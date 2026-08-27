@@ -1,0 +1,142 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { rightNav } from "@/data/navigation";
+import { Menu, X } from "lucide-react";
+import { useMobileMenu } from "@/hooks/useMobileMenu";
+import { MobileMenu } from "./MobileMenu";
+import { CommandPalette } from "@/components/ui/CommandPalette";
+import { RouteLoader } from "@/components/ui/RouteLoader";
+import { ProjectDropdown } from "./ProjectDropdown";
+
+const DESKTOP_NAV_ITEMS = [
+  { label: "ABOUT", href: "/about" },
+  { label: "DOWNLOADS", href: "/downloads" },
+  { label: "DOCS", href: "/docs" },
+  { label: "CONTACT", href: "/contact" },
+];
+
+export function Navigation() {
+  const pathname = usePathname();
+  const { isOpen, close, toggle } = useMobileMenu();
+  const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!navRef.current || !indicatorRef.current) return;
+
+    // Find the active link or dropdown trigger
+    const activeLink = navRef.current.querySelector('[data-active="true"]');
+    if (activeLink) {
+      const rect = activeLink.getBoundingClientRect();
+      const navRect = navRef.current.getBoundingClientRect();
+      indicatorRef.current.style.width = `${rect.width}px`;
+      indicatorRef.current.style.transform = `translateX(${rect.left - navRect.left}px)`;
+      indicatorRef.current.style.opacity = "1";
+    } else {
+      indicatorRef.current.style.opacity = "0";
+    }
+  }, [pathname]);
+
+  return (
+    <>
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-40 h-[64px]",
+          "flex items-center justify-between px-5 md:px-8",
+          "bg-swiss-bg/95 backdrop-blur-sm",
+          "border-b-2 border-swiss-border",
+          "transition-all duration-150",
+          scrolled && "bg-swiss-bg"
+        )}
+      >
+        {/* Logo */}
+        <Link
+          href="/"
+          className="group font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg shrink-0"
+        >
+          Lorenz
+          <span className="text-swiss-accent">.</span>
+          <span className="transition-colors duration-150 group-hover:text-swiss-accent">
+            dev
+          </span>
+        </Link>
+
+        {/* Center nav — desktop */}
+        <div
+          ref={navRef}
+          className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
+        >
+          <ProjectDropdown />
+          {DESKTOP_NAV_ITEMS.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-active={isActive}
+                className={cn(
+                  "font-swiss text-[11px] font-bold tracking-widest uppercase py-1",
+                  "relative transition-colors duration-150",
+                  isActive ? "text-swiss-fg" : "text-swiss-fg/50 hover:text-swiss-fg"
+                )}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <span
+            ref={indicatorRef}
+            aria-hidden="true"
+            className="absolute bottom-[-4px] left-0 h-[3px] bg-swiss-accent transition-all duration-200 pointer-events-none opacity-0"
+          />
+        </div>
+
+        {/* Right nav — desktop */}
+        <div className="hidden lg:flex items-center gap-6">
+          {rightNav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              className={cn(
+                "font-swiss text-[11px] font-bold tracking-widest uppercase py-1",
+                "text-swiss-fg/50 hover:text-swiss-fg transition-colors duration-150"
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Mobile controls */}
+        <div className="flex lg:hidden items-center gap-2">
+          <button
+            onClick={toggle}
+            className="w-12 h-12 flex items-center justify-center text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-150"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}
+          </button>
+        </div>
+      </nav>
+
+      <RouteLoader />
+      <MobileMenu isOpen={isOpen} onClose={close} />
+      <CommandPalette />
+    </>
+  );
+}
