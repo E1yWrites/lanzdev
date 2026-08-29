@@ -3,12 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/data/config";
-import { projects } from "@/data/projects";
 import { Badge } from "@/components/ui/Badge";
 import { useReveal } from "@/hooks/useReveal";
 import { asset } from "@/lib/constants";
+import type { Project } from "@/types/project";
 
-export function AboutContent() {
+interface AboutContentProps {
+  projects: Project[];
+}
+
+export function AboutContent({ projects }: AboutContentProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
 
   return (
@@ -152,7 +156,7 @@ export function AboutContent() {
 
                   <div className="md:col-span-3">
                     <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 group-hover:text-swiss-bg/50 transition-colors duration-150">
-                      {project.platforms.join(" / ")}
+                      {project.platforms.length ? project.platforms.join(" / ") : "Source"}
                     </span>
                   </div>
 
@@ -163,8 +167,8 @@ export function AboutContent() {
                   </div>
 
                   <div className="md:col-span-1 flex justify-end">
-                    <Badge variant={project.status === "released" ? "released" : "in-progress"}>
-                      {project.status === "released" ? "Released" : "WIP"}
+                    <Badge variant={project.status === "released" ? "released" : project.status === "archived" ? "archived" : "in-progress"}>
+                      {project.status === "released" ? "Released" : project.status === "archived" ? "Archived" : "WIP"}
                     </Badge>
                   </div>
                 </div>

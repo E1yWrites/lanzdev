@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
-import { projects } from "@/data/projects";
+import { getAllProjects } from "@/lib/githubProjects";
 import { getAllDocSlugs } from "@/data/docs";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://lorenzmalabanan.dev";
 
   const staticPages = ["", "/projects", "/downloads", "/releases", "/docs", "/about", "/contact", "/terms", "/privacy", "/license"].map(
@@ -13,6 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: path === "" ? 1 : 0.8,
     })
   );
+
+  const projects = await getAllProjects();
 
   const projectPages = projects.map((p) => ({
     url: `${baseUrl}/projects/${p.slug}`,

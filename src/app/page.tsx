@@ -5,15 +5,25 @@ import { HowIBuild } from "@/components/sections/HowIBuild";
 import { DownloadSection } from "@/components/sections/DownloadSection";
 import { AboutPreview } from "@/components/sections/AboutPreview";
 import { ClosingWordmark } from "@/components/sections/ClosingWordmark";
+import { getAllProjects, getFeaturedProject } from "@/lib/githubProjects";
 
-export default function Home() {
+export default async function Home() {
+  const [featured, allProjects] = await Promise.all([
+    getFeaturedProject(),
+    getAllProjects(),
+  ]);
+
+  const otherProjects = featured
+    ? allProjects.filter((p) => p.slug !== featured.slug)
+    : allProjects;
+
   return (
     <>
       <Hero />
-      <FeaturedSoftware />
-      <SelectedWork />
+      {featured && <FeaturedSoftware project={featured} />}
+      {otherProjects.length > 0 && <SelectedWork projects={otherProjects} />}
       <HowIBuild />
-      <DownloadSection />
+      {featured && <DownloadSection project={featured} />}
       <AboutPreview />
       <ClosingWordmark />
     </>

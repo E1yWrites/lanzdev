@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { ProjectDropdown } from "./ProjectDropdown";
+import type { ProjectSummary } from "@/lib/githubProjects";
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  projects: ProjectSummary[];
 }
 
 const MOBILE_NAV_ITEMS = [
@@ -18,7 +20,7 @@ const MOBILE_NAV_ITEMS = [
   { label: "CONTACT", href: "/contact" },
 ];
 
-export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, projects }: MobileMenuProps) {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -34,11 +36,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         onClick={onClose}
       />
       <div
-        className="absolute top-[64px] left-3 right-3 bg-swiss-bg border-2 border-swiss-border overflow-hidden"
+        id="mobile-menu"
+        className="absolute top-[64px] left-3 right-3 bg-swiss-bg border-2 border-swiss-border overflow-hidden flex flex-col"
       >
-        <div className="flex flex-col py-2 gap-0">
+        <div className="flex flex-col py-2 gap-0 overflow-y-auto max-h-[calc(100dvh-64px)]">
           {/* Project dropdown — mobile mode */}
-          <ProjectDropdown mobile onItemSelect={onClose} />
+          <ProjectDropdown mobile projects={projects} onItemSelect={onClose} />
 
           {MOBILE_NAV_ITEMS.map((item) => (
             <Link

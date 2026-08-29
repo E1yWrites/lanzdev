@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { DownloadButton } from "@/components/ui/DownloadButton";
-import { getFeaturedProject } from "@/data/projects";
 import { useReveal } from "@/hooks/useReveal";
+import type { Project } from "@/types/project";
 
 const PLATFORMS = [
   {
@@ -24,11 +24,12 @@ const PLATFORMS = [
   },
 ];
 
-export function DownloadSection() {
-  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const project = getFeaturedProject();
+interface DownloadSectionProps {
+  project: Project;
+}
 
-  if (!project) return null;
+export function DownloadSection({ project }: DownloadSectionProps) {
+  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
 
   return (
     <section ref={sectionRef} className="py-20 border-t-2 border-swiss-border">

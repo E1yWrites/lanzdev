@@ -6,8 +6,10 @@ export const SITE_DESCRIPTION =
 export const GITHUB_USERNAME = "E1yWrites";
 export const GITHUB_REPO = "tala";
 
-export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+// Optional GitHub token for higher API rate limits (`ghp_...`, `github_pat_...`,
+// or `gho_...`). Public data works without it.
+export const GITHUB_TOKEN = process.env.GITHUB_TOKEN || "";
 
 export function asset(path: string): string {
-  return `${BASE_PATH}${path}`;
+  return path;
 }

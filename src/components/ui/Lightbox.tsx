@@ -25,6 +25,9 @@ export function Lightbox({ src, alt, onClose }: LightboxProps) {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image preview"
       className="fixed inset-0 z-[55] flex items-center justify-center bg-swiss-fg/80"
       onClick={onClose}
     >

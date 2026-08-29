@@ -14,13 +14,14 @@ import {
   User,
   Mail,
 } from "lucide-react";
-import { projects } from "@/data/projects";
+import type { ProjectSummary } from "@/lib/githubProjects";
 
 interface CommandPaletteProps {
+  projects: ProjectSummary[];
   className?: string;
 }
 
-export function CommandPalette({ className }: CommandPaletteProps) {
+export function CommandPalette({ projects, className }: CommandPaletteProps) {
   const router = useRouter();
 
   const commands = [
@@ -60,6 +61,9 @@ export function CommandPalette({ className }: CommandPaletteProps) {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
       className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-swiss-fg/20"
       onClick={close}
     >

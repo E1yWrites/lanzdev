@@ -4,15 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { projects } from "@/data/projects";
 import { ChevronDown } from "lucide-react";
+import type { ProjectSummary } from "@/lib/githubProjects";
 
 interface ProjectDropdownProps {
+  projects: ProjectSummary[];
   mobile?: boolean;
   onItemSelect?: () => void;
 }
 
-export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdownProps) {
+export function ProjectDropdown({ projects, mobile = false, onItemSelect }: ProjectDropdownProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -105,7 +106,7 @@ export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdow
           break;
       }
     },
-    [isOpen, open, close]
+    [isOpen, open, close, projects.length]
   );
 
   if (mobile) {
@@ -116,7 +117,7 @@ export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdow
           aria-expanded={isOpen}
           aria-haspopup="true"
           className={cn(
-            "w-full flex items-center justify-between font-swiss text-lg font-bold tracking-widest uppercase py-3",
+            "w-full flex items-center justify-between font-swiss text-lg font-bold tracking-widest uppercase py-3 px-5",
             "transition-colors duration-150",
             isProjectsActive ? "text-swiss-accent" : "text-swiss-fg hover:text-swiss-accent"
           )}
@@ -126,7 +127,7 @@ export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdow
             size={16}
             strokeWidth={2.5}
             className={cn(
-              "transition-transform duration-150",
+              "transition-transform duration-150 shrink-0 ml-6",
               isOpen && "rotate-180"
             )}
           />
@@ -139,11 +140,11 @@ export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdow
                 href={`/projects/${project.slug}`}
                 onClick={onItemSelect}
                 className={cn(
-                  "flex items-start gap-3 py-2 px-4 font-swiss text-sm transition-all duration-150",
+                  "flex items-start gap-3 py-2 pl-6 pr-4 font-swiss text-sm transition-all duration-150",
                   "border-l-2",
                   pathname === `/projects/${project.slug}`
-                    ? "border-swiss-accent text-swiss-accent bg-swiss-accent/5"
-                    : "border-transparent text-swiss-fg/70 hover:text-swiss-fg hover:border-swiss-fg/30"
+                    ? "border-l-swiss-accent text-swiss-accent bg-swiss-accent/5"
+                    : "border-l-transparent text-swiss-fg/70 hover:text-swiss-fg hover:border-l-swiss-fg/30"
                 )}
               >
                 <span className="font-swiss text-[10px] font-bold tracking-widest text-swiss-fg/30 mt-1 shrink-0">
@@ -160,7 +161,7 @@ export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdow
             <Link
               href="/projects"
               onClick={onItemSelect}
-              className="block py-2 px-4 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50 hover:text-swiss-accent transition-colors duration-150"
+              className="block py-2 pl-6 pr-4 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50 hover:text-swiss-accent transition-colors duration-150"
             >
               View all projects →
             </Link>
@@ -179,6 +180,7 @@ export function ProjectDropdown({ mobile = false, onItemSelect }: ProjectDropdow
         onKeyDown={handleKeyDown}
         aria-expanded={isOpen}
         aria-haspopup="true"
+        data-active={isProjectsActive}
         className={cn(
           "font-swiss text-[11px] font-bold tracking-widest uppercase py-1",
           "relative transition-colors duration-150",

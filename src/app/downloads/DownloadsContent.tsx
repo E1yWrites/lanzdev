@@ -1,10 +1,10 @@
 "use client";
 
-import { getFeaturedProject } from "@/data/projects";
 import { DownloadButton } from "@/components/ui/DownloadButton";
 import { Hairline } from "@/components/ui/Hairline";
 import { useReveal } from "@/hooks/useReveal";
 import { Badge } from "@/components/ui/Badge";
+import type { Project } from "@/types/project";
 
 const PLATFORM_CARDS = [
   {
@@ -24,11 +24,12 @@ const PLATFORM_CARDS = [
   },
 ];
 
-export function DownloadsContent() {
-  const project = getFeaturedProject();
-  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+interface DownloadsContentProps {
+  project: Project;
+}
 
-  if (!project) return null;
+export function DownloadsContent({ project }: DownloadsContentProps) {
+  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
 
   return (
     <section ref={sectionRef} className="py-20">

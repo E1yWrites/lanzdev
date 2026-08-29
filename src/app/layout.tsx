@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { InitialLoader } from "@/components/ui/InitialLoader";
+import { getProjectSummaries } from "@/lib/githubProjects";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,16 +32,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const summaries = await getProjectSummaries();
+
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen relative swiss-noise">
         <InitialLoader />
-        <Navigation />
+        <Navigation projects={summaries} />
         <main className="relative z-[1] pt-[64px]">{children}</main>
         <Footer />
       </body>

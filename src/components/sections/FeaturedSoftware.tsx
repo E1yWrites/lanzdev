@@ -5,21 +5,22 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ImagePreview } from "@/components/ui/ImagePreview";
-import { getFeaturedProject } from "@/data/projects";
 import { formatDate } from "@/lib/utils";
 import { asset } from "@/lib/constants";
 import { useReveal } from "@/hooks/useReveal";
+import type { Project } from "@/types/project";
 
-export function FeaturedSoftware() {
+interface FeaturedSoftwareProps {
+  project: Project;
+}
+
+export function FeaturedSoftware({ project }: FeaturedSoftwareProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const project = getFeaturedProject();
-
-  if (!project) return null;
 
   const meta = [
     { label: "Platform", value: project.platforms.join(" / ") },
     { label: "Type", value: "Desktop Application" },
-    { label: "Stack", value: "Tauri / React / TypeScript" },
+    { label: "Stack", value: project.technologies.join(" / ") },
     { label: "Status", value: project.status, capitalize: true },
     { label: "License", value: project.license },
     { label: "Updated", value: formatDate(project.releaseDate) },

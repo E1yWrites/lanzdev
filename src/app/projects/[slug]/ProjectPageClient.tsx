@@ -24,10 +24,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export function ProjectPageClient({ project }: ProjectPageClientProps) {
   const meta = [
     { label: "Project", value: project.name },
-    { label: "Version", value: `v${project.version}` },
-    { label: "Platform", value: project.platforms.join(" / ") },
+    { label: "Version", value: project.version ? `v${project.version}` : "—" },
+    { label: "Platform", value: project.platforms.length ? project.platforms.join(" / ") : "Source" },
     { label: "Status", value: project.status, capitalize: true },
-    { label: "Built with", value: project.technologies.join(" / ") },
+    { label: "Built with", value: project.technologies.length ? project.technologies.join(" / ") : "—" },
     { label: "License", value: project.license },
   ];
 
@@ -37,8 +37,9 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
       <section className="py-16 md:py-24 border-b-2 border-swiss-border">
         <div className="max-w-7xl mx-auto px-5 md:px-8">
           <div className="mb-6">
-            <Badge variant={project.status === "released" ? "released" : project.status === "in-progress" ? "in-progress" : "planned"}>
-              v{project.version} {project.status === "released" ? "released" : project.status === "in-progress" ? "in progress" : "planned"}
+            <Badge variant={project.status === "released" ? "released" : project.status === "in-progress" ? "in-progress" : project.status === "archived" ? "archived" : "planned"}>
+              {project.version ? `v${project.version} ` : ""}
+              {project.status === "released" ? "released" : project.status === "in-progress" ? "in progress" : project.status === "archived" ? "archived" : "planned"}
             </Badge>
           </div>
 
@@ -132,36 +133,38 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
       )}
 
       {/* Features */}
-      <section className="py-16 md:py-24 border-b-2 border-swiss-border bg-swiss-muted swiss-grid-pattern">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <SectionLabel>Features</SectionLabel>
+      {project.features.length > 0 && (
+        <section className="py-16 md:py-24 border-b-2 border-swiss-border bg-swiss-muted swiss-grid-pattern">
+          <div className="max-w-7xl mx-auto px-5 md:px-8">
+            <SectionLabel>Features</SectionLabel>
 
-          <ol className="border-2 border-swiss-border">
-            {project.features.map((feature, i) => (
-              <li
-                key={feature.name}
-                className={`flex items-center justify-between py-4 gap-4 border-b-2 border-swiss-border last:border-0 px-5 ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
-              >
-                <div className="flex items-center gap-4 min-w-0">
-                  <span className="font-swiss text-[11px] font-bold tracking-widest text-swiss-fg/40">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="font-swiss text-sm font-medium text-swiss-fg truncate">
-                    {feature.name}
-                  </span>
-                </div>
-                <span
-                  className={`font-swiss text-[10px] font-bold tracking-widest uppercase shrink-0 ${
-                    feature.available ? "text-swiss-accent" : "text-swiss-fg/40"
-                  }`}
+            <ol className="border-2 border-swiss-border">
+              {project.features.map((feature, i) => (
+                <li
+                  key={feature.name}
+                  className={`flex items-center justify-between py-4 gap-4 border-b-2 border-swiss-border last:border-0 px-5 ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
                 >
-                  {feature.available ? "Available" : "Coming soon"}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+                  <div className="flex items-center gap-4 min-w-0">
+                    <span className="font-swiss text-[11px] font-bold tracking-widest text-swiss-fg/40">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-swiss text-sm font-medium text-swiss-fg truncate">
+                      {feature.name}
+                    </span>
+                  </div>
+                  <span
+                    className={`font-swiss text-[10px] font-bold tracking-widest uppercase shrink-0 ${
+                      feature.available ? "text-swiss-accent" : "text-swiss-fg/40"
+                    }`}
+                  >
+                    {feature.available ? "Available" : "Coming soon"}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
 
       {/* Screenshots */}
       {project.screenshots.length > 0 && (

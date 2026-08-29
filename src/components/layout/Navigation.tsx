@@ -11,6 +11,7 @@ import { MobileMenu } from "./MobileMenu";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { RouteLoader } from "@/components/ui/RouteLoader";
 import { ProjectDropdown } from "./ProjectDropdown";
+import type { ProjectSummary } from "@/lib/githubProjects";
 
 const DESKTOP_NAV_ITEMS = [
   { label: "ABOUT", href: "/about" },
@@ -19,7 +20,11 @@ const DESKTOP_NAV_ITEMS = [
   { label: "CONTACT", href: "/contact" },
 ];
 
-export function Navigation() {
+interface NavigationProps {
+  projects: ProjectSummary[];
+}
+
+export function Navigation({ projects }: NavigationProps) {
   const pathname = usePathname();
   const { isOpen, close, toggle } = useMobileMenu();
   const [scrolled, setScrolled] = useState(false);
@@ -46,7 +51,7 @@ export function Navigation() {
     } else {
       indicatorRef.current.style.opacity = "0";
     }
-  }, [pathname]);
+  }, [pathname, isOpen]);
 
   return (
     <>
@@ -77,7 +82,7 @@ export function Navigation() {
           ref={navRef}
           className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
         >
-          <ProjectDropdown />
+          <ProjectDropdown projects={projects} />
           {DESKTOP_NAV_ITEMS.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -126,8 +131,10 @@ export function Navigation() {
         <div className="flex lg:hidden items-center gap-2">
           <button
             onClick={toggle}
-            className="w-12 h-12 flex items-center justify-center text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-150"
             aria-label="Toggle menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+            className="w-12 h-12 flex items-center justify-center text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-150"
           >
             {isOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}
           </button>
@@ -135,8 +142,8 @@ export function Navigation() {
       </nav>
 
       <RouteLoader />
-      <MobileMenu isOpen={isOpen} onClose={close} />
-      <CommandPalette />
+      <MobileMenu isOpen={isOpen} onClose={close} projects={projects} />
+      <CommandPalette projects={projects} />
     </>
   );
 }
