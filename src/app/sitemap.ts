@@ -16,12 +16,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const projects = await getAllProjects();
 
-  const projectPages = projects.map((p) => ({
-    url: `${baseUrl}/projects/${p.slug}`,
-    lastModified: new Date(p.releaseDate),
-    changeFrequency: "monthly" as const,
-    priority: 0.9,
-  }));
+  const projectPages = projects.map((p) => {
+    const lastModified = p.releaseDate ? new Date(p.releaseDate) : undefined;
+    return {
+      url: `${baseUrl}/projects/${p.slug}`,
+      ...(lastModified && !Number.isNaN(lastModified.getTime())
+        ? { lastModified }
+        : { lastModified: new Date() }),
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    };
+  });
 
   const docPages = getAllDocSlugs().map((slug) => ({
     url: `${baseUrl}/docs/${slug}`,

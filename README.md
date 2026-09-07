@@ -44,8 +44,8 @@ The site auto-populates projects from your public GitHub repositories
 (`GET /users/{username}/repos`) and refreshes release/download info from the
 latest GitHub release of each repo (`revalidate = 3600`).
 
-- New public repos appear as projects automatically (the site repo itself is
-  excluded).
+- New public repos appear as projects automatically. The site repo
+  (`lanzdev`) and the `e1ywrites` profile repo are excluded.
 - Version, release date, and download links track the latest release assets:
   - Windows: `.exe` / `.msi`
   - macOS: `.dmg` / `.app.tar.gz`
@@ -55,10 +55,25 @@ Hand-curated data in `src/data/projects.ts` (story, features, changelog,
 screenshots, featured flag) merges over the GitHub data by repo/slug, so a
 curated project keeps its rich detail while still receiving live release info.
 
+A project with a `demoUrl` gets a "View Demo" button on its project page
+(e.g. the PARADA Landing live preview at `https://parada-landing.vercel.app/#demo`).
+
 See `ADDING_PROJECTS.md` for how to curate a project entry.
+
+## Projects
+
+Currently curated on the site:
+
+- **Tala** — a thoughtful, doodle-inspired note-taking workspace (Tauri + React),
+  with a live web preview at `https://tala-xi.vercel.app/`.
+- **PARADA Landing** — smart parking capstone marketing page, with a live
+  demo deployment. Curated in `src/data/projects.ts`, docs in `src/data/docs.ts`.
+- **Modpack Development** — a Minecraft Fabric modpack dev environment (Gradle + Java).
 
 ## Other pages
 
 - Live release history is served from the GitHub releases API
   (`src/app/releases/page.tsx`).
 - Static content lives in `src/data/` (`config.ts`, `docs.ts`, `navigation.ts`).
+- Project documentation is served under `/docs/<slug>` and driven by
+  `src/data/docs.ts` (`docsByProject` feeds both the docs index and sidebar).

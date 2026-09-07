@@ -22,6 +22,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function ProjectPageClient({ project }: ProjectPageClientProps) {
+  const hasDownloads = (["windows", "macos", "linux"] as const).some(
+    (key) => project.downloads[key]?.available
+  );
+
   const meta = [
     { label: "Project", value: project.name },
     { label: "Version", value: project.version ? `v${project.version}` : "—" },
@@ -64,6 +68,11 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
               >
                 Download for Windows
               </a>
+            )}
+            {project.demoUrl && (
+              <Link href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                <Button variant="accent">View Demo</Button>
+              </Link>
             )}
             <Link
               href={project.githubUrl}
@@ -196,41 +205,43 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
       )}
 
       {/* Downloads */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <SectionLabel>Download</SectionLabel>
+      {hasDownloads && (
+        <section className="py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-5 md:px-8">
+            <SectionLabel>Download</SectionLabel>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border-2 border-swiss-border">
-            {(["windows", "macos", "linux"] as const).map((key, i) => {
-              const dl = project.downloads[key];
-              if (!dl) return null;
-              return (
-                <div
-                  key={key}
-                  className={`p-5 ${i < 2 ? "border-b-2 sm:border-b-0 sm:border-r-2 border-swiss-border" : ""} ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
-                >
-                  <span className="font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg block mb-3">
-                    {key === "macos" ? "macOS" : key[0].toUpperCase() + key.slice(1)}
-                  </span>
-                  {dl.available ? (
-                    <>
-                      <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 block mb-3">
-                        {dl.architecture ?? "x64"} · {dl.fileSize}
-                      </span>
-                      <DownloadButton
-                        url={dl.url}
-                        platform={key.toUpperCase()}
-                      />
-                    </>
-                  ) : (
-                    <DownloadButton state="coming-soon" />
-                  )}
-                </div>
-              );
-            })}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border-2 border-swiss-border">
+              {(["windows", "macos", "linux"] as const).map((key, i) => {
+                const dl = project.downloads[key];
+                if (!dl) return null;
+                return (
+                  <div
+                    key={key}
+                    className={`p-5 ${i < 2 ? "border-b-2 sm:border-b-0 sm:border-r-2 border-swiss-border" : ""} ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
+                  >
+                    <span className="font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg block mb-3">
+                      {key === "macos" ? "macOS" : key[0].toUpperCase() + key.slice(1)}
+                    </span>
+                    {dl.available ? (
+                      <>
+                        <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 block mb-3">
+                          {dl.architecture ?? "x64"} · {dl.fileSize}
+                        </span>
+                        <DownloadButton
+                          url={dl.url}
+                          platform={key.toUpperCase()}
+                        />
+                      </>
+                    ) : (
+                      <DownloadButton state="coming-soon" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

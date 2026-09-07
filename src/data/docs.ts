@@ -299,6 +299,139 @@ The codebase uses a clean separation:
   },
 ];
 
+const paradaSections: DocSection[] = [
+  {
+    slug: "parada-overview",
+    title: "Overview",
+    project: "parada-landing",
+    content: `## What is PARADA?
+
+**PARADA** is a mobile and web-based **smart parking management system** that detects zone-based occupancy using OCR-assisted cameras. This landing page is a faithful 1:1 reproduction of the original design file — a marketing showcase built for the capstone defense at Lyceum of the Philippines University — Batangas (BS Information Technology program).
+
+The page intentionally reflects the honest status of the project: the implemented features are shown alongside the OCR / computer-vision phases that are still under evaluation.
+
+## Live preview
+
+A [live demo](https://parada-landing.vercel.app/#demo) is deployed to Vercel and can be previewed directly from the portfolio.`,
+  },
+  {
+    slug: "parada-runtime",
+    title: "Runtime & Scripts",
+    project: "parada-landing",
+    content: `The page uses a small component runtime and must be served over HTTP (fetch/relative files). On first load it pulls React, Babel, GSAP and fonts from a CDN.
+
+## Run locally
+
+\`\`\`bash
+python3 -m http.server 8080
+# open http://localhost:8080
+\`\`\`
+
+## Files
+
+- \`index.html\` — the full landing page (the design file copied verbatim)
+- \`support.js\` — dc-runtime boot (auto-loads React/Babel and mounts the page)
+- \`image-slot.js\` — \`<image-slot>\` placeholder custom element`,
+  },
+  {
+    slug: "parada-animations",
+    title: "Animations",
+    project: "parada-landing",
+    content: `Every animation is reproduced exactly as designed:
+
+- Pinned **hero** with an interactive scan-canvas, poster auto-fit, and word/atom reveal.
+- A horizontal cinematic **pipeline** (a 900svh sticky section) with nine individually-animated SVG scenes driven by GSAP \`MotionPathPlugin\` — vehicle arrival, camera capture, computer-vision + OCR, the PARADA API hub, vehicle/user/guest resolution, occupancy + session, mobile + admin, exit, and fee receipt.
+- The animated **registered-vs-guest** compare flow with live plate decoding and policy pulses.
+- The **architecture pipeline** SVG with looping motion-path packets.
+- Zone-occupancy cards, module cards, config/stack/status grids, admin dashboard, and security rules.`,
+  },
+  {
+    slug: "parada-related",
+    title: "Related",
+    project: "parada-landing",
+    content: `Source code and architecture live in the companion repository: [E1yWrites/parada](https://github.com/E1yWrites/parada).
+
+This repo is the standalone landing page at [E1yWrites/parada-landing](https://github.com/E1yWrites/parada-landing).`,
+  },
+];
+
+export const paradaDocs: DocPage = {
+  title: "PARADA Landing Docs",
+  description: "Smart parking capstone — landing page details.",
+  navItems: paradaSections.map((s) => ({ slug: s.slug, title: s.title })),
+  sections: paradaSections,
+};
+
+const modpackSections: DocSection[] = [
+  {
+    slug: "modpack-overview",
+    title: "Overview",
+    project: "modpack-development",
+    content: `## Modpack Development
+
+A modern **Minecraft Fabric modpack development environment** with Gradle, a complete project structure, and git integration. It ships with:
+
+- A Java main entry point (\`FabricModMain.java\`)
+- Client-side hook scaffolding (\`FabricModClient.java\`)
+- Fabric mod metadata (\`fabric.mod.json\`)
+- Mixin configuration (\`fabricmod.mixins.json\`)`,
+  },
+  {
+    slug: "modpack-setup",
+    title: "Setup",
+    project: "modpack-development",
+    content: `## Prerequisites
+
+- **Java 17 or higher**
+- **Git**
+
+## Initial setup
+
+\`\`\`bash
+git clone <your-repo-url>
+cd Minecraft\ Mods
+
+# Build (downloads dependencies automatically)
+./gradlew build      # macOS/Linux
+gradlew build        # Windows
+
+# Run in development environment
+./gradlew runClient  # macOS/Linux
+gradlew runClient    # Windows
+\`\`\``,
+  },
+  {
+    slug: "modpack-structure",
+    title: "Project Structure",
+    project: "modpack-development",
+    content: `\`\`\`
+fabric-modpack/
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/example/fabricmod/
+│       │       ├── FabricModMain.java
+│       │       └── client/
+│       │           └── FabricModClient.java
+│       └── resources/
+│           ├── fabric.mod.json
+│           └── fabricmod.mixins.json
+└── build.gradle
+\`\`\``,
+  },
+];
+
+export const modpackDocs: DocPage = {
+  title: "Modpack Development Docs",
+  description: "Minecraft Fabric modpack development environment.",
+  navItems: modpackSections.map((s) => ({ slug: s.slug, title: s.title })),
+  sections: modpackSections,
+};
+
 export const talaDocs: DocPage = {
   title: "Tala Documentation",
   description: "Everything you need to get started with Tala.",
@@ -308,9 +441,15 @@ export const talaDocs: DocPage = {
 
 export const docsByProject: Record<string, ProjectDocs> = {
   tala: talaDocs,
+  "parada-landing": paradaDocs,
+  "modpack-development": modpackDocs,
 };
 
-export const allDocSections: DocSection[] = talaSections;
+export const allDocSections: DocSection[] = [
+  ...talaSections,
+  ...paradaSections,
+  ...modpackSections,
+];
 
 export function getDocBySlug(slug: string): DocSection | undefined {
   return allDocSections.find((s) => s.slug === slug);

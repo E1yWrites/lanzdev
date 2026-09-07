@@ -21,7 +21,7 @@ export interface ProjectSummary {
 }
 
 // Repos that should never appear as projects on the site.
-const EXCLUDED_REPO_NAMES = new Set(["lanzdev"]);
+const EXCLUDED_REPO_NAMES = new Set(["lanzdev", "e1ywrites"]);
 
 function toTitleCase(name: string): string {
   return name
