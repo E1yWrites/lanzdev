@@ -6,11 +6,9 @@ interface DocsLayoutProps {
 
 export default function DocsLayout({ children }: DocsLayoutProps) {
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex">
-        <DocsSidebar />
-        <div className="flex-1 min-w-0">{children}</div>
-      </div>
+    <div className="mx-auto max-w-7xl md:flex md:items-start">
+      <DocsSidebar />
+      <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }
