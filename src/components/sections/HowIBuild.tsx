@@ -18,7 +18,7 @@ export function HowIBuild() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-20 border-t-2 border-swiss-border bg-swiss-muted swiss-diagonal">
+    <section ref={sectionRef} className="py-20 border-t border-ink/10 bg-ink/[0.02] swiss-diagonal">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="reveal">
           <SectionHeader number="04" title="How I Build" />
@@ -39,9 +39,9 @@ export function HowIBuild() {
           </div>
 
           {/* Right — Tech list */}
-          <div className="reveal md:col-span-7 space-y-0 border-2 border-swiss-border">
+          <div className="reveal md:col-span-7 surface-solid rounded-lg overflow-hidden divide-y divide-ink/10">
             {categories.map((cat, i) => (
-              <div key={cat.label} className={`border-b-2 border-swiss-border last:border-0 p-5 ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}>
+              <div key={cat.label} className={`p-5 ${i % 2 === 0 ? "" : "bg-ink/[0.02]"}`}>
                 <span className="section-number mb-3 block">
                   {cat.label}
                 </span>

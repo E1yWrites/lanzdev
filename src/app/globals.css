@@ -4,11 +4,33 @@
 
 @layer base {
   :root {
-    --swiss-bg: #FFFFFF;
-    --swiss-fg: #000000;
-    --swiss-muted: #F2F2F2;
-    --swiss-accent: #FF3000;
-    --swiss-border: #000000;
+    --swiss-bg: #0B0B0C;
+    --swiss-fg: #F5F5F5;
+    --swiss-muted: #1B1B1E;
+    --swiss-accent: #FF4C29;
+    --swiss-border: #F5F5F5;
+
+    /* Semantic material tokens — space-separated rgb, composed via rgb(var(..) / alpha) */
+    --paper: 11 11 12;
+    --paper-elevated: 19 19 21;
+    --ink: 245 245 245;
+    --surface-1: 27 27 30;
+    --accent: 255 76 41;
+
+    /* Cinematic key-light glow behind hero art */
+    --glow: 255 108 61;
+
+    /* Motion */
+    --duration-instant: 100ms;
+    --duration-fast: 160ms;
+    --duration-normal: 240ms;
+    --duration-slow: 420ms;
+    --ease-standard: cubic-bezier(.4, 0, .2, 1);
+    --ease-out-back: cubic-bezier(.34, 1.2, .64, 1);
+
+    /* Pointer position for interactive glass, set via onPointerMove */
+    --pointer-x: 50%;
+    --pointer-y: 50%;
   }
 
   *,
@@ -37,7 +59,7 @@
 
   ::selection {
     background-color: var(--swiss-accent);
-    color: #FFFFFF;
+    color: #0B0B0C;
   }
 
   a {
@@ -91,22 +113,107 @@
 }
 
 @layer components {
+  /* Docs — copy-button feedback */
+  .doc-copy-pop {
+    animation: docPop 320ms var(--ease-out-back);
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(6px) translateX(-6px);
-    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+    filter: blur(4px);
+    transition:
+      opacity var(--duration-slow) var(--ease-standard),
+      transform var(--duration-slow) var(--ease-standard),
+      filter var(--duration-slow) var(--ease-standard);
   }
 
   .reveal.visible {
     opacity: 1;
     transform: translateY(0) translateX(0);
+    filter: blur(0);
+  }
+
+  /* Material tiers — depth via surface, not decoration */
+  .surface-solid {
+    background: rgb(var(--paper) / 0.7);
+    border: 1px solid rgb(var(--ink) / 0.1);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+  }
+
+  .surface-subtle {
+    background: rgb(var(--ink) / 0.03);
+  }
+
+  .surface-glass {
+    background: rgb(var(--paper) / 0.6);
+    border: 1px solid rgb(var(--ink) / 0.1);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--ink) / 0.08),
+      0 8px 30px -12px rgb(0 0 0 / 0.5);
+  }
+
+  .surface-elevated {
+    background: rgb(var(--paper-elevated));
+    border: 1px solid rgb(var(--ink) / 0.08);
+    box-shadow: 0 12px 40px -16px rgb(0 0 0 / 0.6);
+  }
+
+  /* Cinematic key-light glow — hero backdrop */
+  .surface-glow {
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 40%,
+      rgb(var(--glow) / 0.22),
+      transparent 70%
+    );
+  }
+
+  /* Pointer-reactive highlight — glass surfaces only, updated via onPointerMove writing --pointer-x/y */
+  .glass-interactive {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-interactive::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      280px circle at var(--pointer-x) var(--pointer-y),
+      rgb(var(--ink) / 0.06),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-standard);
+    pointer-events: none;
+  }
+
+  .glass-interactive:hover::before {
+    opacity: 1;
+  }
+
+  /* Tactile press — hover lift, active compress, spring settle */
+  .tactile {
+    transition: transform var(--duration-fast) var(--ease-out-back), box-shadow var(--duration-fast) var(--ease-standard);
+  }
+
+  .tactile:hover {
+    transform: translateY(-2px);
+  }
+
+  .tactile:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: var(--duration-instant);
   }
 
   .skeleton {
     background: linear-gradient(
       90deg,
       var(--swiss-muted) 25%,
-      #E8E8E8 50%,
+      #2A2A2E 50%,
       var(--swiss-muted) 75%
     );
     background-size: 200% 100%;
@@ -160,13 +267,13 @@
 @layer utilities {
   .swiss-grid-pattern {
     background-image:
-      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 72px 72px;
   }
 
   .swiss-dots {
-    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 16px 16px;
   }
 
@@ -175,8 +282,8 @@
       45deg,
       transparent,
       transparent 10px,
-      rgba(0, 0, 0, 0.02) 10px,
-      rgba(0, 0, 0, 0.02) 11px
+      rgba(255, 255, 255, 0.025) 10px,
+      rgba(255, 255, 255, 0.025) 11px
     );
   }
 
@@ -188,10 +295,21 @@
     content: "";
     position: absolute;
     inset: 0;
-    opacity: 0.015;
+    opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 0;
+  }
+
+  /* Markdown-rendered doc content — never let a word wrap and clip mid-character */
+  .doc-content {
+    overflow-wrap: break-word;
+    word-break: normal;
+    min-width: 0;
+  }
+
+  .doc-content :is(ul, ol) {
+    padding-left: 0;
   }
 }
 
@@ -236,10 +354,23 @@
   50% { opacity: 0; }
 }
 
+@keyframes docPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
   }
 
@@ -253,6 +384,25 @@
   }
 
   .animate-pulse {
+    animation: none;
+  }
+
+  .glass-interactive::before {
+    display: none;
+  }
+
+  .tactile,
+  .tactile:hover,
+  .tactile:active {
+    transition: none;
+    transform: none;
+  }
+
+  .animate-drift {
+    animation: none;
+  }
+
+  .doc-copy-pop {
     animation: none;
   }
 

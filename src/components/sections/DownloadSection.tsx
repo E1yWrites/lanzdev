@@ -32,7 +32,7 @@ export function DownloadSection({ project }: DownloadSectionProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
 
   return (
-    <section ref={sectionRef} className="py-20 border-t-2 border-swiss-border">
+    <section ref={sectionRef} className="py-20 border-t border-ink/10">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="reveal">
           <SectionHeader number="05" title="Download Software" />
@@ -50,8 +50,8 @@ export function DownloadSection({ project }: DownloadSectionProps) {
           </p>
         </div>
 
-        <div className="reveal border-2 border-swiss-border">
-          <div className="p-6 md:p-8 border-b-2 border-swiss-border bg-swiss-muted">
+        <div className="reveal surface-solid rounded-lg overflow-hidden">
+          <div className="p-6 md:p-8 border-b border-ink/10 bg-ink/[0.02]">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h3 className="font-swiss font-black text-2xl tracking-tighter uppercase text-swiss-fg">{project.name}</h3>
@@ -66,13 +66,13 @@ export function DownloadSection({ project }: DownloadSectionProps) {
           </div>
 
           <div className="p-6 md:p-8">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border-2 border-swiss-border">
-              {PLATFORMS.map((platform, i) => {
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {PLATFORMS.map((platform) => {
                 const dl = project.downloads[platform.key];
                 return (
                   <div
                     key={platform.key}
-                    className={`p-5 ${i < PLATFORMS.length - 1 ? "border-b-2 sm:border-b-0 sm:border-r-2 border-swiss-border" : ""} ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
+                    className="surface-subtle rounded-md p-5"
                   >
                     <span className="font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg block mb-1">
                       {platform.label}
@@ -90,7 +90,7 @@ export function DownloadSection({ project }: DownloadSectionProps) {
               })}
             </div>
 
-            <div className="flex flex-wrap gap-x-8 gap-y-2 mt-6 pt-5 border-t-2 border-swiss-border">
+            <div className="flex flex-wrap gap-x-8 gap-y-2 mt-6 pt-5 border-t border-ink/10">
               {[
                 { href: "/releases", label: "Release notes" },
                 { href: project.githubUrl, label: "Source code", external: true },

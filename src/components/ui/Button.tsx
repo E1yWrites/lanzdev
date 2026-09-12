@@ -11,13 +11,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-swiss-fg text-swiss-bg border-2 border-swiss-border hover:bg-swiss-accent hover:border-swiss-accent transition-all duration-150",
+    "bg-swiss-fg text-swiss-bg border-2 border-swiss-border hover:bg-swiss-accent hover:border-swiss-accent hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.35)]",
   secondary:
-    "bg-swiss-bg text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-150",
+    "bg-swiss-bg text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.25)]",
   ghost:
-    "bg-transparent text-swiss-fg border-2 border-transparent hover:border-swiss-border transition-all duration-150",
+    "bg-transparent text-swiss-fg border-2 border-transparent hover:border-swiss-border",
   accent:
-    "bg-swiss-accent text-swiss-bg border-2 border-swiss-accent hover:bg-swiss-fg hover:border-swiss-fg transition-all duration-150",
+    "bg-swiss-accent text-swiss-bg border-2 border-swiss-accent hover:bg-swiss-fg hover:border-swiss-fg hover:shadow-[0_10px_24px_-10px_rgba(255,48,0,0.4)]",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -32,9 +32,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center gap-2",
+          "tactile inline-flex items-center justify-center gap-2",
           "font-swiss font-bold tracking-widest uppercase",
-          "transition-all duration-150 ease-out",
+          "transition-all duration-fast ease-standard",
           "disabled:opacity-30 disabled:pointer-events-none",
           variantStyles[variant],
           sizeStyles[size],

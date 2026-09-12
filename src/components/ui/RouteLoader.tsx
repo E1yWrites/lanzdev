@@ -16,7 +16,7 @@ export function RouteLoader() {
   if (!loading) return null;
 
   return (
-    <div className="fixed top-[64px] left-0 right-0 z-50 h-[3px]">
+    <div className="fixed top-14 left-0 right-0 z-50 h-[3px]">
       <div className="h-full bg-swiss-accent animate-route-progress" />
     </div>
   );

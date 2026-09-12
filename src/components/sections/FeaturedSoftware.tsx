@@ -27,7 +27,7 @@ export function FeaturedSoftware({ project }: FeaturedSoftwareProps) {
   ];
 
   return (
-    <section ref={sectionRef} className="py-20 border-t-2 border-swiss-border bg-swiss-muted swiss-dots">
+    <section ref={sectionRef} className="py-20 border-t border-ink/10 bg-ink/[0.02] swiss-dots">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="reveal">
           <SectionHeader number="02" title="Featured Software" />
@@ -60,7 +60,7 @@ export function FeaturedSoftware({ project }: FeaturedSoftwareProps) {
             </div>
 
             {/* Metadata grid */}
-            <div className="reveal border-t-2 border-swiss-border pt-6">
+            <div className="reveal border-t border-ink/10 pt-6">
               <dl className="grid grid-cols-2 gap-y-5 gap-x-8">
                 {meta.map((m) => (
                   <div key={m.label}>
@@ -68,7 +68,7 @@ export function FeaturedSoftware({ project }: FeaturedSoftwareProps) {
                       {m.label}
                     </dt>
                     <dd
-                      className={`font-swiss text-sm font-medium text-swiss-fg ${m.capitalize ? "capitalize" : ""}`}
+                      className={`font-mono text-sm font-medium text-swiss-fg ${m.capitalize ? "capitalize" : ""}`}
                     >
                       {m.value}
                     </dd>

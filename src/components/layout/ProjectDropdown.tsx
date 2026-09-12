@@ -111,7 +111,7 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
 
   if (mobile) {
     return (
-      <div className="border-b-2 border-swiss-border">
+      <div className="border-b border-ink/10">
         <button
           onClick={toggle}
           aria-expanded={isOpen}
@@ -203,10 +203,10 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
         <div
           role="menu"
           aria-label="Projects"
-          className="absolute top-full left-0 mt-2 w-80 border-2 border-swiss-border bg-swiss-bg z-50"
+          className="surface-glass absolute top-full left-0 mt-2 w-80 rounded-lg overflow-hidden z-50"
           onMouseLeave={() => setActiveIndex(-1)}
         >
-          <div className="px-4 py-3 border-b-2 border-swiss-border">
+          <div className="px-4 py-3 border-b border-ink/10">
             <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
               Projects
             </span>
@@ -270,7 +270,7 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
               </Link>
             ))}
           </div>
-          <div className="border-t-2 border-swiss-border px-4 py-2.5">
+          <div className="border-t border-ink/10 px-4 py-2.5">
             <Link
               href="/projects"
               className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 hover:text-swiss-accent transition-colors duration-150"

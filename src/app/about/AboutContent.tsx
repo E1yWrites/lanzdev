@@ -1,183 +1,422 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { siteConfig } from "@/data/config";
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
+import { BrowserPreview } from "@/components/ui/BrowserPreview";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { siteConfig } from "@/data/config";
+import { useParallax } from "@/hooks/useParallax";
 import { useReveal } from "@/hooks/useReveal";
 import { asset } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/types/project";
 
 interface AboutContentProps {
   projects: Project[];
 }
 
+// Order in which the curated projects appear on the About page.
+const SELECTED_ORDER = ["tala", "parada-landing", "modpack-development"];
+
+const capabilities = [
+  {
+    title: "Web Development",
+    text: "Interfaces, web applications, APIs and interactive experiences.",
+  },
+  {
+    title: "Desktop Software",
+    text: "Cross-platform tools and focused native-like experiences.",
+  },
+  {
+    title: "Product Engineering",
+    text: "Architecture, systems, implementation and turning ideas into working software.",
+  },
+  {
+    title: "Cybersecurity",
+    text: "Networking, secure systems and security-conscious engineering.",
+  },
+];
+
+const principles = [
+  {
+    title: "Make it useful.",
+    text: "Software should solve a real problem before it tries to impress.",
+  },
+  {
+    title: "Make it clear.",
+    text: "Complex systems should feel simple to the person using them.",
+  },
+  {
+    title: "Make it deliberate.",
+    text: "Every interaction, transition and piece of architecture should have a reason.",
+  },
+];
+
+const milestones = [
+  { year: "2024", label: "LPU-B", text: "Started building software seriously." },
+  { year: "2025", label: "TALA", text: "Built a desktop note-taking application." },
+  { year: "2026", label: "PARADA", text: "Designed and engineered a smart parking platform." },
+  { year: "2026", label: "LORENZ.DEV", text: "Independent software development and design." },
+];
+
+function statusBadge(project: Project) {
+  if (project.status === "released") return { variant: "released" as const, label: "Released" };
+  if (project.status === "archived") return { variant: "archived" as const, label: "Archived" };
+  return { variant: "in-progress" as const, label: "Work in progress" };
+}
+
+function EditorialFrame({ project }: { project: Project }) {
+  return (
+    <div className="relative aspect-[4/3] border border-ink/10 bg-ink/[0.02] swiss-grid-pattern overflow-hidden flex flex-col justify-between p-6 md:p-8">
+      <div className="flex items-start justify-between">
+        <span className="font-mono text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
+          {statusBadge(project).label}
+        </span>
+        <span aria-hidden="true" className="font-swiss text-xl text-swiss-accent">
+          →
+        </span>
+      </div>
+      <span className="font-swiss font-black uppercase text-swiss-fg/10 text-5xl md:text-6xl leading-none tracking-tighter select-none">
+        {project.name.split(" ").map((word) => (
+          <span key={word} className="block">{word}</span>
+        ))}
+      </span>
+      <div className="flex flex-wrap gap-x-6 gap-y-1">
+        {project.technologies.slice(0, 4).map((tech) => (
+          <span key={tech} className="font-mono text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
+            {tech}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function AboutContent({ projects }: AboutContentProps) {
-  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const heroRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const portraitRef = useParallax({ speed: 0.08 });
+  const whatRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const workRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const thinkRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const storyRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const certRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const finalRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+
+  const selected = SELECTED_ORDER.map((slug) => projects.find((p) => p.slug === slug)).filter(
+    (p): p is Project => Boolean(p)
+  );
 
   return (
-    <section ref={sectionRef} className="py-20">
-      <div className="max-w-7xl mx-auto px-5 md:px-8">
+    <>
+      {/* 01 — HERO */}
+      <section ref={heroRef} className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="reveal mb-12 md:mb-16">
+            <span className="section-number">About / Lorenz</span>
+          </div>
 
-        {/* Section label */}
-        <div className="reveal mb-12 md:mb-16">
-          <span className="section-number">About Lorenz</span>
-        </div>
-
-        {/* Hero — name + photo + statement */}
-        <div className="reveal mb-20 md:mb-24">
-          <div className="grid md:grid-cols-12 gap-8 lg:gap-12 items-start">
-            {/* Name + statement — left */}
+          <div className="grid md:grid-cols-12 gap-12 lg:gap-16 items-start">
+            {/* Left — name + statement */}
             <div className="md:col-span-7">
-              <h1 className="font-swiss font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tighter uppercase text-swiss-fg leading-[0.9] mb-8">
-                Lorenz
-                <br />
-                Malabanan
-              </h1>
+              <div className="reveal">
+                <h1 className="font-swiss font-black uppercase text-swiss-fg text-display leading-[0.88] tracking-tighter">
+                  Lorenz
+                  <br />
+                  Malabanan
+                </h1>
+              </div>
 
-              <ul className="space-y-1 mb-8">
-                {[`${siteConfig.education.level} · BSIT`, "Independent software developer", siteConfig.education.location].map((line, i) => (
-                  <li
-                    key={i}
-                    className="font-swiss text-sm font-medium text-swiss-fg/70"
-                  >
-                    {line}
-                  </li>
-                ))}
-              </ul>
+              <div className="reveal mt-8 md:mt-10 flex items-center gap-4">
+                <span aria-hidden="true" className="w-10 h-[2px] bg-swiss-accent flex-shrink-0" />
+                <span className="font-mono text-xs font-bold tracking-[0.2em] uppercase text-swiss-fg/60">
+                  Independent software developer
+                </span>
+              </div>
 
-              {/* Intro paragraph */}
-              <p className="font-swiss text-lg md:text-xl text-swiss-fg/70 max-w-lg leading-relaxed mb-10">
-                I design and build software across the web, desktop, and
-                security — with a focus on practical, thoughtful digital
-                experiences.
-              </p>
+              <div className="reveal mt-8 md:mt-10 max-w-xl">
+                <p className="font-swiss text-xl md:text-2xl text-swiss-fg leading-snug">
+                  I build software at the intersection of engineering and design.
+                </p>
+                <p className="font-swiss text-base md:text-lg text-swiss-fg/60 mt-4 leading-relaxed">
+                  From desktop tools to web applications and complex systems, I enjoy
+                  turning complicated ideas into software that feels deliberate,
+                  understandable, and useful.
+                </p>
+              </div>
 
-              <Link
-                href="/projects"
-                className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50 hover:text-swiss-accent transition-colors duration-150 inline-flex items-center gap-2"
-              >
-                View projects
-              </Link>
+              <div className="reveal mt-10">
+                <a
+                  href="#selected-work"
+                  className="group inline-flex items-center gap-3 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/60 hover:text-swiss-accent transition-colors duration-150"
+                >
+                  Explore selected work
+                  <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">
+                    →
+                  </span>
+                </a>
+              </div>
             </div>
 
-            {/* Photo — right */}
-            <div className="md:col-span-5 relative">
-              <div className="relative w-full aspect-[4/5] border-2 border-swiss-border overflow-hidden bg-swiss-muted swiss-grid-pattern">
-                <Image
-                  src={asset("/images/profilepic.png")}
-                  alt="Lorenz Malabanan"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  priority
-                />
+            {/* Right — portrait */}
+            <div className="md:col-span-5">
+              <div className="reveal">
+                <figure className="relative lg:translate-x-4">
+                  <div ref={portraitRef} className="relative aspect-[4/5] overflow-hidden border border-ink/10 bg-swiss-muted swiss-grid-pattern">
+                    <Image
+                      src={asset("/images/profilepic.png")}
+                      alt="Lorenz Malabanan"
+                      fill
+                      priority
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                    <div aria-hidden="true" className="absolute inset-0 swiss-noise pointer-events-none" />
+                  </div>
+                  <figcaption className="mt-3 font-mono text-[11px] tracking-widest uppercase text-swiss-fg/40 flex items-center justify-between">
+                    <span>Lorenz / 2026</span>
+                    <span>{siteConfig.education.location}</span>
+                  </figcaption>
+                </figure>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Divider */}
-        <hr className="border-0 border-t-2 border-swiss-border" />
-
-        {/* Focus + Certifications */}
-        <div className="reveal py-16 md:py-20">
-          <div className="grid md:grid-cols-2 gap-16 md:gap-20">
-            {/* Focus */}
-            <div>
-              <span className="section-number block mb-6">01 — Focus</span>
-              <ol>
-                {siteConfig.focus.map((item, i) => (
-                  <li key={item} className="group flex items-center justify-between py-4 border-b-2 border-swiss-border cursor-default hover:bg-swiss-muted transition-colors duration-150">
-                    <div className="flex items-center gap-4 px-2">
-                      <span className="font-swiss text-[11px] font-bold tracking-widest text-swiss-fg/40">{String(i + 1).padStart(2, "0")}</span>
-                      <span className="font-swiss font-black text-2xl uppercase tracking-tighter text-swiss-fg group-hover:text-swiss-accent transition-colors duration-150">
-                        {item}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            {/* Certifications */}
-            <div>
-              <span className="section-number block mb-6">02 — Certifications</span>
-              <ol>
-                {siteConfig.certifications.map((cert, i) => (
-                  <li key={cert} className="group flex items-center justify-between py-4 border-b-2 border-swiss-border cursor-default hover:bg-swiss-muted transition-colors duration-150">
-                    <div className="flex items-center gap-4 px-2">
-                      <span className="font-swiss text-[11px] font-bold tracking-widest text-swiss-fg/40">{String(i + 1).padStart(2, "0")}</span>
-                      <span className="font-swiss text-sm font-medium text-swiss-fg group-hover:text-swiss-accent transition-colors duration-150">
-                        {cert.replace("Cisco ", "")}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <hr className="border-0 border-t-2 border-swiss-border" />
-
-        {/* Selected Work teaser */}
-        <div className="reveal py-16 md:py-20">
-          <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
-            <span className="font-swiss font-black text-2xl tracking-tighter uppercase text-swiss-fg">Selected work</span>
-            <Link
-              href="/projects"
-              className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50 hover:text-swiss-accent transition-colors duration-150 inline-flex items-center gap-1.5"
-            >
-              View all
-            </Link>
+      {/* 02 — WHAT I DO */}
+      <section ref={whatRef} className="py-20 border-t border-ink/10">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="reveal">
+            <SectionHeader number="01" title="What I Do" />
           </div>
 
-          <div className="space-y-0 border-2 border-swiss-border">
-            {projects.map((project, index) => (
-              <Link
-                key={project.id}
-                href={`/projects/${project.slug}`}
-                className="group block border-b-2 border-swiss-border last:border-0 p-6 hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-150"
-              >
-                <div className="grid md:grid-cols-12 gap-3 md:gap-6 items-start">
-                  <div className="md:col-span-1">
-                    <span className="font-swiss text-[11px] font-bold tracking-widest text-swiss-fg/40 group-hover:text-swiss-accent transition-colors duration-150">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-
-                  <div className="md:col-span-5">
-                    <h3 className="font-swiss font-black text-2xl md:text-3xl tracking-tighter uppercase group-hover:text-swiss-bg transition-colors duration-150">
-                      {project.name}
-                    </h3>
-                  </div>
-
-                  <div className="md:col-span-3">
-                    <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 group-hover:text-swiss-bg/50 transition-colors duration-150">
-                      {project.platforms.length ? project.platforms.join(" / ") : "Source"}
-                    </span>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <p className="font-swiss text-sm text-swiss-fg/70 leading-relaxed group-hover:text-swiss-bg/70 transition-colors duration-150">
-                      {project.tagline}
+          <ol>
+            {capabilities.map((cap, i) => (
+              <li key={cap.title} className="group border-t border-ink/10 last:border-b">
+                <div className="py-8 md:py-10 flex items-start gap-6 md:gap-10">
+                  <span className="font-mono text-xs text-swiss-fg/30 pt-2 group-hover:text-swiss-accent transition-colors duration-150">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between gap-4">
+                      <h2 className="font-swiss font-black text-3xl md:text-5xl tracking-tighter uppercase text-swiss-fg leading-none transition-all duration-300 group-hover:translate-x-1 md:group-hover:translate-x-2 group-hover:text-swiss-accent">
+                        {cap.title}
+                      </h2>
+                      <span aria-hidden="true" className="font-swiss text-lg text-swiss-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                        →
+                      </span>
+                    </div>
+                    <p className="font-swiss text-sm md:text-base text-swiss-fg/50 group-hover:text-swiss-fg/80 mt-3 max-w-md leading-relaxed transition-colors duration-300">
+                      {cap.text}
                     </p>
                   </div>
-
-                  <div className="md:col-span-1 flex justify-end">
-                    <Badge variant={project.status === "released" ? "released" : project.status === "archived" ? "archived" : "in-progress"}>
-                      {project.status === "released" ? "Released" : project.status === "archived" ? "Archived" : "WIP"}
-                    </Badge>
-                  </div>
                 </div>
-              </Link>
+              </li>
             ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 03 — SELECTED WORK */}
+      <section ref={workRef} id="selected-work" className="py-20 border-t border-ink/10 bg-ink/[0.02]">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="reveal">
+            <SectionHeader number="02" title="Selected Work" />
+          </div>
+
+          <div className="space-y-16 md:space-y-24">
+            {selected.map((project, i) => {
+              const reversed = i % 2 === 1;
+              return (
+                <article key={project.id} className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+                  {/* Content */}
+                  <div className={cn("lg:col-span-5 min-w-0", reversed && "lg:order-2")}>
+                    <div className="reveal">
+                      <div className="flex items-center justify-between mb-5">
+                        <span className="font-mono text-xs font-bold tracking-widest text-swiss-fg/40">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <Badge variant={statusBadge(project).variant}>
+                          {statusBadge(project).label}
+                        </Badge>
+                      </div>
+
+                      <h2 className="font-swiss font-black text-4xl md:text-5xl lg:text-6xl tracking-tighter uppercase text-swiss-fg leading-none">
+                        {project.name}
+                      </h2>
+
+                      <p className="font-swiss text-base text-swiss-fg/60 mt-5 leading-relaxed">
+                        {project.description}
+                      </p>
+
+                      <div className="mt-6 flex flex-wrap gap-x-6 gap-y-1">
+                        {project.technologies.slice(0, 3).map((tech) => (
+                          <span key={tech} className="font-mono text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="group inline-flex items-center gap-3 mt-8 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/60 hover:text-swiss-accent transition-colors duration-150"
+                      >
+                        View project
+                        <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">
+                          →
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Visual */}
+                  <div className={cn("lg:col-span-7 min-w-0", reversed && "lg:order-1")}>
+                    <div className="reveal">
+                      {project.heroImage ? (
+                        <BrowserPreview
+                          title={project.name}
+                          url={`${project.name.split(" ")[0].toLowerCase()}.app`}
+                          image={project.heroImage}
+                          imageAlt={`${project.name} application interface`}
+                        />
+                      ) : (
+                        <EditorialFrame project={project} />
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
+      </section>
 
-      </div>
-    </section>
+      {/* 04 — HOW I THINK */}
+      <section ref={thinkRef} className="py-20 border-t border-ink/10">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="reveal">
+            <SectionHeader number="03" title="How I Think" />
+          </div>
+
+          <ol>
+            {principles.map((principle, i) => (
+              <li key={principle.title} className="group border-t border-ink/10 last:border-b">
+                <div className="py-10 md:py-14 grid md:grid-cols-12 gap-4 md:gap-8 items-start">
+                  <div className="md:col-span-2">
+                    <span className="font-swiss font-black text-6xl md:text-7xl text-swiss-fg/15 group-hover:text-swiss-accent/80 transition-colors duration-300">
+                      {i + 1}
+                    </span>
+                  </div>
+                  <div className="md:col-span-10">
+                    <h2 className="font-swiss font-black text-4xl md:text-5xl lg:text-6xl tracking-tighter uppercase text-swiss-fg leading-none group-hover:text-swiss-accent transition-colors duration-300">
+                      {principle.title}
+                    </h2>
+                    <p className="font-swiss text-base text-swiss-fg/50 group-hover:text-swiss-fg/80 mt-4 max-w-lg leading-relaxed transition-colors duration-300">
+                      {principle.text}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 05 — BUILDING */}
+      <section ref={storyRef} className="py-20 border-t border-ink/10 bg-ink/[0.02]">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-start">
+            <div className="md:col-span-5">
+              <div className="reveal">
+                <span className="editorial-label block mb-5">Building</span>
+                <h2 className="font-swiss font-black text-4xl md:text-5xl tracking-tighter uppercase text-swiss-fg">
+                  The story so far
+                </h2>
+              </div>
+            </div>
+            <div className="md:col-span-7">
+              <ol>
+                {milestones.map((m) => (
+                  <li key={m.year + m.label} className="group border-t border-ink/10 last:border-b">
+                    <div className="py-5 flex items-baseline gap-6">
+                      <span className="font-mono text-[11px] font-bold tracking-widest text-swiss-fg/40 group-hover:text-swiss-accent transition-colors duration-150 shrink-0">
+                        {m.year}
+                      </span>
+                      <span className="font-swiss font-bold text-base tracking-[0.15em] uppercase text-swiss-fg shrink-0">
+                        {m.label}
+                      </span>
+                      <span className="font-swiss text-sm text-swiss-fg/50 group-hover:text-swiss-fg/80 leading-relaxed transition-colors duration-300">
+                        {m.text}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 — CERTIFICATIONS */}
+      <section ref={certRef} className="py-20 border-t border-ink/10">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="reveal">
+            <SectionHeader number="04" title="Certifications" />
+          </div>
+
+          <ol className="max-w-2xl">
+            {siteConfig.certifications.map((cert, i) => {
+              const [issuer, ...rest] = cert.split(" ");
+              const name = rest.join(" ") || issuer;
+              return (
+                <li key={cert} className="group border-t border-ink/10 last:border-b">
+                  <div className="py-4 flex items-baseline justify-between gap-6">
+                    <div className="flex items-baseline gap-4">
+                      <span className="font-mono text-xs text-swiss-fg/30">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="font-swiss text-sm font-medium text-swiss-fg/80 group-hover:text-swiss-accent transition-colors duration-150">
+                        {name}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 shrink-0">
+                      {issuer}
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
+      {/* 07 — FINAL STATEMENT */}
+      <section ref={finalRef} className="py-24 md:py-32 border-t border-ink/10">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <div className="reveal">
+            <h2
+              className="font-swiss font-black leading-[0.88] tracking-tighter uppercase"
+              style={{ fontSize: "clamp(2.25rem, 6.5vw, 88px)" }}
+            >
+              Building software
+              <br />
+              <span className="text-swiss-accent">for curious people.</span>
+            </h2>
+          </div>
+          <div className="reveal mt-12">
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-3 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/60 hover:text-swiss-accent transition-colors duration-150"
+            >
+              View all projects
+              <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

@@ -10,9 +10,17 @@ export function ClosingWordmark() {
   return (
     <section
       ref={sectionRef}
-      className="relative border-t-2 border-swiss-border overflow-hidden bg-swiss-fg text-swiss-bg"
+      className="relative border-t border-ink/10 overflow-hidden bg-black text-swiss-fg"
     >
-      <div className="max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-24">
+      <div
+        aria-hidden="true"
+        className="absolute -inset-24 opacity-[0.08] pointer-events-none animate-drift"
+        style={{
+          background:
+            "radial-gradient(600px circle at 30% 40%, rgb(var(--accent)), transparent 60%)",
+        }}
+      />
+      <div className="relative max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-24">
         <div className="reveal relative">
           <h2
             ref={parallaxRef}

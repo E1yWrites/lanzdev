@@ -37,9 +37,9 @@ export function MobileMenu({ isOpen, onClose, projects }: MobileMenuProps) {
       />
       <div
         id="mobile-menu"
-        className="absolute top-[64px] left-3 right-3 bg-swiss-bg border-2 border-swiss-border overflow-hidden flex flex-col"
+        className="surface-glass absolute top-14 left-3 right-3 rounded-lg overflow-hidden flex flex-col"
       >
-        <div className="flex flex-col py-2 gap-0 overflow-y-auto max-h-[calc(100dvh-64px)]">
+        <div className="flex flex-col py-2 gap-0 overflow-y-auto max-h-[calc(100dvh-56px)]">
           {/* Project dropdown — mobile mode */}
           <ProjectDropdown mobile projects={projects} onItemSelect={onClose} />
 
@@ -49,7 +49,7 @@ export function MobileMenu({ isOpen, onClose, projects }: MobileMenuProps) {
               href={item.href}
               className={cn(
                 "font-swiss text-lg font-bold tracking-widest uppercase py-3 px-5",
-                "border-b-2 border-swiss-border last:border-0",
+                "border-b border-ink/10 last:border-0",
                 "transition-colors duration-150",
                 pathname === item.href || pathname.startsWith(item.href + "/")
                   ? "text-swiss-accent"

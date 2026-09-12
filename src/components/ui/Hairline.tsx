@@ -7,7 +7,7 @@ interface HairlineProps {
 export function Hairline({ className }: HairlineProps) {
   return (
     <hr
-      className={cn("border-0 border-t-2 border-swiss-border", className)}
+      className={cn("border-0 border-t border-ink/10", className)}
     />
   );
 }

@@ -57,12 +57,12 @@ export function Navigation({ projects }: NavigationProps) {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 h-[64px]",
+          "fixed top-0 left-0 right-0 z-40 h-14",
           "flex items-center justify-between px-5 md:px-8",
-          "bg-swiss-bg/95 backdrop-blur-sm",
-          "border-b-2 border-swiss-border",
-          "transition-all duration-150",
-          scrolled && "bg-swiss-bg"
+          "bg-paper/70 backdrop-blur-xl backdrop-saturate-150",
+          "border-b border-ink/10",
+          "transition-all duration-normal ease-standard",
+          scrolled && "shadow-[0_1px_0_0_rgb(var(--ink)/0.1),0_12px_24px_-16px_rgb(var(--ink)/0.25)]"
         )}
       >
         {/* Logo */}
@@ -105,7 +105,7 @@ export function Navigation({ projects }: NavigationProps) {
           <span
             ref={indicatorRef}
             aria-hidden="true"
-            className="absolute bottom-[-4px] left-0 h-[3px] bg-swiss-accent transition-all duration-200 pointer-events-none opacity-0"
+            className="absolute bottom-[-8px] left-0 h-[6px] rounded-full bg-accent/15 shadow-[0_0_0_1px_rgb(var(--accent)/0.25)] transition-all duration-normal ease-out-back pointer-events-none opacity-0"
           />
         </div>
 
@@ -134,7 +134,7 @@ export function Navigation({ projects }: NavigationProps) {
             aria-label="Toggle menu"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
-            className="w-12 h-12 flex items-center justify-center text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-150"
+            className="tactile w-12 h-12 flex items-center justify-center text-swiss-fg border border-ink/15 rounded-md hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-fast"
           >
             {isOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}
           </button>
