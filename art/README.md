@@ -11,8 +11,8 @@ build time (it's excluded from the root `tsconfig.json`).
 | `Macropad`   | `macropad.webp` (transparent, 1600×1200)      | Home hero poster, before the live model loads            |
 | `Parada`     | `parada.webp` (transparent)                   | PARADA `cover` — poster for the live lot                 |
 | `Tala`       | `tala.webp` (transparent)                     | Tala `cover` — poster for the live desk                  |
-| `ParadaFilm` | `films/parada.{mp4,webm,jpg}` — 15 s, 720p    | Showreel, film dialog, PARADA project page               |
-| `TalaFilm`   | `films/tala.{mp4,webm,jpg}` — 15 s, 720p      | Showreel, film dialog, Tala project page                 |
+| `ParadaFilm` | `films/parada.{webm,mp4,jpg}` — 15 s, 1080p, sound | Showreel, film dialog, PARADA project page          |
+| `TalaFilm`   | `films/tala.{webm,mp4,jpg}` — 15 s, 1080p, sound   | Showreel, film dialog, Tala project page            |
 | `ShareImage` | `og.jpg` (1200×630)                           | Open Graph / Twitter image (`src/app/layout.tsx`)        |
 
 ## Working on it
@@ -22,6 +22,7 @@ cd art
 npm install
 npm run studio               # preview and scrub in Remotion Studio
 npm run preview Parada Tala  # quick PNGs in out/ (append @frame, e.g. ParadaFilm@150)
+python3 audio/compose.py     # regenerate the soundtracks (numpy + scipy) → public/audio/*.mp3
 npm run render               # re-render every asset into ../public/art
 ONLY=TalaFilm npm run render # just one
 ```
@@ -35,6 +36,11 @@ REMOTION_BROWSER_EXECUTABLE=/path/to/headless_shell REMOTION_GL=swangle npm run 
 
 ## Notes
 
+- **Films** are composed at 1280×720 and rendered at 1.5× (1920×1080) from near-lossless
+  frames: H.264 + AAC (CRF 19), then a VP9 + Opus WebM transcoded from that master.
+- **Soundtracks** come from `audio/compose.py`: a small numpy synthesiser (keys, pads,
+  bass, drums, whooshes, beeps, a servo, an engine, pencil grain, bells) with every effect
+  placed on the films' own timeline. Deterministic — same seed, same audio.
 - **One model, two drivers.** Each model in `src/three` is a pure function of its
   props (`press`, `approach`, `scan`, `write`, `night`…). The films compute those
   props from the frame number; the site's rigs (`src/components/three/scenes.tsx`)

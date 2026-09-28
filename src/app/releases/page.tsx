@@ -8,7 +8,7 @@ import { formatDate, formatFileSize, slugToTitle } from "@/lib/utils";
 
 export const metadata = {
   title: "Releases",
-  description: "Release history and changelog.",
+  description: "Every Tala release with its notes and downloads, straight from GitHub — plus the full changelog.",
 };
 
 export const revalidate = 3600;
@@ -45,9 +45,9 @@ function assetPlatform(name: string) {
 function AssetList({ assets }: { assets: ReleaseAsset[] }) {
   return (
     <div className="mt-8 max-w-2xl">
-      <h4 className="t-label mb-3 leading-normal text-swiss-fg/60">
+      <h3 className="t-label mb-3 leading-normal text-swiss-fg/60">
         Assets · {assets.length}
-      </h4>
+      </h3>
       <ul className="divide-y divide-ink/10 overflow-hidden rounded-md border border-ink/10">
         {assets.map((asset) => (
           <li key={asset.name}>
@@ -59,7 +59,7 @@ function AssetList({ assets }: { assets: ReleaseAsset[] }) {
                 {assetPlatform(asset.name)}
               </span>
               <span className="min-w-0 truncate font-mono text-xs text-swiss-fg/80 group-hover:text-swiss-fg">{asset.name}</span>
-              <span className="flex items-center gap-3 font-mono text-[11px] text-swiss-fg/40">
+              <span className="flex items-center gap-3 font-mono text-[11px] text-swiss-fg/60">
                 {formatFileSize(asset.size)}
                 <Download size={14} strokeWidth={2} aria-hidden="true" className="transition-colors duration-fast group-hover:text-swiss-accent" />
               </span>
@@ -116,6 +116,7 @@ export default async function ReleasesPage({
               release.name && !release.name.toLowerCase().endsWith(release.tagName.toLowerCase()) ? release.name : undefined;
             return (
               <TimelineEntry
+                headingLevel="h2"
                 key={release.tagName}
                 version={release.tagName}
                 date={formatDate(release.publishedAt)}
@@ -126,9 +127,9 @@ export default async function ReleasesPage({
                   <p className="font-display font-light tracking-tight mb-6 text-xl text-swiss-fg md:text-2xl">{title}</p>
                 )}
                 {release.body ? (
-                  <ReleaseNotes body={release.body} />
+                  <ReleaseNotes body={release.body} labelLevel="h3" />
                 ) : (
-                  <p className="font-swiss text-sm text-swiss-fg/50">No notes for this release.</p>
+                  <p className="font-swiss text-sm text-swiss-fg/60">No notes for this release.</p>
                 )}
                 {release.assets.length > 0 && <AssetList assets={release.assets} />}
               </TimelineEntry>

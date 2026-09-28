@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 
 interface TimelineEntryProps {
+  /** h2 when entries sit right under the page's h1 (/releases), h3 under a section heading. */
+  headingLevel?: "h2" | "h3";
   version: string;
   date: string;
   latest?: boolean;
@@ -9,7 +11,7 @@ interface TimelineEntryProps {
 }
 
 /** One release in a version timeline — sticky version rail on the left, notes on the right. */
-export function TimelineEntry({ version, date, latest = false, tags = [], children }: TimelineEntryProps) {
+export function TimelineEntry({ headingLevel: Heading = "h3", version, date, latest = false, tags = [], children }: TimelineEntryProps) {
   return (
     <article className="grid gap-6 border-t border-ink/10 py-10 first:border-t-0 first:pt-0 md:grid-cols-12 md:gap-10 md:py-12">
       <header className="self-start md:sticky md:top-24 md:col-span-3">
@@ -21,7 +23,7 @@ export function TimelineEntry({ version, date, latest = false, tags = [], childr
               latest ? "bg-swiss-accent shadow-[0_0_0_4px_rgb(var(--accent)/0.15)]" : "bg-ink/25"
             )}
           />
-          <h3 className="font-mono text-base font-bold normal-case tracking-normal text-swiss-fg">{version}</h3>
+          <Heading className="font-mono text-base font-bold normal-case tracking-normal text-swiss-fg">{version}</Heading>
         </div>
         <p className="t-label mt-2 pl-5 text-swiss-fg/60">{date}</p>
         {tags.length > 0 && (
@@ -46,14 +48,10 @@ export function TimelineEntry({ version, date, latest = false, tags = [], childr
 }
 
 /** A labelled bullet group — "Added", "Fixed", or a release-note heading. */
-export function NoteGroup({ label, items }: { label?: React.ReactNode; items: React.ReactNode[] }) {
+export function NoteGroup({ label, items, labelLevel: Label = "h4" }: { label?: React.ReactNode; items: React.ReactNode[]; labelLevel?: "h3" | "h4" }) {
   return (
     <div className="mb-6 last:mb-0">
-      {label && (
-        <h4 className="t-label mb-3 leading-normal text-swiss-fg/60">
-          {label}
-        </h4>
-      )}
+      {label && <Label className="t-label mb-3 leading-normal text-swiss-fg/60">{label}</Label>}
       <ul className="space-y-2">
         {items.map((item, i) => (
           <li key={i} className="flex gap-3 font-swiss text-sm leading-relaxed text-swiss-fg/75">
@@ -150,7 +148,8 @@ function renderInline(text: string): React.ReactNode[] {
 }
 
 /** Renders a GitHub release body. Consecutive label + list pairs become NoteGroups. */
-export function ReleaseNotes({ body }: { body: string }) {
+export function ReleaseNotes({ body, labelLevel = "h4" }: { body: string; labelLevel?: "h3" | "h4" }) {
+  const Label = labelLevel;
   const blocks = parseBlocks(body);
   if (blocks.length === 0) return null;
 
@@ -159,13 +158,13 @@ export function ReleaseNotes({ body }: { body: string }) {
     const block = blocks[i];
     const next = blocks[i + 1];
     if (block.type === "label" && next?.type === "list") {
-      nodes.push(<NoteGroup key={i} label={block.text} items={next.items.map(renderInline)} />);
+      nodes.push(<NoteGroup key={i} label={block.text} labelLevel={labelLevel} items={next.items.map(renderInline)} />);
       i++;
     } else if (block.type === "label") {
       nodes.push(
-        <h4 key={i} className="t-label mb-3 mt-6 leading-normal text-swiss-fg/60 first:mt-0">
+        <Label key={i} className="t-label mb-3 mt-6 leading-normal text-swiss-fg/60 first:mt-0">
           {block.text}
-        </h4>
+        </Label>
       );
     } else if (block.type === "list") {
       nodes.push(<NoteGroup key={i} items={block.items.map(renderInline)} />);

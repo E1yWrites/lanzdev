@@ -254,12 +254,15 @@
     animation: pageEnter 700ms var(--ease-out) backwards;
   }
 
-  /* Kinetic display type: letters rise in once on screen, and thicken near the pointer. */
+  /* Kinetic display type: letters rise into place once on screen. Each line is a mask
+     for the rise — padded well past the glyphs' ascenders, descenders and overhangs so
+     nothing is ever clipped (tight display leading would otherwise cut the tops off
+     T and P), with the padding cancelled out by negative margins. */
   .kinetic-line {
     display: block;
     overflow: hidden;
-    padding-bottom: 0.1em;
-    margin-bottom: -0.1em;
+    padding: 0.2em 0.08em 0.16em;
+    margin: -0.2em -0.08em -0.16em;
   }
 
   .kinetic-word {
@@ -269,13 +272,8 @@
 
   .kinetic-letter {
     display: inline-block;
-    font-weight: var(--w, 300);
-    transform: translateY(var(--lift, 0));
-    transition:
-      font-weight 260ms var(--ease-out),
-      transform 260ms var(--ease-out);
-    animation: letterRise 1000ms var(--ease-out) backwards;
-    animation-delay: calc(var(--delay, 0ms) + var(--i, 0) * 32ms);
+    animation: letterRise 950ms var(--ease-out) backwards;
+    animation-delay: calc(var(--delay, 0ms) + var(--i, 0) * 28ms);
   }
 
   .js .kinetic:not([data-play]) .kinetic-letter {
@@ -351,7 +349,8 @@
     animation: logoStar 1000ms cubic-bezier(0.34, 1.56, 0.64, 1) 550ms backwards;
   }
 
-  /* Cursor ring (components/motion/Cursor.tsx) */
+  /* Cursor ring (components/motion/Cursor.tsx): small and hollow, so it never hides
+     what's under it. Labels appear in a tag beside the pointer, not over the text. */
   .cursor-ring {
     position: fixed;
     left: 0;
@@ -366,49 +365,54 @@
   .cursor-ring::before {
     content: "";
     position: absolute;
-    left: -16px;
-    top: -16px;
-    width: 32px;
-    height: 32px;
+    left: -11px;
+    top: -11px;
+    width: 22px;
+    height: 22px;
     border-radius: 999px;
-    border: 1px solid rgb(var(--ink) / 0.55);
+    border: 1px solid rgb(var(--ink) / 0.5);
     transition:
-      transform 380ms var(--ease-out),
+      transform 320ms var(--ease-out),
       background-color 200ms linear,
       border-color 200ms linear;
   }
 
   .cursor-ring[data-state="hover"]::before {
-    transform: scale(1.55);
+    transform: scale(1.3);
     border-color: rgb(var(--accent));
   }
 
   .cursor-ring[data-state="label"]::before {
-    transform: scale(3.1);
+    transform: scale(0.36);
     background: rgb(var(--accent));
     border-color: transparent;
   }
 
   .cursor-ring-label {
     position: absolute;
-    left: 0;
-    top: 0;
-    transform: translate(-50%, -50%) scale(0.6);
+    left: 14px;
+    top: 14px;
+    padding: 5px 9px 4px;
+    border-radius: 999px;
+    background: rgb(var(--accent));
     opacity: 0;
+    transform: translate(-6px, -6px) scale(0.9);
+    transform-origin: 0 0;
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 10px;
+    line-height: 1.2;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     white-space: nowrap;
     color: rgb(var(--on-sheet));
     transition:
-      opacity 180ms linear,
-      transform 380ms var(--ease-out);
+      opacity 160ms linear,
+      transform 320ms var(--ease-out);
   }
 
   .cursor-ring[data-state="label"] .cursor-ring-label {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: none;
   }
 
   .magnetic {
@@ -465,6 +469,39 @@
     transform: none;
   }
 
+  /* Folder stack (components/home/WorkFolders.tsx). --cover (0–1) is how far the next
+     folder has slid over this one. */
+  .folder {
+    --cover: 0;
+    transform-origin: 50% 0;
+  }
+
+  @media (min-width: 768px) {
+    .folder {
+      transform: scale(calc(1 - var(--cover) * 0.04));
+    }
+
+    /* Lined up: scroll settles on a folder when you stop near one. */
+    html {
+      scroll-snap-type: y proximity;
+    }
+  }
+
+  .folder-shade {
+    background: rgb(0 0 0);
+    opacity: calc(var(--cover) * 0.5);
+  }
+
+  .folder-snap {
+    height: 0;
+    scroll-snap-align: start;
+    scroll-margin-top: 56px;
+  }
+
+  .folder-hold {
+    height: 42svh;
+  }
+
   /* Folders: the tab lifts as its folder is hovered. */
   .folder-tab {
     transition: transform 400ms var(--ease-out);
@@ -475,11 +512,12 @@
   }
 
   .link-underline {
+    display: inline-block;
+    padding: 6px 0 5px; /* a 24px+ tap target around 11px type */
     background-image: linear-gradient(currentColor, currentColor);
     background-size: 0% 1px;
-    background-position: 0 100%;
+    background-position: 0 calc(100% - 3px);
     background-repeat: no-repeat;
-    padding-bottom: 2px;
     transition: background-size 400ms var(--ease-out);
   }
 
@@ -587,7 +625,7 @@
 
 @keyframes letterRise {
   from {
-    transform: translateY(110%) rotate(4deg);
+    transform: translateY(115%);
     opacity: 0;
   }
 }
@@ -751,6 +789,10 @@
   .logo:hover .logo-l,
   .folder:hover .folder-tab {
     transform: none;
+  }
+
+  .folder {
+    transform: none !important;
   }
 
   .reveal {

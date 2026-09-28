@@ -28,7 +28,7 @@ function LeadProject({ project, index }: { project: Project; index: number }) {
   ].filter(([, value]) => value);
 
   return (
-    <Link href={`/projects/${project.slug}`} data-cursor="Open" className="group block rounded-lg">
+    <Link href={`/projects/${project.slug}`} className="group block rounded-lg">
       <Surface tier="elevated" className="grid overflow-hidden rounded-lg transition-colors duration-normal group-hover:border-ink/20 lg:grid-cols-12">
         <div
           className={cn(
@@ -142,7 +142,7 @@ export function ProjectsContent({ projects }: ProjectsContentProps) {
             href={siteConfig.github.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="t-label inline-flex items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
+            className="t-label inline-flex min-h-7 items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
           >
             All repositories on GitHub
             <ArrowUpRight size={12} strokeWidth={2.5} aria-hidden="true" />

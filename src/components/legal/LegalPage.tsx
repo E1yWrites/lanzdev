@@ -49,7 +49,7 @@ export function LegalPage({ title, href, lede, updated, sections, contactTopic }
                         "block rounded-md border px-3 py-2 font-swiss text-sm transition-colors duration-fast lg:rounded-none lg:border-0 lg:border-l-2 lg:py-1.5 lg:pl-4",
                         active
                           ? "border-accent/40 text-swiss-fg lg:border-accent"
-                          : "border-ink/10 text-swiss-fg/50 hover:text-swiss-fg lg:border-ink/10"
+                          : "border-ink/10 text-swiss-fg/60 hover:text-swiss-fg lg:border-ink/10"
                       )}
                     >
                       {page.label}

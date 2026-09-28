@@ -16,7 +16,7 @@ function FooterColumn({ title, items }: { title: string; items: NavItem[] }) {
               href={item.href}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
-              className="t-label group inline-flex text-ink"
+              className="t-label group inline-flex min-h-7 items-center text-ink"
             >
               <span className="roll">
                 <span>
@@ -42,7 +42,7 @@ export function Footer() {
       <FooterInvitation email={siteConfig.email} github={siteConfig.github.url} />
 
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-5 py-12 md:px-8 lg:grid-cols-6">
-        <Link href="/" className="t-label group col-span-2 inline-flex items-center gap-2.5 self-start text-ink lg:col-span-1">
+        <Link href="/" className="t-label group col-span-2 inline-flex min-h-7 items-center gap-2.5 self-start text-ink lg:col-span-1">
           <LogoMark size={20} />
           <span>
             Lorenz<span className="text-accent">.</span>dev
@@ -56,9 +56,12 @@ export function Footer() {
       {/* The sign-off: the mark, big. Hover it. */}
       <div aria-hidden="true" className="group mx-auto flex max-w-7xl items-end gap-[2vw] overflow-hidden px-5 md:px-8">
         <LogoMark size="css" className="h-[15vw] max-h-48 w-auto shrink-0 translate-y-[6%] text-ink" />
-        <span className="translate-y-[18%] select-none font-display text-[16vw] font-light leading-none tracking-[-0.05em] text-ink/[0.07] transition-colors duration-slow group-hover:text-ink/[0.14] xl:text-[13rem]">
-          lorenz.dev
-        </span>
+        {/* Drawn as a graphic, not text: it's a watermark, and it would fail contrast as text. */}
+        <svg viewBox="0 0 1000 200" className="h-auto w-[70vw] max-w-[62rem] translate-y-[14%] select-none text-ink/[0.07] transition-colors duration-slow group-hover:text-ink/[0.14]">
+          <text x="0" y="170" fill="currentColor" style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 300, fontSize: 212, letterSpacing: "-0.05em" }}>
+            lorenz.dev
+          </text>
+        </svg>
       </div>
 
       <div className="border-t border-dotted border-ink/30">

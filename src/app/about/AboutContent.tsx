@@ -79,12 +79,12 @@ function Rows({ rows }: { rows: { main: string; detail: string; aside?: string }
     <ol className="border-t border-dotted border-ink/25">
       {rows.map((r, i) => (
         <li key={r.main + i} className="reveal group grid grid-cols-[2rem_1fr] gap-x-4 border-b border-dotted border-ink/25 py-4 md:grid-cols-[2.5rem_1fr_auto]">
-          <span className="t-label pt-1 text-ink/45 transition-colors group-hover:text-accent">{String(i + 1).padStart(2, "0")}</span>
+          <span className="t-label pt-1 text-ink/60 transition-colors group-hover:text-accent">{String(i + 1).padStart(2, "0")}</span>
           <div>
             <p className="font-display text-xl font-light leading-snug text-ink transition-transform duration-normal ease-out group-hover:translate-x-1 md:text-2xl">{r.main}</p>
             <p className="mt-1 text-sm leading-relaxed text-ink/60">{r.detail}</p>
           </div>
-          {r.aside && <span className="t-label col-start-2 mt-2 text-ink/55 md:col-start-auto md:mt-1 md:text-right">{r.aside}</span>}
+          {r.aside && <span className="t-label col-start-2 mt-2 text-ink/60 md:col-start-auto md:mt-1 md:text-right">{r.aside}</span>}
         </li>
       ))}
     </ol>
@@ -113,7 +113,7 @@ export function AboutContent({ projects }: AboutContentProps) {
             </p>
             <div className="reveal mt-9 flex flex-wrap items-center gap-3">
               <Magnetic>
-                <a href={`mailto:${siteConfig.email}`} data-cursor="Say hi" className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-on-sheet">
+                <a href={`mailto:${siteConfig.email}`} className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-on-sheet">
                   <span className="live-dot" aria-hidden="true" /> {siteConfig.availability}
                 </a>
               </Magnetic>
@@ -138,7 +138,7 @@ export function AboutContent({ projects }: AboutContentProps) {
       <Section number="01" title="Selected work" id="selected-work">
         <div className="grid gap-6 sm:grid-cols-2">
           {selected.map((project, i) => (
-            <Link key={project.id} href={`/projects/${project.slug}`} data-cursor="Open" className="reveal group block">
+            <Link key={project.id} href={`/projects/${project.slug}`} className="reveal group block">
               <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-ink/10 bg-ink/[0.03]">
                 <Image src={project.cover!} alt="" fill sizes="(min-width: 640px) 33vw, 100vw" className="object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
                 <span className="t-label absolute left-4 top-4 text-ink/60">{String(i + 1).padStart(2, "0")}</span>
@@ -177,7 +177,7 @@ export function AboutContent({ projects }: AboutContentProps) {
           {siteConfig.skills.map((s) => (
             <li key={s.name} className="reveal group bg-paper p-5 transition-colors duration-normal hover:bg-accent hover:text-on-sheet">
               <p className="font-display text-2xl font-light">{s.name}</p>
-              <p className="t-label mt-2 text-ink/55 transition-colors group-hover:text-on-sheet/75">{s.detail}</p>
+              <p className="t-label mt-2 text-ink/60 transition-colors group-hover:text-on-sheet/75">{s.detail}</p>
             </li>
           ))}
         </ul>
@@ -197,7 +197,7 @@ export function AboutContent({ projects }: AboutContentProps) {
         <ol className="border-t border-dotted border-ink/25">
           {principles.map((p, i) => (
             <li key={p.title} className="reveal group grid grid-cols-[3rem_1fr] gap-4 border-b border-dotted border-ink/25 py-6">
-              <span className="font-display text-4xl font-light text-ink/20 transition-colors group-hover:text-accent">{i + 1}</span>
+              <span className="font-display text-4xl font-light text-ink/60 transition-colors group-hover:text-accent">{i + 1}</span>
               <div>
                 <p className="font-display text-3xl font-light text-ink md:text-4xl">{p.title}</p>
                 <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink/60 md:text-base">{p.text}</p>

@@ -9,6 +9,7 @@ import { PAD_KEYS } from "@/three/padKeys";
 import { siteConfig } from "@/data/config";
 import { asset } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useFinePointer } from "@/hooks/useMedia";
 
 const INDEX_NAME: Record<string, string> = { parada: "PARADA", tala: "Tala", about: "About", contact: "Say hi" };
 
@@ -38,6 +39,7 @@ function ManilaClock() {
 export function Hero() {
   const section = useRef<HTMLElement>(null);
   const hovered = useStore(heroKey);
+  const finePointer = useFinePointer();
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -64,11 +66,11 @@ export function Hero() {
         {/* top rail */}
         <div className="t-label grid grid-cols-2 gap-4 border-b border-dotted border-ink/25 py-4 text-ink/70 md:grid-cols-3">
           <span>
-            {siteConfig.personalName} <span className="text-ink/40">·</span> {siteConfig.alias}
+            {siteConfig.personalName} <span className="text-ink/60">·</span> {siteConfig.alias}
           </span>
           <span className="hidden text-center md:block">Portfolio — 2026</span>
           <span className="text-right">
-            Batangas <span className="text-ink/40">·</span> <ManilaClock />
+            Batangas <span className="text-ink/60">·</span> <ManilaClock />
           </span>
         </div>
 
@@ -95,16 +97,15 @@ export function Hero() {
                   <li key={k.id} className="border-b border-dotted border-ink/25">
                     <Link
                       href={k.href}
-                      data-cursor={k.id === "contact" ? "Say hi" : "Open"}
                       onPointerEnter={() => heroKey.set(i)}
                       onPointerLeave={() => heroKey.get() === i && heroKey.set(-1)}
                       onFocus={() => heroKey.set(i)}
                       onBlur={() => heroKey.get() === i && heroKey.set(-1)}
                       className={cn("index-row group flex items-baseline gap-4 py-3 transition-colors duration-fast", hovered === i ? "text-accent" : "text-ink")}
                     >
-                      <span className="t-label w-6 text-ink/50">{k.index}</span>
+                      <span className="t-label w-6 text-ink/60">{k.index}</span>
                       <span className="font-display text-2xl font-light md:text-[1.7rem]">{INDEX_NAME[k.id]}</span>
-                      <span className="t-label ml-auto text-right text-ink/50">{INDEX_DETAIL[k.id]}</span>
+                      <span className="t-label ml-auto text-right text-ink/60">{INDEX_DETAIL[k.id]}</span>
                       <span aria-hidden="true" className="index-arrow t-label">
                         →
                       </span>
@@ -124,7 +125,7 @@ export function Hero() {
               sizes="(min-width: 1024px) 58vw, 100vw"
               className="hero-stage mx-auto aspect-[4/3] w-full max-w-[980px] lg:-mr-8"
             />
-            <p className="t-label pointer-events-none absolute bottom-2 right-2 hidden text-ink/45 md:block">Hover a key — click to open</p>
+            <p className="t-label pointer-events-none absolute bottom-2 right-2 hidden text-ink/60 md:block">{finePointer ? "Hover a key — click to open" : "Tap a key to open"}</p>
           </div>
         </div>
 

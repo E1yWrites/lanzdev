@@ -72,7 +72,7 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
             onKeyDown={handleKeyDown}
             placeholder="Jump to…"
             aria-label="Search commands"
-            className="flex-1 bg-transparent text-base text-ink outline-none placeholder:text-ink/50 focus-visible:outline-none"
+            className="flex-1 bg-transparent text-base text-ink outline-none placeholder:text-ink/60 focus-visible:outline-none"
           />
           <kbd className="t-label rounded-sm border border-ink/20 px-1.5 text-ink/60">Esc</kbd>
         </div>
@@ -94,7 +94,7 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
                       close();
                     }}
                   >
-                    <span className={cn("t-label w-5", i === selectedIndex ? "text-accent" : "text-ink/50")}>
+                    <span className={cn("t-label w-5", i === selectedIndex ? "text-accent" : "text-ink/60")}>
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {cmd.label}

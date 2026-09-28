@@ -2,7 +2,7 @@ import { LegalPage, type LegalSection } from "@/components/legal/LegalPage";
 
 export const metadata = {
   title: "Terms of Service",
-  description: "Terms of service for Lorenz.dev.",
+  description: "The terms for using Lorenz.dev and downloading its software, including licences and warranties.",
 };
 
 const SECTIONS: LegalSection[] = [

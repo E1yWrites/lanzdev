@@ -17,7 +17,11 @@ export function CountUp({ value, duration = 1400 }: { value: string; duration?: 
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !animatable || reduced) return;
+    if (!el || !animatable || reduced) {
+      // Nothing to count (or motion is off): show the real value.
+      setShown(value);
+      return;
+    }
     const parts = value.split(/(\d[\d,]*)/);
     const render = (t: number) =>
       parts.map((p) => (/^\d[\d,]*$/.test(p) ? Math.round(Number(p.replace(/,/g, "")) * t).toLocaleString("en-US") : p)).join("");
@@ -45,7 +49,8 @@ export function CountUp({ value, duration = 1400 }: { value: string; duration?: 
   }, [value, animatable, reduced, duration]);
 
   return (
-    <span ref={ref} className="tabular" aria-label={value}>
+    <span ref={ref} className="tabular">
+      <span className="sr-only">{value}</span>
       <span aria-hidden="true">{shown}</span>
     </span>
   );

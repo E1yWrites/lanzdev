@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 import { useFilmLoading, type FilmState } from "@/components/motion/FilmPlayer";
 import { KineticText } from "@/components/motion/KineticText";
 import { Loader } from "@/components/motion/Loader";
@@ -59,8 +60,8 @@ function ReelVideo({
       aria-hidden={!active}
       aria-label={`${item.name} — ${item.caption}`}
     >
-      <source src={item.film.mp4} type="video/mp4" />
       <source src={item.film.webm} type="video/webm" />
+      <source src={item.film.mp4} type="video/mp4" />
     </video>
   );
 }
@@ -81,6 +82,13 @@ export function Showreel({ items }: { items: ReelItem[] }) {
   const [current, setCurrent] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
+  // Auto-play has to start muted (browser policy); sound is one tap away.
+  const [sound, setSound] = useState(false);
+  useEffect(() => {
+    videos.current.forEach((v, i) => {
+      if (v) v.muted = !(sound && i === current);
+    });
+  }, [sound, current]);
   const [status, setStatus] = useState<FilmState>({ ready: false, buffering: false, progress: 0 });
 
   // Play the current film while on screen — once it's ready — and keep the others still.
@@ -156,7 +164,7 @@ export function Showreel({ items }: { items: ReelItem[] }) {
                 setCurrent(i);
                 setUserPaused(false);
               }}
-              className={cn("group text-left transition-colors duration-fast", i === current ? "text-ink" : "text-ink/45 hover:text-ink/80")}
+              className={cn("group text-left transition-colors duration-fast", i === current ? "text-ink" : "text-ink/60 hover:text-ink/80")}
             >
               <span className="block h-[3px] w-full overflow-hidden rounded-full bg-ink/15">
                 <span
@@ -192,17 +200,42 @@ export function Showreel({ items }: { items: ReelItem[] }) {
             />
           ))}
           {loading && <Loader label="Loading film" progress={status.progress} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />}
-          <button
-            type="button"
-            onClick={toggle}
-            aria-label={playing ? `Pause the ${item.name} film` : `Play the ${item.name} film`}
-            className="t-label absolute bottom-4 right-4 inline-flex h-10 items-center gap-2 rounded-full bg-paper/80 px-4 text-ink backdrop-blur transition-colors hover:bg-accent hover:text-on-sheet"
-          >
-            <span aria-hidden="true" className={playing ? "pause-glyph" : "play-glyph"} />
-            {playing ? "Pause" : "Play"}
-          </button>
+          <div className="absolute bottom-4 right-4 flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const next = !sound;
+                setSound(next);
+                const v = videos.current[current];
+                // Turning sound on is a request to hear it — start playing if paused.
+                if (next && v?.paused) {
+                  setUserPaused(false);
+                  v.muted = false;
+                  v.play().catch(() => undefined);
+                }
+              }}
+              aria-pressed={sound}
+              aria-label={sound ? "Mute the films" : "Turn sound on"}
+              className={cn(
+                "t-label inline-flex h-10 items-center gap-2 rounded-full px-4 backdrop-blur transition-colors",
+                sound ? "bg-accent text-on-sheet" : "bg-paper/80 text-ink hover:bg-accent hover:text-on-sheet"
+              )}
+            >
+              {sound ? <Volume2 size={14} strokeWidth={2} aria-hidden="true" /> : <VolumeX size={14} strokeWidth={2} aria-hidden="true" />}
+              {sound ? "Sound on" : "Sound off"}
+            </button>
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label={playing ? `Pause the ${item.name} film` : `Play the ${item.name} film`}
+              className="t-label inline-flex h-10 items-center gap-2 rounded-full bg-paper/80 px-4 text-ink backdrop-blur transition-colors hover:bg-accent hover:text-on-sheet"
+            >
+              <span aria-hidden="true" className={playing ? "pause-glyph" : "play-glyph"} />
+              {playing ? "Pause" : "Play"}
+            </button>
+          </div>
         </div>
-        <p className="t-label mt-3 text-ink/55">{item.caption}</p>
+        <p className="t-label mt-3 text-ink/60">{item.caption}</p>
       </div>
     </section>
   );

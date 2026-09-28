@@ -113,12 +113,12 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
           <nav aria-label="Breadcrumb" className="reveal mb-12 flex items-center gap-3 md:mb-16">
             <Link
               href="/projects"
-              className="t-label inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
+              className="t-label inline-flex min-h-7 items-center gap-2 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
             >
               <ArrowLeft size={12} strokeWidth={2.5} aria-hidden="true" />
               Projects
             </Link>
-            <span aria-hidden="true" className="text-swiss-fg/20">/</span>
+            <span aria-hidden="true" className="text-swiss-fg/60">/</span>
             <span aria-current="page" className="font-mono text-[11px] text-swiss-fg/70">{project.slug}</span>
           </nav>
 
@@ -237,7 +237,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
       {project.film && (
         <Section id="film" index={num()} title={`${project.film.duration} seconds of ${project.name}`}>
           <FilmPlayer film={project.film} title={project.name} className="rounded-xl border border-ink/10" />
-          <p className="t-label mt-3 text-ink/55">Rendered with Remotion from the same 3D model as above. No sound.</p>
+          <p className="t-label mt-3 text-ink/60">Rendered with Remotion from the same 3D model as above. Sound on — the soundtrack is synthesised, not sampled.</p>
         </Section>
       )}
 
@@ -264,7 +264,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
           index={num()}
           title="Roadmap"
           aside={
-            <span className="font-mono text-xs text-swiss-fg/50">
+            <span className="font-mono text-xs text-swiss-fg/60">
               <span className="text-swiss-fg">{pad(project.milestones.filter((m) => m.status === "done").length)}</span> / {pad(project.milestones.length)} phases done
             </span>
           }
@@ -279,7 +279,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
           index={num()}
           title="Features"
           aside={
-            <span className="font-mono text-xs text-swiss-fg/50">
+            <span className="font-mono text-xs text-swiss-fg/60">
               <span className="text-swiss-fg">{pad(shipped)}</span> / {pad(project.features.length)} shipped
             </span>
           }
@@ -287,17 +287,17 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
           <ol className="grid gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 sm:grid-cols-2">
             {project.features.map((feature, i) => (
               <li key={feature.name} className="flex items-start gap-4 bg-swiss-bg p-4 md:p-5">
-                <span className="mt-0.5 w-6 shrink-0 font-mono text-[11px] text-swiss-fg/35">{pad(i + 1)}</span>
+                <span className="mt-0.5 w-6 shrink-0 font-mono text-[11px] text-swiss-fg/60">{pad(i + 1)}</span>
                 <div className="min-w-0 flex-1">
                   <span className="block font-swiss text-sm font-medium text-swiss-fg">{feature.name}</span>
                   {feature.description && (
-                    <span className="mt-1 block font-swiss text-xs leading-relaxed text-swiss-fg/50">{feature.description}</span>
+                    <span className="mt-1 block font-swiss text-xs leading-relaxed text-swiss-fg/60">{feature.description}</span>
                   )}
                 </div>
                 {feature.available ? (
                   <Check size={16} strokeWidth={2.5} className="mt-0.5 shrink-0 text-swiss-accent" aria-label="Available" />
                 ) : (
-                  <Clock size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-swiss-fg/35" aria-label="Coming soon" />
+                  <Clock size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-swiss-fg/60" aria-label="Coming soon" />
                 )}
               </li>
             ))}
@@ -324,7 +324,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
           aside={
             <Link
               href={project.slug === "tala" ? "/releases" : `/releases?project=${project.slug}`}
-              className="t-label inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
+              className="t-label inline-flex min-h-7 items-center gap-2 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
             >
               All releases
               <ArrowRight size={12} strokeWidth={2.5} aria-hidden="true" />
@@ -360,7 +360,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
               size={40}
               strokeWidth={1.5}
               aria-hidden="true"
-              className="shrink-0 text-swiss-fg/30 transition-all duration-normal ease-standard group-hover:translate-x-2 group-hover:text-swiss-accent"
+              className="shrink-0 text-swiss-fg/60 transition-all duration-normal ease-standard group-hover:translate-x-2 group-hover:text-swiss-accent"
             />
           </Link>
         </section>

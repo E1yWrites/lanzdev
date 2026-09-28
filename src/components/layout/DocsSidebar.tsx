@@ -22,7 +22,7 @@ export function DocsSidebar() {
         <details className="group border-b border-ink/10 md:hidden">
           <summary className="t-label flex h-12 cursor-pointer list-none items-center justify-between px-5 text-swiss-fg/70 [&::-webkit-details-marker]:hidden">
             <span>
-              Browse docs <span className="text-swiss-fg/40">/</span>{" "}
+              Browse docs <span className="text-swiss-fg/60">/</span>{" "}
               <span className="text-swiss-accent">{projectLabel(activeGroup[0])}</span>
             </span>
             <ChevronDown size={14} className="transition-transform duration-normal group-open:rotate-180" />
@@ -45,7 +45,7 @@ export function DocsSidebar() {
             ))}
             <Link
               href="/docs"
-              className="t-label mt-3 block text-swiss-fg/60 hover:text-swiss-accent"
+              className="t-label mt-3 flex min-h-7 items-center text-swiss-fg/60 hover:text-swiss-accent"
             >
               ← All documentation
             </Link>
@@ -61,7 +61,7 @@ export function DocsSidebar() {
           <>
             <Link
               href="/docs"
-              className="editorial-label block text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent"
+              className="editorial-label flex min-h-7 items-center text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
             >
               ← All docs
             </Link>

@@ -32,7 +32,7 @@ export function BrowserPreview({
           <span className="h-2.5 w-2.5 rounded-full bg-ink/10" />
         </div>
         <div className="flex min-w-0 flex-1 justify-center">
-          <span className="truncate rounded-md border border-ink/10 bg-ink/[0.04] px-3 py-1 font-mono text-[11px] text-swiss-fg/50">
+          <span className="truncate rounded-md border border-ink/10 bg-ink/[0.04] px-3 py-1 font-mono text-[11px] text-swiss-fg/60">
             {url ?? title}
           </span>
         </div>

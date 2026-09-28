@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { CountUp } from "@/components/motion/CountUp";
 import { FilmDialog } from "@/components/motion/FilmDialog";
 import { KineticText } from "@/components/motion/KineticText";
@@ -33,7 +33,7 @@ function Ticker({ items, rule }: { items: string[]; rule: string }) {
   );
 }
 
-function Folder({ project, index, first }: { project: Project; index: number; first: boolean }) {
+function Folder({ project, index, first, innerRef }: { project: Project; index: number; first: boolean; innerRef: (el: HTMLElement | null) => void }) {
   const tone = TONES[project.tone ?? "sheet"];
   const status = projectStatus(project.status);
   const [film, setFilm] = useState(false);
@@ -56,7 +56,7 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
       : "Plays on its own · drag to turn";
 
   return (
-    <article aria-labelledby={`work-${project.slug}`} className="folder text-on-sheet md:sticky md:top-14">
+    <article ref={innerRef} aria-labelledby={`work-${project.slug}`} className="folder text-on-sheet md:sticky md:top-14">
       {/* Tab row: transparent except the tab, so earlier folders' tabs stay visible. */}
       <div className="relative h-10 [--tab-step:calc(var(--tab-w)-10px)] [--tab-w:min(20rem,46vw)]">
         <span
@@ -64,7 +64,7 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
           style={{ ...TAB_CLIP, "--i": index } as React.CSSProperties}
         >
           Project {pad(index + 1)}
-          <span className="hidden text-on-sheet/60 sm:inline">— {project.role?.split(" · ")[0]}</span>
+          <span className="hidden text-on-sheet/85 sm:inline">— {project.role?.split(" · ")[0]}</span>
         </span>
         {first && (
           <Link href="/projects" className="t-label absolute bottom-0 right-0 hidden h-10 w-[var(--tab-w)] items-center bg-paper-elevated px-5 text-ink transition-colors duration-fast hover:text-accent md:flex" style={TAB_CLIP}>
@@ -73,10 +73,12 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
         )}
       </div>
 
-      {/* On md+ each folder is exactly one screen tall (minus nav and tab), so the whole
-          folder — model included — is on screen before the next one slides over it. */}
-      <div className={cn(tone.surface, "md:h-[calc(100svh-6rem)]")}>
-        <div className="mx-auto grid h-full w-full max-w-[1600px] grid-cols-1 gap-6 px-5 pb-8 pt-6 md:grid-cols-12 md:gap-8 md:px-8 lg:px-12">
+      {/* On md+ each folder is at least one screen tall (minus nav and tab), with the model
+          filling what's left — it grows rather than overflowing on short screens. */}
+      <div className={cn(tone.surface, "relative md:flex md:min-h-[calc(100svh-6rem)] md:flex-col")}>
+        {/* darkens as the next folder slides over this one (see WorkFolders) */}
+        <div aria-hidden="true" className="folder-shade pointer-events-none absolute inset-0 z-[3]" />
+        <div className="mx-auto grid w-full max-w-[1600px] flex-1 grid-cols-1 gap-6 px-5 pb-8 pt-6 md:grid-cols-12 md:gap-8 md:px-8 lg:px-12">
           {/* text column */}
           <div className="flex min-h-0 min-w-0 flex-col md:col-span-5 lg:col-span-4">
             <KineticText
@@ -105,7 +107,7 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
 
             <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
               <Magnetic>
-                <Link href={`/projects/${project.slug}`} data-cursor="Open" className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-on-sheet px-5 text-sheet transition-transform duration-fast active:scale-95">
+                <Link href={`/projects/${project.slug}`} className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-on-sheet px-5 text-sheet transition-transform duration-fast active:scale-95">
                   View project <span aria-hidden="true">→</span>
                 </Link>
               </Magnetic>
@@ -114,7 +116,7 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
                   <button
                     type="button"
                     onClick={() => setFilm(true)}
-                    data-cursor="Play"
+                   
                     className="t-label inline-flex h-11 items-center gap-2 rounded-full border border-on-sheet/50 px-5 transition-colors duration-fast hover:bg-on-sheet hover:text-sheet"
                   >
                     <span aria-hidden="true" className="play-glyph" />
@@ -160,7 +162,7 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
                 night={night}
                 cursor={isTala ? "Drag · click for night" : "Drag · hover to play"}
                 onClick={isTala ? () => setNight((v) => !v) : undefined}
-                className="aspect-[4/3] w-full md:aspect-auto md:min-h-0 md:flex-1"
+                className="aspect-[4/3] w-full md:aspect-auto md:min-h-[22rem] md:flex-1"
               />
             ) : null}
             {project.stats && (
@@ -183,18 +185,84 @@ function Folder({ project, index, first }: { project: Project; index: number; fi
   );
 }
 
-/** Projects as a stack of file folders: each slides over the last; every tab stays in view. */
+/**
+ * Projects as a stack of file folders. On md+ each folder pins under the nav and holds
+ * for a moment (the spacer after it) before the next slides over it; the one being
+ * covered dims and eases back, so the stack reads as one continuous move. Scroll snaps
+ * (gently, `proximity`) to each folder so it settles lined up. Folders taller than the
+ * screen pin by their bottom edge instead, so nothing is ever hidden under the next one.
+ */
 export function WorkFolders({ projects }: { projects: Project[] }) {
+  const folders = useRef<(HTMLElement | null)[]>([]);
+
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 768px)");
+    const NAV = 56;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const list = folders.current.filter((f): f is HTMLElement => Boolean(f));
+      if (!wide.matches) {
+        list.forEach((f) => {
+          f.style.removeProperty("top");
+          f.style.setProperty("--cover", "0");
+        });
+        return;
+      }
+      const vh = window.innerHeight;
+      const tops = list.map((f) => Math.min(NAV, vh - f.offsetHeight));
+      list.forEach((f, i) => {
+        f.style.top = `${tops[i]}px`;
+        const next = list[i + 1];
+        let cover = 0;
+        if (next) {
+          const travel = Math.max(1, vh - tops[i + 1]);
+          cover = Math.min(1, Math.max(0, (vh - next.getBoundingClientRect().top) / travel));
+        }
+        f.style.setProperty("--cover", cover.toFixed(3));
+      });
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    const ro = new ResizeObserver(schedule);
+    folders.current.forEach((f) => f && ro.observe(f));
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    wide.addEventListener("change", schedule);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      wide.removeEventListener("change", schedule);
+    };
+  }, [projects.length]);
+
   return (
     <section id="work" aria-labelledby="work-title" className="relative scroll-mt-4 pt-10">
       <h2 id="work-title" className="sr-only">
         Selected work
       </h2>
       {projects.map((project, i) => (
-        <Folder key={project.id} project={project} index={i} first={i === 0} />
+        <Fragment key={project.id}>
+          {/* where the folder lines up under the nav — a snap point */}
+          <div aria-hidden="true" className="folder-snap" />
+          <Folder
+            project={project}
+            index={i}
+            first={i === 0}
+            innerRef={(el) => {
+              folders.current[i] = el;
+            }}
+          />
+          {/* the pause: the folder stays pinned, fully in view, while this scrolls by */}
+          <div aria-hidden="true" className="folder-hold hidden md:block" />
+        </Fragment>
       ))}
       <div className="mx-auto max-w-7xl px-5 py-8 md:hidden">
-        <Link href="/projects" className="t-label text-ink">
+        <Link href="/projects" className="t-label inline-flex min-h-7 items-center text-ink">
           All projects →
         </Link>
       </div>

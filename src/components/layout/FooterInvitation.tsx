@@ -15,7 +15,7 @@ export function FooterInvitation({ email, github }: { email: string; github: str
       <KineticText as="p" lines={["Have a project", "in mind"]} accent="?" className="mt-8 max-w-4xl font-display text-[clamp(3rem,7vw,6.5rem)] font-light leading-[0.98] tracking-[-0.03em] text-ink" />
       <div className="mt-10 flex flex-wrap items-center gap-3">
         <Magnetic strength={0.35}>
-          <a href={`mailto:${email}`} data-cursor="Email" className="t-label inline-flex h-12 items-center gap-3 rounded-full bg-ink px-6 text-paper transition-colors duration-normal hover:bg-accent hover:text-on-sheet">
+          <a href={`mailto:${email}`} className="t-label inline-flex h-12 items-center gap-3 rounded-full bg-ink px-6 text-paper transition-colors duration-normal hover:bg-accent hover:text-on-sheet">
             {email} <span aria-hidden="true">→</span>
           </a>
         </Magnetic>

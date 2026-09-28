@@ -2,7 +2,7 @@ import { LegalPage, type LegalSection } from "@/components/legal/LegalPage";
 
 export const metadata = {
   title: "Privacy Policy",
-  description: "Privacy policy for Lorenz.dev.",
+  description: "What Lorenz.dev collects (next to nothing), what it stores in your browser, and how to reach its author.",
 };
 
 const SECTIONS: LegalSection[] = [

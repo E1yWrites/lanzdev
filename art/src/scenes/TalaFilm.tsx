@@ -1,4 +1,4 @@
-import { AbsoluteFill, Easing, interpolateColors, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, staticFile, Easing, interpolateColors, useCurrentFrame, useVideoConfig } from "remotion";
 import { TALA } from "../../../src/three/palette";
 import { TalaDesk } from "../../../src/three/TalaDesk";
 import { MONO, SERIF, Studio, useFontsReady } from "../shared/studio";
@@ -111,6 +111,8 @@ export function TalaFilm() {
         </Label>
       </div>
 
+      {/* Soundtrack synthesised by audio/compose.py, cued to this timeline. */}
+      <Audio src={staticFile("audio/tala.mp3")} />
       <Progress frame={frame} total={durationInFrames} color={ink} />
     </AbsoluteFill>
   );

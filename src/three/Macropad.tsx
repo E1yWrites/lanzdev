@@ -75,6 +75,7 @@ function Key({
   font,
   ready,
   cap,
+  glowMap,
   onKey,
 }: {
   k: PadKey;
@@ -84,6 +85,7 @@ function Key({
   font: string;
   ready: boolean;
   cap: THREE.BufferGeometry;
+  glowMap: THREE.Texture;
   onKey?: MacropadProps["onKey"];
 }) {
   const f = FINISH[k.finish];
@@ -102,13 +104,29 @@ function Key({
         <boxGeometry args={[0.62, 0.14, 0.62]} />
         <meshStandardMaterial color="#1c1c1f" roughness={0.5} />
       </mesh>
-      {/* underglow */}
-      <mesh position={[0, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.08, 1.08]} />
-        <meshBasicMaterial color={f.color} transparent opacity={glow * 0.55} toneMapped={false} depthWrite={false} />
+      {/* underglow: a soft additive halo, lifted clear of the plate (sharing its plane made it flicker) */}
+      <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} visible={glow > 0.01} renderOrder={1}>
+        <planeGeometry args={[1.6, 1.6]} />
+        <meshBasicMaterial
+          map={glowMap}
+          color={f.color}
+          transparent
+          opacity={glow * 0.9}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+          polygonOffset
+          polygonOffsetFactor={-4}
+        />
+      </mesh>
+      {/* Pointer target: fixed at the key's resting size, so the cap dipping under the
+          pointer can't flip hover off and on (that was the flicker). Never drawn. */}
+      <mesh position={[0, KEY_H / 2 + 0.12, 0]} {...handlers}>
+        <boxGeometry args={[1.02, KEY_H + 0.04, 1.02]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
       </mesh>
       <group position={[0, KEY_H / 2 + 0.12 - press * 0.13, 0]}>
-        <mesh geometry={cap} {...handlers}>
+        <mesh geometry={cap}>
           <meshPhysicalMaterial
             color={f.color}
             roughness={f.roughness}
@@ -312,6 +330,18 @@ export function Macropad({ font, ready, press = [], glow = [], knob = 0, screen,
   const body = useDisposable(() => new RoundedBoxGeometry(CASE.w, CASE.h, CASE.d, 8, 0.16), []);
   const plate = useDisposable(() => new RoundedBoxGeometry(2.3, 0.05, 2.3, 4, 0.06), []);
   const cap = useDisposable(() => taperedCap(1, 1, KEY_H), []);
+  const glowMap = useDisposable(
+    () =>
+      canvasTexture(128, 128, (ctx, w, h) => {
+        const g = ctx.createRadialGradient(w / 2, h / 2, w * 0.18, w / 2, h / 2, w / 2);
+        g.addColorStop(0, "rgba(255,255,255,0.9)");
+        g.addColorStop(0.55, "rgba(255,255,255,0.35)");
+        g.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+      }),
+    []
+  );
   const s = screen ?? { title: "LORENZ.DEV", sub: "HOVER A KEY ·  CLICK TO OPEN", meter: 0.25 };
 
   return (
@@ -324,7 +354,7 @@ export function Macropad({ font, ready, press = [], glow = [], knob = 0, screen,
         <meshStandardMaterial color="#141416" roughness={0.6} />
       </mesh>
       {PAD_KEYS.map((k, i) => (
-        <Key key={k.id} k={k} i={i} press={press[i] ?? 0} glow={glow[i] ?? 0} font={font} ready={ready} cap={cap} onKey={onKey} />
+        <Key key={k.id} k={k} i={i} press={press[i] ?? 0} glow={glow[i] ?? 0} font={font} ready={ready} cap={cap} glowMap={glowMap} onKey={onKey} />
       ))}
       <Screen title={s.title} sub={s.sub} meter={s.meter} font={font} ready={ready} />
       <Knob angle={knob} />

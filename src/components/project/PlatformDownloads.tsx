@@ -43,8 +43,8 @@ export function PlatformDownloads({ project, className }: PlatformDownloadsProps
                 </span>
               )}
             </div>
-            <p className="mt-2 font-mono text-[11px] text-swiss-fg/50">{detail}</p>
-            <p className="mt-1 font-mono text-[11px] text-swiss-fg/50">
+            <p className="mt-2 font-mono text-[11px] text-swiss-fg/60">{detail}</p>
+            <p className="mt-1 font-mono text-[11px] text-swiss-fg/60">
               {available ? fileMeta || "Latest build" : "Not yet available"}
             </p>
             <DownloadButton
