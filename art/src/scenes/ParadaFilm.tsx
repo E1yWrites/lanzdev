@@ -1,4 +1,4 @@
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, staticFile, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { ParadaLot } from "../../../src/three/ParadaLot";
 import { PARADA, SITE } from "../../../src/three/palette";
 import { MONO, SERIF, Studio, useFontsReady } from "../shared/studio";
@@ -153,6 +153,8 @@ export function ParadaFilm() {
         </Label>
       </div>
 
+      {/* Soundtrack synthesised by audio/compose.py, cued to this timeline. */}
+      <Audio src={staticFile("audio/parada.mp3")} />
       <Progress frame={frame} total={durationInFrames} color={INK} />
     </AbsoluteFill>
   );

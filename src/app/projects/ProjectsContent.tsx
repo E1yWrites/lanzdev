@@ -28,7 +28,7 @@ function LeadProject({ project, index }: { project: Project; index: number }) {
   ].filter(([, value]) => value);
 
   return (
-    <Link href={`/projects/${project.slug}`} data-cursor="Open" className="group block rounded-lg">
+    <Link href={`/projects/${project.slug}`} className="group block rounded-lg">
       <Surface tier="elevated" className="grid overflow-hidden rounded-lg transition-colors duration-normal group-hover:border-ink/20 lg:grid-cols-12">
         <div
           className={cn(

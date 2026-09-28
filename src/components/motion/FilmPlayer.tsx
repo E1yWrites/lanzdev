@@ -52,7 +52,8 @@ export function useFilmLoading(video: React.RefObject<HTMLVideoElement>, load: b
 interface FilmPlayerProps {
   film: ProjectFilm;
   title: string;
-  /** Start playing — but only once enough is buffered to play straight through. */
+  /** Start playing — but only once enough is buffered to play straight through.
+   *  Sound is tried first (it follows a click); if the browser refuses, it plays muted. */
   autoPlay?: boolean;
   className?: string;
 }
@@ -72,14 +73,18 @@ export function FilmPlayer({ film, title, autoPlay = false, className }: FilmPla
     const v = video.current;
     if (!autoPlay || !ready || !v || started.current) return;
     started.current = true;
-    v.play().catch(() => undefined);
+    v.muted = false;
+    v.play().catch(() => {
+      v.muted = true;
+      v.play().catch(() => undefined);
+    });
   }, [autoPlay, ready]);
 
   return (
     <div ref={wrap} className={cn("relative overflow-hidden bg-black", className)}>
-      <video ref={video} className="aspect-video w-full" poster={film.poster} controls playsInline muted preload="none" aria-label={`${title} — ${film.duration}-second film`}>
-        <source src={film.mp4} type="video/mp4" />
+      <video ref={video} className="aspect-video w-full" poster={film.poster} controls playsInline preload="none" aria-label={`${title} — ${film.duration}-second film, with sound`}>
         <source src={film.webm} type="video/webm" />
+        <source src={film.mp4} type="video/mp4" />
       </video>
       {((autoPlay && !ready) || buffering) && (
         <Loader label="Loading film" progress={progress} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />

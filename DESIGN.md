@@ -43,10 +43,12 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
 | **Macropad** (live 3D) | Home hero | The site index as an object: four keys → PARADA, Tala, About, Say hi. Hover a key and it dips and glows and the OLED reads out where it goes; click to open. The pad leans toward the pointer, and the knob turns with the scroll. The list of links beside it is the same index — hovering either lights the other. |
 | **PARADA lot** (live 3D) | PARADA folder + page | Hover and the story plays: the waiting car's plate is read, the barrier lifts, it parks, **Zone A drops from 12 to 11 free**, a new car arrives. Drag to turn. |
 | **Tala desk** (live 3D) | Tala folder + page | Hover and the pencil writes *tala* in cursive; click (or the Day/Night chip) to flip the sun to the moon. Drag to turn. |
-| **Films** (Remotion, 15 s each) | Showreel, film dialog, project pages | Rendered from the same models: PARADA's gate-to-zone pipeline and Tala's writing / day-to-night / v1.1.0 features. Play while on screen, hand over like stories. |
-| **Kinetic type** | Hero and every page title | Letters rise in when on screen; near the pointer the variable weight thickens and letters lift. |
+| **Films** (Remotion, 15 s each, 1080p, with sound) | Showreel, film dialog, project pages | Rendered from the same models: PARADA's gate-to-zone pipeline and Tala's writing / day-to-night / v1.1.0 features. They buffer before they're on screen and start only once they can play through; the showreel plays muted (browser policy) with a **Sound on** toggle, the dialog and project pages play with sound. |
+| **Soundtracks** | In the films | Synthesised from scratch (`art/audio/compose.py`, no samples or licences): a music bed per project plus effects cued to the frame — engine, plate-read blips and chime, barrier servo, the counter's ding; pencil strokes, a dusk sparkle, a pop per feature chip. |
+| **Folder stack** | Home | Each project folder pins under the nav, **holds** for a beat, then the next slides over it while the covered one dims and eases back. Scroll snaps gently (`proximity`) so a folder always settles lined up; one taller than the screen pins by its bottom edge so nothing is hidden. |
+| **Kinetic type** | Hero and every page title | Letters rise into place when on screen, then stay put — no hover distortion, and each line's mask is padded so no glyph is ever clipped. |
 | **Velocity marquee** | Under the hero | Drifts on its own, speeds up and leans with scroll velocity, reverses on the way back up. |
-| **Cursor ring** | Mouse/trackpad only | Trails the pointer; grows over links; shows a label ("Open", "Play", "Drag · hover to play") over things that do something. The system cursor stays. |
+| **Cursor ring** | Mouse/trackpad only | A small hollow ring that trails the pointer and turns accent over links. Labels ("Drag · hover to play", "Play", "Open parada") appear only over media with no text of their own, in a small tag beside the pointer — never over text. The system cursor stays. |
 | **Magnetic buttons, rolling links, filling rows, tilting card, colour lens** | Throughout | Small hover rewards that confirm what's interactive. |
 | **Scroll progress, page rise, count-ups, roadmap track** | Throughout | Orientation: how far down, which page arrived, which numbers matter. |
 
@@ -62,9 +64,10 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
   viewport — one at a time, in idle time — renders only while visible, and cross-fades
   over the poster once it has drawn. Reduced motion or no WebGL: the poster stays.
 - **Weight.** Home first-load JS is 124 kB. three.js and the scenes (~215 kB gzipped)
-  load lazily after first paint and never under reduced motion. The films are
-  1.3–2 MB each and only download when played or on screen (`preload="none"` until
-  then; H.264 first, VP9 as fallback).
+  are prefetched in idle time after first paint (never under reduced motion), with a
+  "Loading 3D" tag over the poster until the live model has drawn. The films are
+  1080p with audio — about 4 MB as VP9/Opus (served first) and 6 MB as H.264/AAC — and
+  only start downloading as they near the screen.
 
 ## Motifs
 

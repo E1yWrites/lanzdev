@@ -95,7 +95,6 @@ export function Hero() {
                   <li key={k.id} className="border-b border-dotted border-ink/25">
                     <Link
                       href={k.href}
-                      data-cursor={k.id === "contact" ? "Say hi" : "Open"}
                       onPointerEnter={() => heroKey.set(i)}
                       onPointerLeave={() => heroKey.get() === i && heroKey.set(-1)}
                       onFocus={() => heroKey.set(i)}

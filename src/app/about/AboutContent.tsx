@@ -113,7 +113,7 @@ export function AboutContent({ projects }: AboutContentProps) {
             </p>
             <div className="reveal mt-9 flex flex-wrap items-center gap-3">
               <Magnetic>
-                <a href={`mailto:${siteConfig.email}`} data-cursor="Say hi" className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-on-sheet">
+                <a href={`mailto:${siteConfig.email}`} className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-on-sheet">
                   <span className="live-dot" aria-hidden="true" /> {siteConfig.availability}
                 </a>
               </Magnetic>
@@ -138,7 +138,7 @@ export function AboutContent({ projects }: AboutContentProps) {
       <Section number="01" title="Selected work" id="selected-work">
         <div className="grid gap-6 sm:grid-cols-2">
           {selected.map((project, i) => (
-            <Link key={project.id} href={`/projects/${project.slug}`} data-cursor="Open" className="reveal group block">
+            <Link key={project.id} href={`/projects/${project.slug}`} className="reveal group block">
               <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-ink/10 bg-ink/[0.03]">
                 <Image src={project.cover!} alt="" fill sizes="(min-width: 640px) 33vw, 100vw" className="object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
                 <span className="t-label absolute left-4 top-4 text-ink/60">{String(i + 1).padStart(2, "0")}</span>

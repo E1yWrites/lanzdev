@@ -5,8 +5,9 @@ import { cursorLabel } from "@/components/three/store";
 import { useFinePointer, useReducedMotion } from "@/hooks/useMedia";
 
 /**
- * A ring that trails the pointer (the system cursor stays). Over links and buttons it
- * grows; over anything with `data-cursor="Label"` — or a 3D key — it shows the label.
+ * A small ring that trails the pointer (the system cursor stays). Over links and buttons
+ * it turns accent. Labels are only for media with no text of their own — 3D stages,
+ * films, a 3D key (`data-cursor="Label"`) — and sit in a tag beside the pointer.
  * Mouse/trackpad only, and off under reduced motion.
  */
 export function Cursor() {
@@ -29,8 +30,8 @@ export function Cursor() {
     let raf = 0;
 
     const render = () => {
-      cur.x += (pos.x - cur.x) * 0.22;
-      cur.y += (pos.y - cur.y) * 0.22;
+      cur.x += (pos.x - cur.x) * 0.38;
+      cur.y += (pos.y - cur.y) * 0.38;
       el.style.transform = `translate3d(${cur.x}px, ${cur.y}px, 0)`;
       raf = requestAnimationFrame(render);
     };
