@@ -29,10 +29,10 @@ export function Capabilities() {
         {ROWS.map((row, i) => (
           <li key={row.area} className="cap-row group relative border-b border-dotted border-ink/30">
             <div className="relative z-[1] grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 gap-y-1 py-5 transition-colors duration-normal group-hover:text-on-sheet md:grid-cols-[3rem_minmax(0,4fr)_minmax(0,5fr)_minmax(0,3fr)] md:py-6">
-              <span className="t-label text-ink/50 transition-colors group-hover:text-on-sheet/70">{String(i + 1).padStart(2, "0")}</span>
+              <span className="t-label text-ink/60 transition-colors group-hover:text-on-sheet/70">{String(i + 1).padStart(2, "0")}</span>
               <span className="font-display text-3xl font-light tracking-tight transition-transform duration-normal ease-out group-hover:translate-x-2 md:text-4xl">{row.area}</span>
               <span className="col-start-2 font-mono text-[13px] text-ink/75 transition-colors group-hover:text-on-sheet md:col-start-auto">{row.tools}</span>
-              <span className="t-label col-start-2 text-ink/50 transition-colors group-hover:text-on-sheet/75 md:col-start-auto md:text-right">{row.where}</span>
+              <span className="t-label col-start-2 text-ink/60 transition-colors group-hover:text-on-sheet/75 md:col-start-auto md:text-right">{row.where}</span>
             </div>
           </li>
         ))}

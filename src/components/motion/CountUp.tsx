@@ -49,7 +49,8 @@ export function CountUp({ value, duration = 1400 }: { value: string; duration?: 
   }, [value, animatable, reduced, duration]);
 
   return (
-    <span ref={ref} className="tabular" aria-label={value}>
+    <span ref={ref} className="tabular">
+      <span className="sr-only">{value}</span>
       <span aria-hidden="true">{shown}</span>
     </span>
   );

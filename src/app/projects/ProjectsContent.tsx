@@ -142,7 +142,7 @@ export function ProjectsContent({ projects }: ProjectsContentProps) {
             href={siteConfig.github.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="t-label inline-flex items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
+            className="t-label inline-flex min-h-7 items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
           >
             All repositories on GitHub
             <ArrowUpRight size={12} strokeWidth={2.5} aria-hidden="true" />

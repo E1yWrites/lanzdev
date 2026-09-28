@@ -64,7 +64,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
           style={{ ...TAB_CLIP, "--i": index } as React.CSSProperties}
         >
           Project {pad(index + 1)}
-          <span className="hidden text-on-sheet/60 sm:inline">— {project.role?.split(" · ")[0]}</span>
+          <span className="hidden text-on-sheet/85 sm:inline">— {project.role?.split(" · ")[0]}</span>
         </span>
         {first && (
           <Link href="/projects" className="t-label absolute bottom-0 right-0 hidden h-10 w-[var(--tab-w)] items-center bg-paper-elevated px-5 text-ink transition-colors duration-fast hover:text-accent md:flex" style={TAB_CLIP}>
@@ -262,7 +262,7 @@ export function WorkFolders({ projects }: { projects: Project[] }) {
         </Fragment>
       ))}
       <div className="mx-auto max-w-7xl px-5 py-8 md:hidden">
-        <Link href="/projects" className="t-label text-ink">
+        <Link href="/projects" className="t-label inline-flex min-h-7 items-center text-ink">
           All projects →
         </Link>
       </div>

@@ -161,7 +161,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
           compact ? "h-9 px-3" : "h-12 max-w-[560px] px-4"
         )}
       >
-        <span className={cn("flex min-w-0 items-center gap-2.5 text-swiss-fg/50", compact ? "text-xs" : "text-sm")}>
+        <span className={cn("flex min-w-0 items-center gap-2.5 text-swiss-fg/60", compact ? "text-xs" : "text-sm")}>
           <Search size={compact ? 13 : 15} className="shrink-0" />
           <span className="truncate">Search docs…</span>
         </span>
@@ -173,7 +173,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setOpen(false)} />
           <div className="surface-elevated relative mx-auto mt-[10vh] w-[min(600px,calc(100vw-32px))] overflow-hidden rounded-lg">
             <div className="flex items-center gap-3 border-b border-ink/10 px-4">
-              <Search size={16} className="shrink-0 text-swiss-fg/50" />
+              <Search size={16} className="shrink-0 text-swiss-fg/60" />
               <input
                 ref={inputRef}
                 value={query}
@@ -183,7 +183,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
                 }}
                 onKeyDown={onInputKeyDown}
                 placeholder="Search documentation…"
-                className="h-14 min-w-0 flex-1 bg-transparent text-[15px] text-swiss-fg placeholder:text-swiss-fg/40 focus:outline-none"
+                className="h-14 min-w-0 flex-1 bg-transparent text-[15px] text-swiss-fg placeholder:text-swiss-fg/60 focus:outline-none"
               />
               <kbd className={kbd}>esc</kbd>
             </div>
@@ -200,7 +200,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
                   }}
                   className={cn(
                     "t-label rounded-[4px] px-2.5 py-1 transition-colors duration-fast",
-                    project === p.key ? "bg-swiss-fg text-swiss-bg" : "text-swiss-fg/50 hover:bg-ink/10 hover:text-swiss-fg"
+                    project === p.key ? "bg-swiss-fg text-swiss-bg" : "text-swiss-fg/60 hover:bg-ink/10 hover:text-swiss-fg"
                   )}
                 >
                   {p.label}
@@ -210,7 +210,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
 
             <div ref={listRef} className="scrollbar-hide max-h-[340px] overflow-y-auto p-2" role="listbox">
               {list.length === 0 && (
-                <p className="px-3 py-10 text-center text-sm text-swiss-fg/50">
+                <p className="px-3 py-10 text-center text-sm text-swiss-fg/60">
                   {query.trim() ? "No documents match your search." : "Type to search all documentation. Recent docs appear here."}
                 </p>
               )}
@@ -235,7 +235,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
                         <span className="t-label text-swiss-accent">{e.label}</span>
                         <span className={cn("truncate text-sm", isActive ? "text-swiss-fg" : "text-swiss-fg/80")}>{e.title}</span>
                       </span>
-                      {e.description && <span className="mt-0.5 block truncate text-xs text-swiss-fg/50">{e.description}</span>}
+                      {e.description && <span className="mt-0.5 block truncate text-xs text-swiss-fg/60">{e.description}</span>}
                     </span>
                     <CornerDownLeft size={13} className={cn("shrink-0 text-swiss-accent transition-opacity duration-instant", !isActive && "opacity-0")} />
                   </button>

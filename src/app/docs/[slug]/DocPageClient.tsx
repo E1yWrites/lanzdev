@@ -69,10 +69,10 @@ export function DocPageClient({ doc }: { doc: DocSection }) {
     <article ref={sectionRef} className="flex gap-12 px-5 py-10 md:px-10 md:py-14 lg:px-14">
       <div className="min-w-0 max-w-[720px] flex-1">
         <nav aria-label="Breadcrumb" className="t-label reveal flex items-center gap-2">
-          <Link href="/docs" className="text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent">
+          <Link href="/docs" className="inline-flex min-h-7 items-center text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent">
             Docs
           </Link>
-          <span className="text-swiss-fg/30">/</span>
+          <span className="text-swiss-fg/60">/</span>
           <span className="text-swiss-accent">{projectLabel(doc.project)}</span>
         </nav>
         <h1 className="font-display font-light tracking-tight reveal mt-5 text-4xl text-swiss-fg md:text-5xl">{doc.title}</h1>
@@ -82,7 +82,7 @@ export function DocPageClient({ doc }: { doc: DocSection }) {
               <p className="font-swiss text-base leading-relaxed text-swiss-fg/70">{docMeta[doc.slug].description}</p>
             )}
             {updated && (
-              <time dateTime={updated} className="font-mono text-xs text-swiss-fg/50">
+              <time dateTime={updated} className="font-mono text-xs text-swiss-fg/60">
                 Updated {formatDate(updated)}
               </time>
             )}
@@ -121,7 +121,7 @@ export function DocPageClient({ doc }: { doc: DocSection }) {
       {headings.length > 1 && (
         <aside className="hidden w-52 shrink-0 xl:block">
           <div ref={tocRef} className="sticky top-24">
-            <span className="editorial-label block text-swiss-fg/50">On this page</span>
+            <span className="editorial-label block text-swiss-fg/60">On this page</span>
             <ul className="mt-4 border-l border-ink/10">
               {headings.map((h, i) => (
                 <li key={h}>
@@ -180,7 +180,7 @@ function renderBody(raw: string, nextCode: () => number): string {
     const isShell = /^(bash|sh|shell|zsh)$/.test(lang ?? "");
     const body = esc(code.trim())
       .split("\n")
-      .map((l) => (isShell ? l.replace(/(^|\s)(#.*)$/, '$1<span class="text-ink/55">$2</span>') : l))
+      .map((l) => (isShell ? l.replace(/(^|\s)(#.*)$/, '$1<span class="text-ink/60">$2</span>') : l))
       .join("\n");
     return (
       `<figure class="my-6 overflow-hidden rounded-md border border-ink/10 bg-swiss-muted">` +
@@ -189,7 +189,7 @@ function renderBody(raw: string, nextCode: () => number): string {
       `<span class="t-label ml-2 text-ink/60">${lang || "text"}</span>` +
       `<button type="button" data-copy-target="${id}" class="t-label ml-auto rounded-[4px] border border-ink/15 px-2.5 py-1 text-swiss-fg/60 transition-colors duration-fast hover:border-accent/60 hover:text-swiss-fg">Copy</button>` +
       `</figcaption>` +
-      `<pre class="overflow-x-auto p-4 font-mono text-[13px] leading-6 text-swiss-fg/90"><code id="${id}">${body}</code></pre>` +
+      `<pre tabindex="0" class="overflow-x-auto p-4 font-mono text-[13px] leading-6 text-swiss-fg/90"><code id="${id}">${body}</code></pre>` +
       `</figure>`
     );
   });

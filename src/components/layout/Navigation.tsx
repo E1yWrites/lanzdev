@@ -38,7 +38,7 @@ export function Navigation({ projects }: NavigationProps) {
         )}
       >
         <nav aria-label="Main" className="t-label mx-auto flex h-full max-w-7xl items-center px-5 md:px-8 lg:grid lg:grid-cols-6">
-          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} aria-label="Lorenz.dev — home" className="group inline-flex items-center gap-2.5 text-ink">
+          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} aria-label="Lorenz.dev — home" className="group -my-1 inline-flex items-center gap-2.5 py-2 text-ink">
             <LogoMark size={22} intro />
             <span className="roll" aria-hidden="true">
               <span>

@@ -164,7 +164,7 @@ export function Showreel({ items }: { items: ReelItem[] }) {
                 setCurrent(i);
                 setUserPaused(false);
               }}
-              className={cn("group text-left transition-colors duration-fast", i === current ? "text-ink" : "text-ink/45 hover:text-ink/80")}
+              className={cn("group text-left transition-colors duration-fast", i === current ? "text-ink" : "text-ink/60 hover:text-ink/80")}
             >
               <span className="block h-[3px] w-full overflow-hidden rounded-full bg-ink/15">
                 <span
@@ -235,7 +235,7 @@ export function Showreel({ items }: { items: ReelItem[] }) {
             </button>
           </div>
         </div>
-        <p className="t-label mt-3 text-ink/55">{item.caption}</p>
+        <p className="t-label mt-3 text-ink/60">{item.caption}</p>
       </div>
     </section>
   );

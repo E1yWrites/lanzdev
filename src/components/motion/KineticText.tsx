@@ -50,7 +50,8 @@ export function KineticText({ lines, accent, className, delay = 0, as: Tag = "h1
   };
 
   return (
-    <Tag ref={ref} id={id} className={cn("kinetic", className)} aria-label={lines.join(" ") + (accent ?? "")}>
+    <Tag ref={ref} id={id} className={cn("kinetic", className)}>
+      <span className="sr-only">{lines.join(" ") + (accent ?? "")}</span>
       {lines.map((line, li) => (
         <span key={li} className="kinetic-line" aria-hidden="true">
           {line.split(" ").map((word, wi, words) => (

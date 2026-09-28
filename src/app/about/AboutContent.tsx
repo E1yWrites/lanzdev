@@ -79,12 +79,12 @@ function Rows({ rows }: { rows: { main: string; detail: string; aside?: string }
     <ol className="border-t border-dotted border-ink/25">
       {rows.map((r, i) => (
         <li key={r.main + i} className="reveal group grid grid-cols-[2rem_1fr] gap-x-4 border-b border-dotted border-ink/25 py-4 md:grid-cols-[2.5rem_1fr_auto]">
-          <span className="t-label pt-1 text-ink/45 transition-colors group-hover:text-accent">{String(i + 1).padStart(2, "0")}</span>
+          <span className="t-label pt-1 text-ink/60 transition-colors group-hover:text-accent">{String(i + 1).padStart(2, "0")}</span>
           <div>
             <p className="font-display text-xl font-light leading-snug text-ink transition-transform duration-normal ease-out group-hover:translate-x-1 md:text-2xl">{r.main}</p>
             <p className="mt-1 text-sm leading-relaxed text-ink/60">{r.detail}</p>
           </div>
-          {r.aside && <span className="t-label col-start-2 mt-2 text-ink/55 md:col-start-auto md:mt-1 md:text-right">{r.aside}</span>}
+          {r.aside && <span className="t-label col-start-2 mt-2 text-ink/60 md:col-start-auto md:mt-1 md:text-right">{r.aside}</span>}
         </li>
       ))}
     </ol>
@@ -177,7 +177,7 @@ export function AboutContent({ projects }: AboutContentProps) {
           {siteConfig.skills.map((s) => (
             <li key={s.name} className="reveal group bg-paper p-5 transition-colors duration-normal hover:bg-accent hover:text-on-sheet">
               <p className="font-display text-2xl font-light">{s.name}</p>
-              <p className="t-label mt-2 text-ink/55 transition-colors group-hover:text-on-sheet/75">{s.detail}</p>
+              <p className="t-label mt-2 text-ink/60 transition-colors group-hover:text-on-sheet/75">{s.detail}</p>
             </li>
           ))}
         </ul>
@@ -197,7 +197,7 @@ export function AboutContent({ projects }: AboutContentProps) {
         <ol className="border-t border-dotted border-ink/25">
           {principles.map((p, i) => (
             <li key={p.title} className="reveal group grid grid-cols-[3rem_1fr] gap-4 border-b border-dotted border-ink/25 py-6">
-              <span className="font-display text-4xl font-light text-ink/20 transition-colors group-hover:text-accent">{i + 1}</span>
+              <span className="font-display text-4xl font-light text-ink/60 transition-colors group-hover:text-accent">{i + 1}</span>
               <div>
                 <p className="font-display text-3xl font-light text-ink md:text-4xl">{p.title}</p>
                 <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink/60 md:text-base">{p.text}</p>

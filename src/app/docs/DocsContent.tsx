@@ -148,10 +148,10 @@ export function DocsContent() {
                 <span className="min-w-0 flex-1 truncate font-swiss text-sm text-swiss-fg/80 transition-colors duration-fast group-hover:text-swiss-fg">
                   {row.title}
                 </span>
-                <time dateTime={row.updated} className="shrink-0 font-mono text-xs text-swiss-fg/50">
+                <time dateTime={row.updated} className="shrink-0 font-mono text-xs text-swiss-fg/60">
                   {formatDate(row.updated)}
                 </time>
-                <ArrowRight size={14} className="hidden shrink-0 text-swiss-fg/30 transition-all duration-fast group-hover:translate-x-1 group-hover:text-swiss-accent sm:block" />
+                <ArrowRight size={14} className="hidden shrink-0 text-swiss-fg/60 transition-all duration-fast group-hover:translate-x-1 group-hover:text-swiss-accent sm:block" />
               </Link>
             </li>
           ))}

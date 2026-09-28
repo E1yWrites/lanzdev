@@ -21,9 +21,10 @@ export function Roadmap({ milestones }: { milestones: ProjectMilestone[] }) {
 
   return (
     <div>
-      <ol className="flex gap-1 md:gap-1.5" aria-label="Phases">
+      {/* one track from md up; two rows of wide-enough cells on phones */}
+      <ol className="grid grid-cols-9 gap-1 md:flex md:gap-1.5" aria-label="Phases">
         {milestones.map((m, i) => (
-          <li key={m.id} className="flex-1">
+          <li key={m.id} className="md:flex-1">
             <button
               type="button"
               aria-label={`Phase ${m.id}: ${m.title} — ${STATE[m.status].label}`}
@@ -40,7 +41,7 @@ export function Roadmap({ milestones }: { milestones: ProjectMilestone[] }) {
           </li>
         ))}
       </ol>
-      <div className="mt-2 flex justify-between font-mono text-[10px] text-ink/40">
+      <div className="mt-2 flex justify-between font-mono text-[10px] text-ink/60">
         <span>Phase {milestones[0]?.id}</span>
         <span>Phase {milestones[milestones.length - 1]?.id}</span>
       </div>
@@ -59,8 +60,8 @@ export function Roadmap({ milestones }: { milestones: ProjectMilestone[] }) {
       <ol className="mt-8 grid gap-x-8 border-t border-dotted border-ink/25 sm:grid-cols-2 lg:grid-cols-3">
         {milestones.map((m) => (
           <li key={m.id} className="flex items-baseline gap-3 border-b border-dotted border-ink/15 py-2.5">
-            <span className="w-6 shrink-0 font-mono text-[11px] text-ink/40">{m.id.padStart(2, "0")}</span>
-            <span className={cn("flex-1 text-sm", m.status === "next" ? "text-ink/45" : "text-ink/85")}>{m.title}</span>
+            <span className="w-6 shrink-0 font-mono text-[11px] text-ink/60">{m.id.padStart(2, "0")}</span>
+            <span className={cn("flex-1 text-sm", m.status === "next" ? "text-ink/60" : "text-ink/85")}>{m.title}</span>
             <span aria-hidden="true" className={cn("h-2 w-2 shrink-0 rounded-full", m.status === "done" ? "bg-ink/70" : m.status === "active" ? "bg-accent" : "border border-ink/40")} />
           </li>
         ))}

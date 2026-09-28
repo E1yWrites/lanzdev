@@ -89,10 +89,24 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
 
 ## Checks
 
-`tsc --noEmit`, `next lint` and `next build` pass. Browser checks (Playwright, 1440 px
-and 390 px): one `<h1>` per page, no nested interactive elements, no horizontal
-overflow, no images without `alt`, no canvases under reduced motion, no console errors.
-Interactions verified: 3D key hover lights its link and a click navigates; film dialog
-opens and closes on Esc; Tala's day/night toggle; showreel tabs; command palette;
-`/projects/parada-landing` redirects to `/projects/parada`; mobile menu opens and
-closes on Esc; no cursor ring on touch.
+`tsc --noEmit`, `next lint` and `next build` pass. A Playwright audit runs against the
+production build at 1440 px and 390 px (touch), about 1,100 checks, all passing:
+
+- **Every page:** axe-core with no serious or critical violations, and text contrast
+  at or above AA. One `<h1>` per page, with headings in order. A meta description of
+  real length. No horizontal overflow, broken images, missing `alt`, nested
+  interactive elements or duplicate ids. Tap targets of at least 24 px on phones. No
+  console errors or failed requests.
+- **Keyboard:** the skip link comes first. Every focus stop shows the accent ring, and
+  focus never sticks. Ctrl+K opens the palette.
+- **Type:** kinetic letters settle inside their masks, with no clipped glyphs, and
+  keep one weight under the pointer.
+- **Folders:** each folder snaps flush under the nav, holds, and dims as the next one
+  covers it. Its call to action stays visible while pinned (1440×900 and 1366×768).
+- **Macropad:** hovering a key never flickers (0 hover flips while the pointer is still),
+  and a click navigates.
+- **Films:** the showreel autoplays muted once it can play through, Sound on unmutes
+  it, the tabs keep sound on, and Pause works. The dialog and project films are
+  buffered by the time they are on screen.
+- **Phone:** there's no cursor ring. The menu opens, navigates and closes, and the hero
+  hint reads "Tap a key".

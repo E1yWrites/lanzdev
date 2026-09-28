@@ -13,7 +13,7 @@ const SECTIONS: LegalSection[] = [
         <p>Tala is licensed under the MIT License.</p>
         <div className="mt-5 rounded-md border border-ink/10 bg-ink/[0.03] p-5 font-mono text-xs leading-relaxed text-swiss-fg/70 md:p-6">
           <p className="font-bold text-swiss-fg">MIT License</p>
-          <p className="mb-4 text-swiss-fg/40">Copyright (c) 2026 e1yu</p>
+          <p className="mb-4 text-swiss-fg/60">Copyright (c) 2026 e1yu</p>
           <p className="mb-3">
             Permission is hereby granted, free of charge, to any person
             obtaining a copy of this software and associated documentation

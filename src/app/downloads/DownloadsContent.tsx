@@ -18,7 +18,7 @@ interface DownloadsContentProps {
 }
 
 const linkClass =
-  "t-label inline-flex items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent";
+  "t-label inline-flex min-h-7 items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent";
 
 export function DownloadsContent({ project, others }: DownloadsContentProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
@@ -52,7 +52,7 @@ export function DownloadsContent({ project, others }: DownloadsContentProps) {
                   <h2 className="font-display font-light tracking-tight text-3xl text-swiss-fg">{project.name}</h2>
                   <Badge variant={status.variant}>{status.label}</Badge>
                 </div>
-                <p className="mt-1.5 font-mono text-xs text-swiss-fg/50">
+                <p className="mt-1.5 font-mono text-xs text-swiss-fg/60">
                   {[project.version && `v${project.version}`, project.releaseDate && formatDate(project.releaseDate), project.license]
                     .filter(Boolean)
                     .join(" · ")}
@@ -99,7 +99,7 @@ export function DownloadsContent({ project, others }: DownloadsContentProps) {
                       {p.name}
                     </span>
                     <span className="font-swiss text-sm text-swiss-fg/60 sm:col-span-5">{p.tagline}</span>
-                    <span className="flex items-center justify-between gap-4 font-mono text-[11px] text-swiss-fg/40 sm:col-span-3">
+                    <span className="flex items-center justify-between gap-4 font-mono text-[11px] text-swiss-fg/60 sm:col-span-3">
                       {platformSummary(p)}
                       <ArrowRight size={14} strokeWidth={2} aria-hidden="true" className="transition-transform duration-fast group-hover:translate-x-1 group-hover:text-swiss-accent" />
                     </span>
