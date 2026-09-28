@@ -1,13 +1,13 @@
 {
   "name": "lanzdev-art",
   "private": true,
-  "description": "Remotion source for the site's generated art: hero loop, project objects, share image.",
+  "description": "Remotion source for the site's generated art: model posters, the two 15-second films and the share image.",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "node render.mjs"
+    "render": "node render.mjs",
+    "preview": "node preview.mjs"
   },
   "dependencies": {
-    "@react-three/drei": "9.122.0",
     "@react-three/fiber": "8.18.0",
     "@remotion/bundler": "^4.0.529",
     "@remotion/cli": "4.0.529",

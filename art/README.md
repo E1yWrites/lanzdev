@@ -1,23 +1,29 @@
 # art/
 
-Remotion source for the site's generated art. Everything it renders lands in
-`../public/art/` and is committed, so the website never depends on this folder
-at build time (it's excluded from the root `tsconfig.json`).
+Remotion source for the site's rendered art. The 3D models themselves live in
+[`../src/three`](../src/three) and are shared with the website, which draws them
+live; this folder renders the same models into files. Everything lands in
+`../public/art/` and is committed, so the site never depends on this folder at
+build time (it's excluded from the root `tsconfig.json`).
 
-| Composition  | Output                                 | Used by                                                    |
-| ------------ | -------------------------------------- | ---------------------------------------------------------- |
-| `Hero`       | `hero.webm`, `hero.mp4`, `hero-poster.jpg` | Home hero — 6 s seamless loop on pure black            |
-| `Parada`     | `parada.webp` (transparent)            | PARADA cover (`cover` in `src/data/projects.ts`)           |
-| `Modpack`    | `modpack.webp` (transparent)           | Modpack cover                                              |
-| `ShareImage` | `og.jpg` (1200×630)                    | Open Graph / Twitter image (`src/app/layout.tsx`)          |
+| Composition  | Output                                        | Used by                                                  |
+| ------------ | --------------------------------------------- | -------------------------------------------------------- |
+| `Macropad`   | `macropad.webp` (transparent, 1600×1200)      | Home hero poster, before the live model loads            |
+| `Parada`     | `parada.webp` (transparent)                   | PARADA `cover` — poster for the live lot                 |
+| `Tala`       | `tala.webp` (transparent)                     | Tala `cover` — poster for the live desk                  |
+| `ParadaFilm` | `films/parada.{mp4,webm,jpg}` — 15 s, 720p    | Showreel, film dialog, PARADA project page               |
+| `TalaFilm`   | `films/tala.{mp4,webm,jpg}` — 15 s, 720p      | Showreel, film dialog, Tala project page                 |
+| `ShareImage` | `og.jpg` (1200×630)                           | Open Graph / Twitter image (`src/app/layout.tsx`)        |
 
 ## Working on it
 
 ```bash
 cd art
 npm install
-npm run studio   # preview and tweak in Remotion Studio
-npm run render   # re-render every asset into ../public/art
+npm run studio               # preview and scrub in Remotion Studio
+npm run preview Parada Tala  # quick PNGs in out/ (append @frame, e.g. ParadaFilm@150)
+npm run render               # re-render every asset into ../public/art
+ONLY=TalaFilm npm run render # just one
 ```
 
 On a machine without a GPU (CI, containers), point Remotion at a headless
@@ -29,14 +35,19 @@ REMOTION_BROWSER_EXECUTABLE=/path/to/headless_shell REMOTION_GL=swangle npm run 
 
 ## Notes
 
-- The hero is rendered on `#000000`; the site layers it with
-  `mix-blend-mode: screen`, so the black disappears into the page background.
-- Keycap legends are drawn to canvas textures after the fonts load (troika text
-  never reports ready in headless renders). Call `useFontsReady()` in the
-  composition component, *outside* `<ThreeCanvas>` — state changes inside the
-  canvas don't trigger a redraw in Remotion's frame loop.
-- Lighting uses local `Lightformer`s rather than HDR presets, so renders work
-  offline and are reproducible.
-- Colours mirror the site tokens in `src/app/globals.css` (accent `#FF4C29`,
-  sheet `#EFEEE9`, grey `#D3D2CC`). Fonts in `public/fonts` are OFL-licensed
-  (JetBrains Mono, Newsreader); licence texts sit beside them.
+- **One model, two drivers.** Each model in `src/three` is a pure function of its
+  props (`press`, `approach`, `scan`, `write`, `night`…). The films compute those
+  props from the frame number; the site's rigs (`src/components/three/scenes.tsx`)
+  compute them from the pointer, hover and time.
+- **One copy of three.** The shared models import `three`, `@react-three/fiber` and
+  `react`; `bundle.mjs` aliases those to this folder's `node_modules` so the bundle
+  never holds two copies. `remotion.config.ts` applies the same override to Studio.
+- **Same lighting, same framing.** Lighting is `StudioLights` (emissive panels baked
+  into a PMREM environment — no HDR download, reproducible offline). Camera framing
+  comes from `src/three/views.ts`, so a poster and its live model line up exactly
+  when the site swaps one for the other.
+- **Text on models** is drawn to canvas textures once the fonts load. Call
+  `useFontsReady()` in the composition, *outside* `<ThreeCanvas>` — state changes
+  inside the canvas don't trigger a redraw in Remotion's frame loop.
+- Fonts in `public/fonts` are OFL-licensed (JetBrains Mono, Newsreader); licence
+  texts sit beside them.

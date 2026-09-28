@@ -1,8 +1,12 @@
+import { KineticText } from "@/components/motion/KineticText";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
   eyebrow: string;
-  title: React.ReactNode;
+  /** One string, or one string per line. */
+  title: string | string[];
+  /** Trailing punctuation in the accent colour. */
+  accent?: string;
   lede?: React.ReactNode;
   /** Mono key/value strip, e.g. [["Projects", "03"]]. Falsy values are dropped. */
   stats?: [string, React.ReactNode][];
@@ -14,7 +18,7 @@ interface PageHeaderProps {
 }
 
 /** Interior page header — eyebrow, light serif title, lede, and a mono stats strip on a dotted rule. */
-export function PageHeader({ eyebrow, title, lede, stats, children, reveal = false, className }: PageHeaderProps) {
+export function PageHeader({ eyebrow, title, accent, lede, stats, children, reveal = false, className }: PageHeaderProps) {
   const r = reveal ? "reveal" : undefined;
   const shownStats = stats?.filter(([, value]) => value);
 
@@ -22,7 +26,7 @@ export function PageHeader({ eyebrow, title, lede, stats, children, reveal = fal
     <header className={cn("border-b border-dotted border-ink/30", className)}>
       <div className="mx-auto max-w-7xl px-5 pb-12 pt-20 md:px-8 md:pb-16 md:pt-28">
         <span className={cn("section-number block", r)}>{eyebrow}</span>
-        <h1 className={cn("mt-8 max-w-5xl font-display text-display font-light text-ink", r)}>{title}</h1>
+        <KineticText lines={Array.isArray(title) ? title : [title]} accent={accent} className="mt-8 max-w-5xl font-display text-display font-light text-ink" />
         {lede && <p className={cn("mt-8 max-w-xl text-base leading-relaxed text-ink/70 md:text-lg", r)}>{lede}</p>}
         {children && <div className={cn("mt-10", r)}>{children}</div>}
         {shownStats && shownStats.length > 0 && (

@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      // PARADA's landing page was listed as its own project before the PARADA repo went public.
+      { source: "/projects/parada-landing", destination: "/projects/parada", permanent: true },
+      { source: "/projects/modpack-development", destination: "/projects", permanent: false },
+    ];
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

@@ -1,8 +1,9 @@
 # Lorenz.dev — Portfolio & Software Studio
 
-The personal site for Lorenz Malabanan — a minimal, spec-sheet–styled portfolio
-built with **Next.js 14 (App Router)**, **React 18**, and **Tailwind CSS**.
-See [`DESIGN.md`](DESIGN.md) for the design system and its Dieter Rams audit.
+The personal site for Lorenz “Lanz” Malabanan — a spec-sheet portfolio with a
+motion layer: live 3D models you can play with, kinetic type and two 15-second
+films. Built with **Next.js 14 (App Router)**, **React 18**, **Tailwind CSS**
+and **three.js**. See [`DESIGN.md`](DESIGN.md) for the design and motion system.
 
 ## Tech
 
@@ -10,9 +11,11 @@ See [`DESIGN.md`](DESIGN.md) for the design system and its Dieter Rams audit.
 - React 18 + TypeScript
 - Tailwind CSS (tokens in `src/app/globals.css`)
 - Newsreader, Instrument Sans, JetBrains Mono (and Kalam once) via `next/font`
-- lucide-react icons
-- Generated art (hero loop, project objects, share image) rendered with
-  Remotion from [`art/`](art/README.md) into `public/art/`
+- lucide-react icons, and a custom logo mark (`src/components/brand/`)
+- Procedural 3D models in `src/three/` (macropad, PARADA lot, Tala desk),
+  drawn live with `@react-three/fiber` and loaded lazily (`src/components/three/`)
+- Posters, films and the share image rendered from the same models with
+  Remotion in [`art/`](art/README.md) into `public/art/`
 
 ## Getting started
 
@@ -49,7 +52,8 @@ The site auto-populates projects from your public GitHub repositories
 latest GitHub release of each repo (`revalidate = 3600`).
 
 - New public repos appear as projects automatically. The site repo
-  (`lanzdev`) and the `e1ywrites` profile repo are excluded.
+  (`lanzdev`), the `e1ywrites` profile repo and `parada-landing` (linked from
+  PARADA instead) are excluded.
 - Version, release date, and download links track the latest release assets:
   - Windows: `.exe` / `.msi`
   - macOS: `.dmg` / `.app.tar.gz`
@@ -59,20 +63,25 @@ Hand-curated data in `src/data/projects.ts` (story, features, changelog,
 screenshots, featured flag) merges over the GitHub data by repo/slug, so a
 curated project keeps its rich detail while still receiving live release info.
 
-A project with a `demoUrl` gets a "View Demo" button on its project page
-(e.g. the PARADA Landing live preview at `https://parada-landing.vercel.app/#demo`).
+A project with a `demoUrl` gets a live-demo button on its project page (PARADA's
+points at its landing page, `https://parada-landing.vercel.app/`).
 
 See `ADDING_PROJECTS.md` for how to curate a project entry.
 
 ## Projects
 
-Currently curated on the site:
+Currently curated on the site, in this order:
 
-- **Tala** — a thoughtful, doodle-inspired note-taking workspace (Tauri + React),
-  with a live web preview at `https://tala-xi.vercel.app/`.
-- **PARADA Landing** — smart parking capstone marketing page, with a live
-  demo deployment. Curated in `src/data/projects.ts`, docs in `src/data/docs.ts`.
-- **Modpack Development** — a Minecraft Fabric modpack dev environment (Gradle + Java).
+1. **PARADA** — smart parking with zone-level availability from OCR-assisted gate
+   cameras (Expo, Next.js, Express, FastAPI + OpenCV/EasyOCR, PostgreSQL). Roadmap,
+   stats and docs come from [E1yWrites/parada](https://github.com/E1yWrites/parada);
+   its landing page is [E1yWrites/parada-landing](https://github.com/E1yWrites/parada-landing).
+2. **Tala** — a local-first note-taking app with handwriting (Tauri + React), with a
+   live web version at `https://tala-xi.vercel.app/`.
+
+Personal details (education, certifications, organisations) live in
+`src/data/config.ts` and are taken from the résumé — email and city only, no phone
+number or street address.
 
 ## Other pages
 

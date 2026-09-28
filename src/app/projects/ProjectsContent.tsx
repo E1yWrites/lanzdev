@@ -10,6 +10,7 @@ import { Surface } from "@/components/ui/Surface";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { siteConfig } from "@/data/config";
 import { platformSummary, projectStatus } from "@/lib/projectDisplay";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/types/project";
 
 interface ProjectsContentProps {
@@ -18,7 +19,7 @@ interface ProjectsContentProps {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-function LeadProject({ project }: { project: Project }) {
+function LeadProject({ project, index }: { project: Project; index: number }) {
   const status = projectStatus(project.status);
   const meta = [
     ["Version", project.version && `v${project.version}`],
@@ -27,10 +28,24 @@ function LeadProject({ project }: { project: Project }) {
   ].filter(([, value]) => value);
 
   return (
-    <Link href={`/projects/${project.slug}`} className="group block rounded-lg">
+    <Link href={`/projects/${project.slug}`} data-cursor="Open" className="group block rounded-lg">
       <Surface tier="elevated" className="grid overflow-hidden rounded-lg transition-colors duration-normal group-hover:border-ink/20 lg:grid-cols-12">
-        <div className="relative order-1 aspect-[16/10] overflow-hidden border-b border-ink/10 bg-ink/[0.02] lg:order-2 lg:col-span-7 lg:aspect-auto lg:min-h-[420px] lg:border-b-0 lg:border-l">
-          {project.heroImage ? (
+        <div
+          className={cn(
+            "relative order-1 aspect-[4/3] overflow-hidden border-b border-ink/10 lg:col-span-7 lg:border-b-0",
+            index % 2 ? "lg:order-1 lg:border-r" : "lg:order-2 lg:border-l",
+            project.cover ? (project.tone === "accent" ? "bg-accent" : "bg-sheet") : "bg-ink/[0.02]"
+          )}
+        >
+          {project.cover ? (
+            <Image
+              src={project.cover}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 720px, 100vw"
+              className="object-contain p-4 transition-transform duration-700 ease-out group-hover:rotate-[-1.5deg] group-hover:scale-[1.05]"
+            />
+          ) : project.heroImage ? (
             <Image
               src={project.heroImage}
               alt={`${project.name} application interface`}
@@ -43,12 +58,16 @@ function LeadProject({ project }: { project: Project }) {
               {project.name}
             </span>
           )}
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/30" />
+          {!project.cover && (
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/30" />
+          )}
         </div>
 
-        <div className="order-2 flex flex-col p-6 md:p-10 lg:order-1 lg:col-span-5">
+        <div className={cn("order-2 flex flex-col p-6 md:p-10 lg:col-span-5", index % 2 ? "lg:order-2" : "lg:order-1")}>
           <div className="mb-8 flex items-center justify-between gap-4">
-            <span className="t-label text-swiss-accent">01 — Featured</span>
+            <span className="t-label text-swiss-accent">
+              {pad(index + 1)} — {project.role ?? "Project"}
+            </span>
             <Badge variant={status.variant}>{status.label}</Badge>
           </div>
           <h2 className="font-display font-light tracking-tight text-5xl text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent md:text-6xl">
@@ -79,8 +98,9 @@ function LeadProject({ project }: { project: Project }) {
 
 export function ProjectsContent({ projects }: ProjectsContentProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const lead = projects.find((p) => p.featured) ?? projects[0];
-  const rest = projects.filter((p) => p !== lead);
+  // Curated projects with a model get the full treatment; anything else from GitHub gets a card.
+  const leads = projects.filter((p) => p.cover);
+  const rest = projects.filter((p) => !p.cover);
   const released = projects.filter((p) => p.status === "released").length;
 
   return (
@@ -98,16 +118,18 @@ export function ProjectsContent({ projects }: ProjectsContentProps) {
       />
 
       <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
-        {lead && (
-          <div className="reveal">
-            <LeadProject project={lead} />
-          </div>
-        )}
+        <div className="space-y-6">
+          {leads.map((project, i) => (
+            <div key={project.id} className="reveal">
+              <LeadProject project={project} index={i} />
+            </div>
+          ))}
+        </div>
 
         {rest.length > 0 && (
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
             {rest.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i + 1} headingLevel="h2" className="reveal" />
+              <ProjectCard key={project.id} project={project} index={leads.length + i} headingLevel="h2" className="reveal" />
             ))}
           </div>
         )}

@@ -12,6 +12,7 @@
     --sheet: 239 238 233; /* #EFEEE9 light "sheet" surfaces */
     --sheet-grey: 211 210 204; /* #D3D2CC */
     --on-sheet: 17 17 17; /* #111111 ink printed on sheets and on accent */
+    --solar: 232 184 74; /* #E8B84A Tala's gold */
 
     /* Motion */
     --duration-instant: 100ms;
@@ -245,6 +246,403 @@
   }
 }
 
+/* ─── Motion layer ─────────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Page arrival (app/template.tsx) */
+  .page-enter {
+    animation: pageEnter 700ms var(--ease-out) backwards;
+  }
+
+  /* Kinetic display type: letters rise in once on screen, and thicken near the pointer. */
+  .kinetic-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+
+  .kinetic-word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .kinetic-letter {
+    display: inline-block;
+    font-weight: var(--w, 300);
+    transform: translateY(var(--lift, 0));
+    transition:
+      font-weight 260ms var(--ease-out),
+      transform 260ms var(--ease-out);
+    animation: letterRise 1000ms var(--ease-out) backwards;
+    animation-delay: calc(var(--delay, 0ms) + var(--i, 0) * 32ms);
+  }
+
+  .js .kinetic:not([data-play]) .kinetic-letter {
+    animation-play-state: paused;
+  }
+
+  /* Hero copy that follows the headline in. */
+  .hero-fade {
+    animation: fadeRise 900ms var(--ease-out) backwards;
+  }
+
+  /* Rolling link: the label slides up and an accent copy slides in beneath it. */
+  .roll {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    line-height: 1.5;
+  }
+
+  .roll > span {
+    display: block;
+    transition: transform 420ms var(--ease-out);
+  }
+
+  .roll > span + span {
+    position: absolute;
+    inset: 0;
+    transform: translateY(100%);
+    color: rgb(var(--accent));
+  }
+
+  .group:hover .roll > span:first-child,
+  .roll:hover > span:first-child {
+    transform: translateY(-100%);
+  }
+
+  .group:hover .roll > span + span,
+  .roll:hover > span + span {
+    transform: translateY(0);
+  }
+
+  /* The logo: the star turns over on hover; on first load the L draws up and the star pops. */
+  .logo-star,
+  .logo-l {
+    transform-box: fill-box;
+  }
+
+  .logo-star {
+    transform-origin: center;
+    transition: transform 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .logo-l {
+    transform-origin: 0% 100%;
+    transition: transform 500ms var(--ease-out);
+  }
+
+  .group:hover .logo-star,
+  .logo:hover .logo-star {
+    transform: rotate(180deg) scale(1.3);
+  }
+
+  .group:hover .logo-l,
+  .logo:hover .logo-l {
+    transform: skewX(-7deg);
+  }
+
+  .logo-intro .logo-l {
+    animation: logoDraw 900ms var(--ease-out) 150ms backwards;
+  }
+
+  .logo-intro .logo-star {
+    animation: logoStar 1000ms cubic-bezier(0.34, 1.56, 0.64, 1) 550ms backwards;
+  }
+
+  /* Cursor ring (components/motion/Cursor.tsx) */
+  .cursor-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 90;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    transition: opacity 200ms linear;
+  }
+
+  .cursor-ring::before {
+    content: "";
+    position: absolute;
+    left: -16px;
+    top: -16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--ink) / 0.55);
+    transition:
+      transform 380ms var(--ease-out),
+      background-color 200ms linear,
+      border-color 200ms linear;
+  }
+
+  .cursor-ring[data-state="hover"]::before {
+    transform: scale(1.55);
+    border-color: rgb(var(--accent));
+  }
+
+  .cursor-ring[data-state="label"]::before {
+    transform: scale(3.1);
+    background: rgb(var(--accent));
+    border-color: transparent;
+  }
+
+  .cursor-ring-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgb(var(--on-sheet));
+    transition:
+      opacity 180ms linear,
+      transform 380ms var(--ease-out);
+  }
+
+  .cursor-ring[data-state="label"] .cursor-ring-label {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .magnetic {
+    transition: transform 450ms var(--ease-out);
+    will-change: transform;
+  }
+
+  /* Hero details */
+  .scroll-cue {
+    position: relative;
+    display: inline-block;
+    width: 1px;
+    height: 28px;
+    overflow: hidden;
+    background: rgb(var(--ink) / 0.2);
+  }
+
+  .scroll-cue::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--accent));
+    animation: scrollCue 1.8s var(--ease-standard) infinite;
+  }
+
+  .live-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #3ddc84;
+  }
+
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: livePing 2s var(--ease-out) infinite;
+  }
+
+  .index-row .index-arrow {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition:
+      opacity 200ms linear,
+      transform 400ms var(--ease-out);
+  }
+
+  .index-row:hover .index-arrow,
+  .index-row:focus-visible .index-arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Folders: the tab lifts as its folder is hovered. */
+  .folder-tab {
+    transition: transform 400ms var(--ease-out);
+  }
+
+  .folder:hover .folder-tab {
+    transform: translateY(-3px);
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+    transition: background-size 400ms var(--ease-out);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .play-glyph {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid currentColor;
+  }
+
+  .pause-glyph {
+    width: 8px;
+    height: 10px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+  }
+
+  /* Capability rows fill with the accent from the left. */
+  .cap-row::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 520ms var(--ease-out);
+  }
+
+  .cap-row:hover::before {
+    transform: scaleX(1);
+  }
+
+  /* About card: tilts toward the pointer, with a soft light where it points. */
+  .tilt-card {
+    position: relative;
+    transition: transform 500ms var(--ease-out);
+    transform-style: preserve-3d;
+  }
+
+  .tilt-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(600px circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.22), transparent 45%);
+    opacity: 0;
+    transition: opacity 300ms linear;
+  }
+
+  .tilt-card:hover::after {
+    opacity: 1;
+  }
+
+  .film-dialog {
+    animation: fadeIn 240ms var(--ease-out);
+  }
+
+  .menu-row {
+    animation: fadeRise 520ms var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 55ms);
+  }
+
+  .spin-slow {
+    animation: spin 9s linear infinite;
+  }
+
+  /* Roadmap track */
+  .roadmap-focus {
+    transform: scaleY(1.18);
+    box-shadow: 0 0 0 2px rgb(var(--paper)), 0 0 0 3px rgb(var(--accent));
+  }
+
+  .roadmap-active {
+    animation: roadmapPulse 1.6s var(--ease-standard) infinite;
+  }
+
+    /* About portrait: a colour lens follows the pointer over the grey photo. */
+  .portrait-lens {
+    clip-path: circle(var(--pr, 0px) at var(--px, 50%) var(--py, 50%));
+    transition: clip-path 260ms var(--ease-out);
+  }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes letterRise {
+  from {
+    transform: translateY(110%) rotate(4deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeRise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes logoDraw {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes logoStar {
+  from {
+    transform: scale(0) rotate(-180deg);
+  }
+}
+
+@keyframes scrollCue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes roadmapPulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes livePing {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -299,6 +697,39 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .kinetic-letter,
+  .hero-fade,
+  .logo-intro .logo-l,
+  .logo-intro .logo-star,
+  .scroll-cue::after,
+  .live-dot::after,
+  .roadmap-active,
+  .menu-row,
+  .spin-slow,
+  .film-dialog {
+    animation: none;
+  }
+
+  .kinetic-letter,
+  .roll > span,
+  .logo-star,
+  .logo-l,
+  .magnetic,
+  .folder-tab,
+  .cap-row::before,
+  .tilt-card {
+    transition: none;
+  }
+
+  .group:hover .logo-star,
+  .logo:hover .logo-star,
+  .group:hover .logo-l,
+  .logo:hover .logo-l,
+  .folder:hover .folder-tab {
+    transform: none;
+  }
+
   .reveal {
     opacity: 1;
     transform: none;

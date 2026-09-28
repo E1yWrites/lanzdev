@@ -11,27 +11,20 @@ export interface ProjectMeta {
 }
 
 export const projectMeta: Record<string, ProjectMeta> = {
+  parada: {
+    label: "PARADA",
+    tagline: "Smart parking with zone-level availability from OCR-assisted gate cameras.",
+    platform: "Mobile · Web · API",
+    stack: "Expo · Next.js · Express · FastAPI",
+    featured: "parada-overview",
+  },
   tala: {
     label: "TALA",
     tagline: "A local-first note-taking workspace for writing, drawing and thinking.",
-    version: "v1.0.1",
-    platform: "Windows · macOS · Web",
+    version: "v1.1.0",
+    platform: "Windows · Web",
     stack: "React · Tauri · TypeScript",
     featured: "getting-started",
-  },
-  "parada-landing": {
-    label: "PARADA",
-    tagline: "Smart parking infrastructure for automated vehicle recognition and occupancy.",
-    platform: "Web · Mobile · API",
-    stack: "React · GSAP · Vite",
-    featured: "parada-overview",
-  },
-  "modpack-development": {
-    label: "MODPACK",
-    tagline: "A modern Minecraft Fabric modpack development environment.",
-    platform: "Windows · macOS · Linux",
-    stack: "Java · Gradle · Fabric",
-    featured: "modpack-setup",
   },
 };
 
@@ -44,22 +37,20 @@ export interface DocMeta {
 }
 
 export const docMeta: Record<string, DocMeta> = {
-  "getting-started": { description: "Your first 5 minutes with Tala — download, install and create your first note.", updated: "2026-09-11" },
-  installation: { description: "Windows, macOS and verified SHA-256 downloads.", updated: "2026-09-05" },
-  features: { description: "Rich text, handwriting, organization, templates and search.", updated: "2026-09-11" },
-  "keyboard-shortcuts": { description: "Every global and editor shortcut in one place.", updated: "2026-09-08" },
-  "pen-tools": { description: "Six presets, ten ink colors and six stroke widths.", updated: "2026-09-11" },
-  exporting: { description: "JSON backup, merge import and integrity checks.", updated: "2026-09-04" },
-  troubleshooting: { description: "Common issues and the fastest fixes.", updated: "2026-09-07" },
-  faq: { description: "Licensing, accounts, storage and multi-device answers.", updated: "2026-09-06" },
-  "developer-setup": { description: "Clone, build and run Tala from source.", updated: "2026-09-07" },
-  "parada-overview": { description: "Smart parking with OCR-assisted zone detection.", updated: "2026-09-09" },
-  "parada-runtime": { description: "Component runtime, local server and file layout.", updated: "2026-09-03" },
-  "parada-animations": { description: "GSAP pipeline, scan canvas and micro-reveals.", updated: "2026-09-09" },
-  "parada-related": { description: "Repositories and companion architecture.", updated: "2026-09-02" },
-  "modpack-overview": { description: "A Fabric modpack development environment.", updated: "2026-09-10" },
-  "modpack-setup": { description: "Prerequisites and your first build.", updated: "2026-09-10" },
-  "modpack-structure": { description: "Gradle wrapper, sources and mixins layout.", updated: "2026-09-08" },
+  "parada-overview": { description: "What PARADA is, the one number it trusts, and where it stands.", updated: "2026-09-28" },
+  "parada-architecture": { description: "Monorepo layout, data flow and the realtime contract.", updated: "2026-09-28" },
+  "parada-vision": { description: "The plate pipeline and its published Phase 14 benchmark.", updated: "2026-09-28" },
+  "parada-local": { description: "Install, run every service and test against real PostgreSQL.", updated: "2026-09-28" },
+  "parada-landing": { description: "The capstone landing page and its GSAP pipeline.", updated: "2026-09-28" },
+  "getting-started": { description: "Your first five minutes with Tala — download, install and write.", updated: "2026-09-28" },
+  installation: { description: "Windows installers, Linux builds, the web app and checksums.", updated: "2026-09-28" },
+  features: { description: "Rich text, handwriting, gestures, documents and search.", updated: "2026-09-28" },
+  "keyboard-shortcuts": { description: "Global, editor and drawing shortcuts in one place.", updated: "2026-09-28" },
+  "pen-tools": { description: "The Draw popover, six presets, lasso and stylus settings.", updated: "2026-09-28" },
+  exporting: { description: "Tala .zip packages, legacy JSON backups and safe imports.", updated: "2026-09-28" },
+  troubleshooting: { description: "Common issues and the fastest fixes.", updated: "2026-09-28" },
+  faq: { description: "Licensing, accounts, storage and moving between devices.", updated: "2026-09-28" },
+  "developer-setup": { description: "Clone, build, test and package Tala from source.", updated: "2026-09-28" },
 };
 
 /** Latest `updated` across a project's docs (ISO), so it can't drift from the per-doc dates. */

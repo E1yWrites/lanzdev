@@ -26,6 +26,8 @@ const config: Config = {
         sheet: "rgb(var(--sheet) / <alpha-value>)",
         "sheet-grey": "rgb(var(--sheet-grey) / <alpha-value>)",
         "on-sheet": "rgb(var(--on-sheet) / <alpha-value>)",
+        // Tala's gold.
+        solar: "rgb(var(--solar) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Helvetica Neue", "Arial", "sans-serif"],

@@ -14,7 +14,8 @@ export const metadata = {
 export const revalidate = 3600;
 
 function fallbackReleasesFromChangelog(): Release[] {
-  const featured = curatedProjects.find((p) => p.featured);
+  // The downloadable app (Tala) — its curated changelog stands in when GitHub can't be reached.
+  const featured = curatedProjects.find((p) => p.featured && p.changelog.length > 0);
   if (!featured) return [];
   return featured.changelog.map((entry) => ({
     tagName: `v${entry.version}`,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { LogoMark } from "@/components/brand/Logo";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { COMMAND_PALETTE_EVENT } from "@/hooks/useCommandPalette";
 import { CommandPalette } from "@/components/ui/CommandPalette";
@@ -37,8 +38,16 @@ export function Navigation({ projects }: NavigationProps) {
         )}
       >
         <nav aria-label="Main" className="t-label mx-auto flex h-full max-w-7xl items-center px-5 md:px-8 lg:grid lg:grid-cols-6">
-          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} className="text-ink transition-colors duration-fast hover:text-accent">
-            Lorenz<span className="text-accent">.</span>dev
+          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} aria-label="Lorenz.dev — home" className="group inline-flex items-center gap-2.5 text-ink">
+            <LogoMark size={22} intro />
+            <span className="roll" aria-hidden="true">
+              <span>
+                Lorenz<span className="text-accent">.</span>dev
+              </span>
+              <span>
+                Lorenz<span className="text-ink">.</span>dev
+              </span>
+            </span>
           </Link>
 
           {mainNav.map((item) => {
@@ -48,13 +57,16 @@ export function Navigation({ projects }: NavigationProps) {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className="group hidden items-center gap-2 text-ink transition-colors duration-fast hover:text-accent lg:inline-flex lg:justify-self-start"
+                className="group hidden items-center gap-2 text-ink lg:inline-flex lg:justify-self-start"
               >
                 <span
                   aria-hidden="true"
-                  className={cn("h-1.5 w-1.5 transition-colors duration-fast", active ? "bg-accent" : "bg-transparent group-hover:bg-ink/30")}
+                  className={cn("h-1.5 w-1.5 transition-all duration-normal", active ? "rotate-45 bg-accent" : "bg-transparent group-hover:rotate-45 group-hover:bg-ink/40")}
                 />
-                {item.label}
+                <span className="roll">
+                  <span>{item.label}</span>
+                  <span aria-hidden="true">{item.label}</span>
+                </span>
               </Link>
             );
           })}

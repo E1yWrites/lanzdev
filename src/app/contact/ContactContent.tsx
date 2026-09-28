@@ -41,14 +41,9 @@ export function ContactContent() {
       <PageHeader
         reveal
         eyebrow="Contact"
-        title={
-          <>
-            Have a
-            <br />
-            project in mind<span className="text-swiss-accent">?</span>
-          </>
-        }
-        lede="Let's build something worth using."
+        title={["Have a", "project in mind"]}
+        accent="?"
+        lede={`Let's build something worth using. I'm also ${siteConfig.availability.toLowerCase()}.`}
       >
         <div className="flex flex-wrap gap-3">
           <ButtonLink href={`mailto:${siteConfig.email}`} variant="accent" size="lg" className="group/cta">

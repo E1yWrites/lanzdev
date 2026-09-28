@@ -29,13 +29,8 @@ export function DownloadsContent({ project, others }: DownloadsContentProps) {
       <PageHeader
         reveal
         eyebrow="Downloads"
-        title={
-          <>
-            Download
-            <br />
-            the software<span className="text-swiss-accent">.</span>
-          </>
-        }
+        title={["Download", "the software"]}
+        accent="."
         lede="The latest builds of software designed and maintained independently — straight from GitHub Releases."
       />
 
