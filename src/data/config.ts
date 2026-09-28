@@ -6,8 +6,8 @@ export const siteConfig = {
   personalName: "Lorenz Malabanan",
   fullName: "Lorenz Lanz V. Malabanan",
   alias: "Lanz",
-  domain: "lorenzmalabanan.dev",
-  url: "https://lorenzmalabanan.dev",
+  domain: "lorenzmalabanan.com",
+  url: "https://lorenzmalabanan.com",
   description:
     "Lorenz “Lanz” Malabanan — a 3rd-year IT student in Batangas building web, mobile and desktop software: PARADA, a smart parking system, and Tala, a note-taking app.",
   tagline: "Software for curious people.",

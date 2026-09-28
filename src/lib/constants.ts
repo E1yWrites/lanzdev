@@ -1,5 +1,5 @@
 export const SITE_NAME = "Lorenz.dev";
-export const SITE_URL = "https://lorenzmalabanan.dev";
+export const SITE_URL = "https://lorenzmalabanan.com";
 export const SITE_DESCRIPTION =
   "Lorenz “Lanz” Malabanan — web, mobile and desktop software from Batangas: PARADA smart parking and Tala notes.";
 
