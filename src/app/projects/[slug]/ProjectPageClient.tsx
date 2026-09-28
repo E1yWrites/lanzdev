@@ -197,7 +197,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
             </div>
           )}
           {!project.heroImage && project.cover && (
-            <div className={cn("reveal relative mt-16 overflow-hidden rounded-xl md:mt-20", project.tone === "accent" ? "bg-accent" : "bg-sheet")}>
+            <div className={cn("reveal relative mt-16 overflow-hidden rounded-xl md:mt-20", { accent: "bg-accent", solar: "bg-solar", stone: "bg-sheet-grey", sheet: "bg-sheet" }[project.tone ?? "sheet"])}>
               {project.model ? (
                 <ModelStage
                   model={project.model}
