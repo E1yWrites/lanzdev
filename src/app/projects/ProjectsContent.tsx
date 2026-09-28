@@ -1,82 +1,132 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Surface } from "@/components/ui/Surface";
+import { ProjectCard } from "@/components/project/ProjectCard";
+import { siteConfig } from "@/data/config";
+import { platformSummary, projectStatus } from "@/lib/projectDisplay";
 import type { Project } from "@/types/project";
 
 interface ProjectsContentProps {
   projects: Project[];
 }
 
-export function ProjectsContent({ projects }: ProjectsContentProps) {
-  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+const pad = (n: number) => String(n).padStart(2, "0");
+
+function LeadProject({ project }: { project: Project }) {
+  const status = projectStatus(project.status);
+  const meta = [
+    ["Version", project.version && `v${project.version}`],
+    ["Platform", platformSummary(project)],
+    ["Stack", project.technologies.slice(0, 4).join(" / ")],
+  ].filter(([, value]) => value);
 
   return (
-    <section ref={sectionRef} className="py-20">
-      <div className="max-w-7xl mx-auto px-5 md:px-8">
-        <div className="mb-12">
-          <h1 className="reveal font-swiss font-black text-6xl md:text-7xl lg:text-8xl tracking-tighter uppercase text-swiss-fg mb-4">
-            Projects
-          </h1>
-          <p className="reveal font-swiss text-base text-swiss-fg/70 leading-relaxed">
-            Software I&apos;ve designed and built.
-          </p>
+    <Link href={`/projects/${project.slug}`} className="group block rounded-lg">
+      <Surface tier="elevated" className="grid overflow-hidden rounded-lg transition-colors duration-normal group-hover:border-ink/20 lg:grid-cols-12">
+        <div className="relative order-1 aspect-[16/10] overflow-hidden border-b border-ink/10 bg-ink/[0.02] swiss-grid-pattern lg:order-2 lg:col-span-7 lg:aspect-auto lg:min-h-[420px] lg:border-b-0 lg:border-l">
+          {project.heroImage ? (
+            <Image
+              src={project.heroImage}
+              alt={`${project.name} application interface`}
+              fill
+              sizes="(min-width: 1024px) 720px, 100vw"
+              className="object-cover object-left-top transition-transform duration-slow ease-standard group-hover:scale-[1.02]"
+            />
+          ) : (
+            <span className="absolute inset-0 flex items-end p-8 font-swiss text-6xl font-black uppercase leading-none tracking-tighter text-swiss-fg/10">
+              {project.name}
+            </span>
+          )}
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/30" />
         </div>
 
-        <div className="grid gap-0 md:grid-cols-2 border-2 border-swiss-border">
-          {projects.map((project, index) => (
-            <Link key={project.id} href={`/projects/${project.slug}`} className="reveal group">
-              <Card
-                className={[
-                  "h-full p-6 md:p-7 border-0",
-                  index % 2 === 0 && !(projects.length % 2 === 1 && index === projects.length - 1) ? "md:border-r-2" : "",
-                  index < projects.length - 1 ? "border-b-2" : "",
-                  projects.length % 2 === 0 && index >= projects.length - 2 ? "md:border-b-0" : "",
-                ].join(" ")}
-              >
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <span className="font-swiss text-[11px] font-bold tracking-widest text-swiss-fg/40 group-hover:text-swiss-accent transition-colors duration-150">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <Badge variant={project.status === "released" ? "released" : project.status === "archived" ? "archived" : "in-progress"}>
-                    {project.status === "released" ? "Released" : project.status === "archived" ? "Archived" : "WIP"}
-                  </Badge>
-                </div>
+        <div className="order-2 flex flex-col p-6 md:p-10 lg:order-1 lg:col-span-5">
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <span className="font-mono text-[11px] font-bold tracking-widest text-swiss-accent">01 — Featured</span>
+            <Badge variant={status.variant}>{status.label}</Badge>
+          </div>
+          <h2 className="font-swiss text-5xl font-black uppercase tracking-tighter text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent md:text-6xl">
+            {project.name}
+          </h2>
+          <p className="mt-4 font-swiss text-lg leading-snug text-swiss-fg">{project.tagline}</p>
+          <p className="mt-3 line-clamp-3 font-swiss text-sm leading-relaxed text-swiss-fg/60">{project.description}</p>
 
-                <h2 className="font-swiss font-black text-2xl md:text-3xl tracking-tighter uppercase mb-1 group-hover:text-swiss-accent transition-colors duration-150">
-                  {project.name}
-                </h2>
-                <p className="font-swiss text-sm text-swiss-fg/70 mb-5 leading-relaxed group-hover:text-swiss-fg transition-colors duration-150">
-                  {project.tagline}
-                </p>
+          <div aria-hidden="true" className="min-h-8 flex-1" />
+          <dl className="mb-8 grid grid-cols-[5.5rem_1fr] gap-y-2 border-t border-ink/10 pt-5">
+            {meta.map(([label, value]) => (
+              <div key={label} className="contents">
+                <dt className="font-swiss text-[10px] font-bold uppercase leading-5 tracking-widest text-swiss-fg/40">{label}</dt>
+                <dd className="font-mono text-xs leading-5 text-swiss-fg">{value}</dd>
+              </div>
+            ))}
+          </dl>
 
-                <dl className="grid grid-cols-2 gap-y-2 border-t-2 border-swiss-border pt-4">
-                  <dt className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">Type</dt>
-                  <dd className="font-swiss text-xs font-medium text-swiss-fg">
-                    {project.platforms.length ? project.platforms.join(" / ") : "Source"}
-                  </dd>
-                  <dt className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">Year</dt>
-                  <dd className="font-swiss text-xs font-medium text-swiss-fg">
-                    {project.releaseDate ? new Date(project.releaseDate).getFullYear() : "—"}
-                  </dd>
-                </dl>
-
-                <span className="inline-block mt-4 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50 group-hover:text-swiss-accent transition-colors duration-150">
-                  Take a look →
-                </span>
-              </Card>
-            </Link>
-          ))}
-        </div>
-
-        <div className="reveal mt-14 text-center">
-          <span className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/40">
-            More software in development
+          <span className="inline-flex items-center gap-2 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
+            Open project
+            <ArrowRight size={12} strokeWidth={2.5} aria-hidden="true" className="transition-transform duration-fast group-hover:translate-x-1" />
           </span>
         </div>
-      </div>
-    </section>
+      </Surface>
+    </Link>
+  );
+}
+
+export function ProjectsContent({ projects }: ProjectsContentProps) {
+  const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const lead = projects.find((p) => p.featured) ?? projects[0];
+  const rest = projects.filter((p) => p !== lead);
+  const released = projects.filter((p) => p.status === "released").length;
+
+  return (
+    <div ref={sectionRef}>
+      <PageHeader
+        reveal
+        eyebrow="Index / Projects"
+        title="Projects"
+        lede="Software I've designed and built — shipped apps, work in progress and the experiments along the way."
+        stats={[
+          ["Projects", pad(projects.length)],
+          ["Released", pad(released)],
+          ["Synced from", "GitHub"],
+        ]}
+      />
+
+      <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
+        {lead && (
+          <div className="reveal">
+            <LeadProject project={lead} />
+          </div>
+        )}
+
+        {rest.length > 0 && (
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {rest.map((project, i) => (
+              <ProjectCard key={project.id} project={project} index={i + 1} headingLevel="h2" className="reveal" />
+            ))}
+          </div>
+        )}
+
+        <div className="reveal mt-14 flex flex-col items-start justify-between gap-4 border-t border-ink/10 pt-8 sm:flex-row sm:items-center">
+          <span className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/40">
+            More software in development
+          </span>
+          <a
+            href={siteConfig.github.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
+          >
+            All repositories on GitHub
+            <ArrowUpRight size={12} strokeWidth={2.5} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+    </div>
   );
 }

@@ -64,17 +64,17 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Command palette"
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-swiss-fg/20"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 pt-[20vh] backdrop-blur-sm"
       onClick={close}
     >
       <div
         className={cn(
-          "w-full max-w-lg border-2 border-swiss-border bg-swiss-bg overflow-hidden",
+          "surface-glass w-full max-w-lg animate-slide-up overflow-hidden rounded-lg",
           className
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 px-4 h-14 border-b-2 border-swiss-border">
+        <div className="flex items-center gap-3 px-4 h-14 border-b border-ink/10">
           <svg width="14" height="14" viewBox="0 0 14 14" className="text-swiss-fg/50 shrink-0">
             <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
             <path d="M10 10l3 3" stroke="currentColor" strokeWidth="2" />
@@ -86,9 +86,9 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="TYPE A COMMAND..."
-            className="flex-1 bg-transparent font-swiss text-sm font-bold tracking-widest uppercase outline-none text-swiss-fg placeholder:text-swiss-fg/30"
+            className="flex-1 bg-transparent font-swiss text-sm font-bold tracking-widest uppercase outline-none focus-visible:outline-none text-swiss-fg placeholder:text-swiss-fg/30"
           />
-          <kbd className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/50 border border-swiss-border px-2 py-1">
+          <kbd className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/50 border border-ink/15 rounded px-2 py-1">
             ESC
           </kbd>
         </div>
@@ -106,18 +106,18 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
                   <li key={cmd.label} className="px-1">
                     <button
                       className={cn(
-                        "w-full flex items-center gap-3 px-4 h-12 text-left",
+                        "w-full flex items-center gap-3 px-4 h-12 text-left rounded-md",
                         "font-swiss text-sm font-bold tracking-widest uppercase transition-all duration-100",
                         i === selectedIndex
-                          ? "bg-swiss-accent text-swiss-bg"
-                          : "text-swiss-fg hover:bg-swiss-muted"
+                          ? "bg-ink/[0.08] text-swiss-fg"
+                          : "text-swiss-fg/70 hover:bg-ink/[0.04] hover:text-swiss-fg"
                       )}
                       onClick={() => {
                         cmd.action();
                         close();
                       }}
                     >
-                      <Icon size={16} strokeWidth={2} className={cn("shrink-0", i === selectedIndex ? "text-swiss-bg" : "text-swiss-fg/50")} />
+                      <Icon size={16} strokeWidth={2} className={cn("shrink-0", i === selectedIndex ? "text-swiss-accent" : "text-swiss-fg/40")} />
                       {cmd.label}
                     </button>
                   </li>
@@ -127,17 +127,17 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
           )}
         </div>
 
-        <div className="flex items-center gap-4 px-4 h-10 border-t-2 border-swiss-border bg-swiss-muted">
+        <div className="flex items-center gap-4 px-4 h-10 border-t border-ink/10">
           <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/50">
-            <kbd className="border border-swiss-border px-1.5 py-0.5 mr-1">↑↓</kbd>
+            <kbd className="border border-ink/15 rounded px-1.5 py-0.5 mr-1">↑↓</kbd>
             NAVIGATE
           </span>
           <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/50">
-            <kbd className="border border-swiss-border px-1.5 py-0.5 mr-1">↵</kbd>
+            <kbd className="border border-ink/15 rounded px-1.5 py-0.5 mr-1">↵</kbd>
             SELECT
           </span>
           <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/50">
-            <kbd className="border border-swiss-border px-1.5 py-0.5 mr-1">ESC</kbd>
+            <kbd className="border border-ink/15 rounded px-1.5 py-0.5 mr-1">ESC</kbd>
             CLOSE
           </span>
         </div>

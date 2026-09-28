@@ -1,5 +1,5 @@
 import { DownloadsContent } from "./DownloadsContent";
-import { getFeaturedProject } from "@/lib/githubProjects";
+import { getAllProjects, getFeaturedProject } from "@/lib/githubProjects";
 import { notFound } from "next/navigation";
 
 export const metadata = {
@@ -8,7 +8,8 @@ export const metadata = {
 };
 
 export default async function DownloadsPage() {
-  const project = await getFeaturedProject();
+  const [project, all] = await Promise.all([getFeaturedProject(), getAllProjects()]);
   if (!project) notFound();
-  return <DownloadsContent project={project} />;
+  const others = all.filter((p) => p.slug !== project.slug);
+  return <DownloadsContent project={project} others={others} />;
 }

@@ -1,128 +1,120 @@
 "use client";
 
-import { DownloadButton } from "@/components/ui/DownloadButton";
-import { Hairline } from "@/components/ui/Hairline";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import { Badge } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Surface } from "@/components/ui/Surface";
+import { PlatformDownloads } from "@/components/project/PlatformDownloads";
+import { platformSummary, projectStatus } from "@/lib/projectDisplay";
+import { formatDate } from "@/lib/utils";
 import type { Project } from "@/types/project";
-
-const PLATFORM_CARDS = [
-  {
-    key: "windows" as const,
-    label: "Windows",
-    details: ["Windows 10 / 11", "x64"],
-  },
-  {
-    key: "macos" as const,
-    label: "macOS",
-    details: ["Apple Silicon", "ARM64"],
-  },
-  {
-    key: "linux" as const,
-    label: "Linux",
-    details: ["x86_64", "AppImage / DEB / RPM"],
-  },
-];
 
 interface DownloadsContentProps {
   project: Project;
+  others: Project[];
 }
 
-export function DownloadsContent({ project }: DownloadsContentProps) {
+const linkClass =
+  "inline-flex items-center gap-1.5 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent";
+
+export function DownloadsContent({ project, others }: DownloadsContentProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
+  const status = projectStatus(project.status);
 
   return (
-    <section ref={sectionRef} className="py-20">
-      <div className="max-w-7xl mx-auto px-5 md:px-8">
-        <div className="mb-10">
-          <h1 className="reveal font-swiss font-black text-6xl md:text-7xl lg:text-8xl tracking-tighter uppercase text-swiss-fg mb-3">
+    <div ref={sectionRef}>
+      <PageHeader
+        reveal
+        eyebrow="Downloads"
+        title={
+          <>
             Download
             <br />
             the software<span className="text-swiss-accent">.</span>
-          </h1>
-          <p className="reveal font-swiss text-base text-swiss-fg/70 max-w-md mt-4 leading-relaxed">
-            Download the latest builds of software designed and maintained
-            independently.
-          </p>
-        </div>
+          </>
+        }
+        lede="The latest builds of software designed and maintained independently — straight from GitHub Releases."
+      />
 
-        <div className="reveal">
-          <div className="border-2 border-swiss-border">
-            <div className="p-6 md:p-8 border-b-2 border-swiss-border bg-swiss-muted">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <h2 className="font-swiss font-black text-3xl tracking-tighter uppercase text-swiss-fg">{project.name}</h2>
-                  <Badge variant={project.status === "released" ? "released" : "in-progress"}>
-                    {project.status === "released" ? "Released" : "Coming soon"}
-                  </Badge>
+      <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
+        <Surface tier="solid" className="reveal overflow-hidden rounded-lg">
+          <div className="flex flex-col gap-6 border-b border-ink/10 p-6 md:flex-row md:items-center md:justify-between md:p-8">
+            <div className="flex items-center gap-5">
+              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-swiss-fg shadow-[0_12px_30px_-12px_rgb(var(--glow)/0.5)]">
+                {project.icon ? (
+                  <Image src={project.icon} alt="" fill sizes="64px" className="object-contain p-1.5" />
+                ) : (
+                  <span aria-hidden="true" className="font-swiss text-3xl font-black uppercase text-swiss-bg">
+                    {project.name.charAt(0)}
+                  </span>
+                )}
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h2 className="font-swiss text-3xl font-black uppercase tracking-tighter text-swiss-fg">{project.name}</h2>
+                  <Badge variant={status.variant}>{status.label}</Badge>
                 </div>
-                <p className="font-swiss text-sm text-swiss-fg/70 max-w-md leading-relaxed">
-                  {project.description}
+                <p className="mt-1.5 font-mono text-xs text-swiss-fg/50">
+                  {[project.version && `v${project.version}`, project.releaseDate && formatDate(project.releaseDate), project.license]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </p>
               </div>
             </div>
+            <p className="max-w-md font-swiss text-sm leading-relaxed text-swiss-fg/70">{project.description}</p>
+          </div>
 
-            <div className="p-6 md:p-8">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border-2 border-swiss-border">
-                {PLATFORM_CARDS.map((platform, i) => {
-                  const dl = project.downloads[platform.key];
-                  return (
-                    <div
-                      key={platform.key}
-                      className={`p-5 ${i < PLATFORM_CARDS.length - 1 ? "border-b-2 sm:border-b-0 sm:border-r-2 border-swiss-border" : ""} ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
-                    >
-                      <span className="font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg block mb-2">
-                        {platform.label}
-                      </span>
-                      {platform.details.map((d) => (
-                        <span key={d} className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 block">
-                          {d}
-                        </span>
-                      ))}
-                      <div className="mt-4">
-                        {dl?.available ? (
-                          <>
-                            <DownloadButton
-                              url={dl.url}
-                              platform={platform.label}
-                              className="w-full"
-                            />
-                            <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 mt-2 block">
-                              {dl.fileSize}
-                            </span>
-                          </>
-                        ) : (
-                          <DownloadButton state="coming-soon" className="w-full" />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+          <div className="p-6 md:p-8">
+            <PlatformDownloads project={project} />
 
-              <Hairline className="my-6" />
-
-              <div className="flex flex-wrap gap-x-8 gap-y-2">
-                {[
-                  { href: "/releases", label: "Release notes" },
-                  { href: project.githubUrl, label: "Source code", external: true },
-                  { href: project.documentationUrl || "/docs", label: "Documentation" },
-                ].map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noopener noreferrer" : undefined}
-                    className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50 hover:text-swiss-accent transition-colors duration-150"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-ink/10 pt-6">
+              <Link href="/releases" className={linkClass}>
+                Release notes
+                <ArrowRight size={12} strokeWidth={2.5} aria-hidden="true" />
+              </Link>
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                Source code
+                <ArrowUpRight size={12} strokeWidth={2.5} aria-hidden="true" />
+              </a>
+              <Link href={project.documentationUrl || "/docs"} className={linkClass}>
+                Documentation
+                <ArrowRight size={12} strokeWidth={2.5} aria-hidden="true" />
+              </Link>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </Surface>
+
+        {others.length > 0 && (
+          <div className="reveal mt-16 md:mt-20">
+            <div className="mb-6 flex items-center gap-4">
+              <span className="section-number">Also available</span>
+              <span aria-hidden="true" className="h-px flex-1 bg-ink/10" />
+            </div>
+            <ul className="divide-y divide-ink/10 border-y border-ink/10">
+              {others.map((p) => (
+                <li key={p.id}>
+                  <Link
+                    href={`/projects/${p.slug}`}
+                    className="group grid gap-1 py-5 sm:grid-cols-12 sm:items-center sm:gap-6"
+                  >
+                    <span className="font-swiss text-lg font-black uppercase tracking-tighter text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent sm:col-span-4">
+                      {p.name}
+                    </span>
+                    <span className="font-swiss text-sm text-swiss-fg/60 sm:col-span-5">{p.tagline}</span>
+                    <span className="flex items-center justify-between gap-4 font-mono text-[11px] text-swiss-fg/40 sm:col-span-3">
+                      {platformSummary(p)}
+                      <ArrowRight size={14} strokeWidth={2} aria-hidden="true" className="transition-transform duration-fast group-hover:translate-x-1 group-hover:text-swiss-accent" />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

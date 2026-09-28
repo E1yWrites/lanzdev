@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { forwardRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes } from "react";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "accent";
 type ButtonSize = "sm" | "md" | "lg";
@@ -26,20 +27,29 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "h-16 px-8 text-sm",
 };
 
+/** Class list shared by <Button> and <ButtonLink> so links never wrap a <button>. */
+export function buttonStyles({
+  variant = "secondary",
+  size = "md",
+  className,
+}: { variant?: ButtonVariant; size?: ButtonSize; className?: string } = {}) {
+  return cn(
+    "tactile inline-flex items-center justify-center gap-2",
+    "font-swiss font-bold tracking-widest uppercase",
+    "transition-all duration-fast ease-standard",
+    "disabled:opacity-30 disabled:pointer-events-none",
+    variantStyles[variant],
+    sizeStyles[size],
+    className
+  );
+}
+
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "secondary", size = "md", children, ...props }, ref) => {
     return (
       <button
         ref={ref}
-        className={cn(
-          "tactile inline-flex items-center justify-center gap-2",
-          "font-swiss font-bold tracking-widest uppercase",
-          "transition-all duration-fast ease-standard",
-          "disabled:opacity-30 disabled:pointer-events-none",
-          variantStyles[variant],
-          sizeStyles[size],
-          className
-        )}
+        className={buttonStyles({ variant, size, className })}
         {...props}
       >
         {children}
@@ -50,4 +60,27 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = "Button";
 
-export { Button, type ButtonProps, type ButtonVariant };
+interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  /** Opens in a new tab with rel="noopener noreferrer". */
+  external?: boolean;
+}
+
+/** A link styled as a button — one focus stop, valid HTML. */
+function ButtonLink({ href, variant = "secondary", size = "md", external, className, children, ...props }: ButtonLinkProps) {
+  return (
+    <Link
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className={buttonStyles({ variant, size, className })}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
+}
+
+export { Button, ButtonLink, type ButtonProps, type ButtonVariant };

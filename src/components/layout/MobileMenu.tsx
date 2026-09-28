@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { ProjectDropdown } from "./ProjectDropdown";
+import { ButtonLink } from "@/components/ui/Button";
 import type { ProjectSummary } from "@/lib/githubProjects";
 
 interface MobileMenuProps {
@@ -32,7 +33,7 @@ export function MobileMenu({ isOpen, onClose, projects }: MobileMenuProps) {
   return (
     <div className="fixed inset-0 z-30 lg:hidden">
       <div
-        className="absolute inset-0 bg-swiss-fg/20"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
       <div
@@ -68,12 +69,9 @@ export function MobileMenu({ isOpen, onClose, projects }: MobileMenuProps) {
             >
               GitHub
             </Link>
-            <Link
-              href="/downloads"
-              className="inline-flex items-center justify-center h-12 px-6 font-swiss text-xs font-bold tracking-widest uppercase bg-swiss-fg text-swiss-bg border-2 border-swiss-border hover:bg-swiss-accent hover:border-swiss-accent transition-all duration-150"
-            >
+            <ButtonLink href="/downloads" variant="primary" className="text-xs">
               Download
-            </Link>
+            </ButtonLink>
           </div>
         </div>
       </div>

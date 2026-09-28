@@ -50,6 +50,8 @@ export interface Project {
   platforms: Platform[];
   technologies: string[];
   license: string;
+  /** Square app icon, shown on a light tile (downloads panel). */
+  icon?: string;
   heroImage?: string;
   screenshots: ProjectScreenshot[];
   features: ProjectFeature[];

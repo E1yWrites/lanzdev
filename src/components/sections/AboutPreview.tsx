@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Surface } from "@/components/ui/Surface";
 import { siteConfig } from "@/data/config";
@@ -50,9 +49,7 @@ export function AboutPreview() {
               )}
             </ul>
 
-            <Link href="/about" className="inline-block">
-              <Button variant="secondary">More about me</Button>
-            </Link>
+            <ButtonLink href="/about" variant="secondary">More about me</ButtonLink>
           </Surface>
 
           {/* Right — Details */}

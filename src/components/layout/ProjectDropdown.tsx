@@ -23,10 +23,11 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
 
   const isProjectsActive = pathname === "/projects" || pathname.startsWith("/projects/");
 
-  const close = useCallback(() => {
+  // Only an explicit dismissal (Escape, picking an item) hands focus back to the trigger.
+  const close = useCallback((restoreFocus = true) => {
     setIsOpen(false);
     setActiveIndex(-1);
-    triggerRef.current?.focus();
+    if (restoreFocus) triggerRef.current?.focus();
   }, []);
 
   const open = useCallback(() => {
@@ -47,16 +48,17 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
         menuRef.current && !menuRef.current.contains(e.target as Node) &&
         triggerRef.current && !triggerRef.current.contains(e.target as Node)
       ) {
-        close();
+        close(false);
       }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [isOpen, close, mobile]);
 
-  // Close on route change
+  // Close on route change — without focusing the trigger, which would pull
+  // keyboard focus into the nav on every page load.
   useEffect(() => {
-    close();
+    close(false);
   }, [pathname, close]);
 
   // Keyboard navigation
@@ -228,10 +230,10 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
                   "flex items-start gap-3 px-4 py-3 transition-all duration-100",
                   "group",
                   activeIndex === i
-                    ? "bg-swiss-fg text-swiss-bg"
+                    ? "bg-ink/[0.08] text-swiss-fg"
                     : pathname === `/projects/${project.slug}`
-                      ? "bg-swiss-muted text-swiss-fg"
-                      : "text-swiss-fg hover:bg-swiss-muted"
+                      ? "bg-ink/[0.04] text-swiss-fg"
+                      : "text-swiss-fg hover:bg-ink/[0.04]"
                 )}
               >
                 <span className={cn(
@@ -246,7 +248,7 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
                   </span>
                   <span className={cn(
                     "font-swiss text-[11px] font-medium block mt-0.5",
-                    activeIndex === i ? "text-swiss-bg/70" : "text-swiss-fg/50"
+                    "text-swiss-fg/50"
                   )}>
                     {project.tagline}
                   </span>
@@ -256,7 +258,7 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
                         key={tech}
                         className={cn(
                           "font-swiss text-[9px] font-bold tracking-widest uppercase",
-                          activeIndex === i ? "text-swiss-bg/50" : "text-swiss-fg/30"
+                          "text-swiss-fg/30"
                         )}
                       >
                         {tech}
@@ -274,7 +276,7 @@ export function ProjectDropdown({ projects, mobile = false, onItemSelect }: Proj
             <Link
               href="/projects"
               className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 hover:text-swiss-accent transition-colors duration-150"
-              onClick={close}
+              onClick={() => close(false)}
             >
               View all projects →
             </Link>

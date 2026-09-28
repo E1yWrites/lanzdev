@@ -2,27 +2,9 @@
 
 import Link from "next/link";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { DownloadButton } from "@/components/ui/DownloadButton";
+import { PlatformDownloads } from "@/components/project/PlatformDownloads";
 import { useReveal } from "@/hooks/useReveal";
 import type { Project } from "@/types/project";
-
-const PLATFORMS = [
-  {
-    key: "windows" as const,
-    label: "Windows",
-    detail: "Windows 10 / 11 · x64",
-  },
-  {
-    key: "macos" as const,
-    label: "macOS",
-    detail: "Apple Silicon · ARM64",
-  },
-  {
-    key: "linux" as const,
-    label: "Linux",
-    detail: "x86_64",
-  },
-];
 
 interface DownloadSectionProps {
   project: Project;
@@ -66,29 +48,7 @@ export function DownloadSection({ project }: DownloadSectionProps) {
           </div>
 
           <div className="p-6 md:p-8">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {PLATFORMS.map((platform) => {
-                const dl = project.downloads[platform.key];
-                return (
-                  <div
-                    key={platform.key}
-                    className="surface-subtle rounded-md p-5"
-                  >
-                    <span className="font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg block mb-1">
-                      {platform.label}
-                    </span>
-                    <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40 block mb-4">
-                      {dl?.available ? platform.detail : `${platform.detail} — coming soon`}
-                    </span>
-                    <DownloadButton
-                      url={dl?.available ? dl.url : undefined}
-                      state={dl?.available ? "available" : "coming-soon"}
-                      label="Download"
-                    />
-                  </div>
-                );
-              })}
-            </div>
+            <PlatformDownloads project={project} />
 
             <div className="flex flex-wrap gap-x-8 gap-y-2 mt-6 pt-5 border-t border-ink/10">
               {[

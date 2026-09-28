@@ -1,7 +1,10 @@
+import { Download } from "lucide-react";
 import { fetchReleases } from "@/lib/github";
 import { projects as curatedProjects } from "@/data/projects";
-import type { Release } from "@/types/release";
-import { formatDate, formatFileSize } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { ReleaseNotes, TimelineEntry } from "@/components/project/ReleaseNotes";
+import type { Release, ReleaseAsset } from "@/types/release";
+import { formatDate, formatFileSize, slugToTitle } from "@/lib/utils";
 
 export const metadata = {
   title: "Releases",
@@ -19,6 +22,7 @@ function fallbackReleasesFromChangelog(): Release[] {
     publishedAt: entry.date,
     body: [
       entry.added?.length ? `Added:\n${entry.added.map((a) => `- ${a}`).join("\n")}` : "",
+      entry.changed?.length ? `Changed:\n${entry.changed.map((c) => `- ${c}`).join("\n")}` : "",
       entry.fixed?.length ? `Fixed:\n${entry.fixed.map((f) => `- ${f}`).join("\n")}` : "",
     ]
       .filter(Boolean)
@@ -26,6 +30,44 @@ function fallbackReleasesFromChangelog(): Release[] {
     prerelease: false,
     assets: [],
   }));
+}
+
+function assetPlatform(name: string) {
+  const n = name.toLowerCase();
+  if (/\.(exe|msi)$/.test(n)) return "Windows";
+  if (/\.(dmg|app\.tar\.gz|app\.zip)$/.test(n)) return "macOS";
+  if (/\.(appimage|deb|rpm)$/.test(n)) return "Linux";
+  if (/\.(sig|sha256|txt|json)$/.test(n)) return "Checksum";
+  return "Asset";
+}
+
+function AssetList({ assets }: { assets: ReleaseAsset[] }) {
+  return (
+    <div className="mt-8 max-w-2xl">
+      <h4 className="mb-3 font-swiss text-[10px] font-bold uppercase leading-normal tracking-widest text-swiss-fg/40">
+        Assets · {assets.length}
+      </h4>
+      <ul className="divide-y divide-ink/10 overflow-hidden rounded-md border border-ink/10">
+        {assets.map((asset) => (
+          <li key={asset.name}>
+            <a
+              href={asset.downloadUrl}
+              className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 px-4 py-3 transition-colors duration-fast hover:bg-ink/[0.04]"
+            >
+              <span className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">
+                {assetPlatform(asset.name)}
+              </span>
+              <span className="min-w-0 truncate font-mono text-xs text-swiss-fg/80 group-hover:text-swiss-fg">{asset.name}</span>
+              <span className="flex items-center gap-3 font-mono text-[11px] text-swiss-fg/40">
+                {formatFileSize(asset.size)}
+                <Download size={14} strokeWidth={2} aria-hidden="true" className="transition-colors duration-fast group-hover:text-swiss-accent" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export default async function ReleasesPage({
@@ -39,79 +81,60 @@ export default async function ReleasesPage({
     releases = fallbackReleasesFromChangelog();
   }
 
-  return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-5 md:px-8">
-        <div className="mb-16">
-          <h1 className="font-swiss font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tighter uppercase text-swiss-fg mb-4">
-            Releases
-          </h1>
-          <p className="font-swiss text-base text-swiss-fg/70 leading-relaxed">
-            Release history and changelog for {projectSlug ? `${projectSlug}` : "Tala"}.
-          </p>
-        </div>
+  const projectName = projectSlug
+    ? curatedProjects.find((p) => p.slug === projectSlug)?.name ?? slugToTitle(projectSlug)
+    : "Tala";
+  const latestIndex = releases.findIndex((r) => !r.prerelease);
 
+  return (
+    <>
+      <PageHeader
+        eyebrow={`Releases / ${projectName}`}
+        title="Releases"
+        lede={`Release history and changelog for ${projectName}.`}
+        stats={[
+          ["Latest", releases[latestIndex]?.tagName],
+          ["Releases", releases.length ? String(releases.length).padStart(2, "0") : undefined],
+          ["Published", releases[0] && formatDate(releases[0].publishedAt)],
+        ]}
+      />
+
+      <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
         {releases.length === 0 ? (
-          <div className="border-2 border-swiss-border p-10 text-center">
-            <span className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/40">
+          <div className="rounded-lg border border-dashed border-ink/15 p-10 text-center">
+            <span className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/40">
               No releases published yet.
             </span>
           </div>
         ) : (
-          <div className="space-y-0 border-2 border-swiss-border">
-            {releases.map((release, i) => (
-              <div
+          releases.map((release, i) => {
+            const latest = i === latestIndex;
+            const tags = [latest && "Latest", release.prerelease && "Pre-release"].filter(Boolean) as string[];
+            // "Tala v1.0.1" only repeats the rail; keep titles that say something more.
+            const title =
+              release.name && !release.name.toLowerCase().endsWith(release.tagName.toLowerCase()) ? release.name : undefined;
+            return (
+              <TimelineEntry
                 key={release.tagName}
-                className={`border-b-2 border-swiss-border py-10 last:border-0 px-6 ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
+                version={release.tagName}
+                date={formatDate(release.publishedAt)}
+                latest={latest}
+                tags={tags}
               >
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span className={`font-swiss font-black text-lg tracking-tighter uppercase text-swiss-fg px-3 py-1 border-2 border-swiss-border ${i === 0 ? "bg-swiss-accent text-swiss-bg border-swiss-accent" : ""}`}>
-                    {release.name || release.tagName}
-                  </span>
-                  <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
-                    {formatDate(release.publishedAt)}
-                  </span>
-                  {i === 0 && !release.prerelease && (
-                    <span className="section-number">Current</span>
-                  )}
-                  {release.prerelease && (
-                    <span className="section-number">
-                      Pre-release
-                    </span>
-                  )}
-                </div>
-
-                {release.body && (
-                  <p className="font-swiss text-base text-swiss-fg/70 mb-6 max-w-2xl leading-relaxed">
-                    {release.body}
-                  </p>
+                {title && (
+                  <p className="mb-6 font-swiss text-xl font-black uppercase tracking-tighter text-swiss-fg md:text-2xl">{title}</p>
                 )}
-
-                {release.assets.length > 0 && (
-                  <div className="space-y-2">
-                    {release.assets.map((asset) => (
-                      <div
-                        key={asset.name}
-                        className="flex flex-wrap items-center gap-3 py-2 border-b border-swiss-border/50 last:border-0"
-                      >
-                        <a
-                          href={asset.downloadUrl}
-                          className="font-swiss text-sm font-medium text-swiss-fg/70 hover:text-swiss-accent break-all transition-colors duration-150"
-                        >
-                          {asset.name}
-                        </a>
-                        <span className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
-                          {formatFileSize(asset.size)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                {release.body ? (
+                  <ReleaseNotes body={release.body} />
+                ) : (
+                  <p className="font-swiss text-sm text-swiss-fg/50">No notes for this release.</p>
                 )}
-              </div>
-            ))}
-          </div>
+                {release.assets.length > 0 && <AssetList assets={release.assets} />}
+              </TimelineEntry>
+            );
+          })
         )}
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

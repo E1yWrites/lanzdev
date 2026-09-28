@@ -23,7 +23,17 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function ProjectPage({ params }: Props) {
-  const project = await getProjectBySlug(params.slug);
-  if (!project) notFound();
-  return <ProjectPageClient project={project} />;
+  const projects = await getAllProjects();
+  const index = projects.findIndex((p) => p.slug === params.slug);
+  if (index === -1) notFound();
+
+  const project = projects[index];
+  const next = projects.length > 1 ? projects[(index + 1) % projects.length] : undefined;
+
+  return (
+    <ProjectPageClient
+      project={project}
+      next={next && { slug: next.slug, name: next.name, tagline: next.tagline }}
+    />
+  );
 }

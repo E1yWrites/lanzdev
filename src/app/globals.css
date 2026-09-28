@@ -171,6 +171,13 @@
     );
   }
 
+  /* Interior page header — the same key light, pushed into the top-left corner */
+  .page-glow {
+    background:
+      radial-gradient(ellipse 55% 70% at 12% 0%, rgb(var(--glow) / 0.13), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 95% 10%, rgb(var(--ink) / 0.035), transparent 70%);
+  }
+
   /* Pointer-reactive highlight — glass surfaces only, updated via onPointerMove writing --pointer-x/y */
   .glass-interactive {
     position: relative;

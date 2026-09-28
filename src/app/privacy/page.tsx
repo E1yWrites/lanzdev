@@ -1,9 +1,11 @@
+import { LegalPage, type LegalSection } from "@/components/legal/LegalPage";
+
 export const metadata = {
   title: "Privacy Policy",
   description: "Privacy policy for Lorenz.dev.",
 };
 
-const SECTIONS = [
+const SECTIONS: LegalSection[] = [
   {
     title: "Overview",
     body: (
@@ -28,9 +30,9 @@ const SECTIONS = [
     title: "Cookies",
     body: (
       <>
-        This website uses localStorage to persist your theme preference.
-        This data remains on your device and is not transmitted to any
-        server. No tracking cookies are used.
+        The documentation search uses localStorage to remember your recent
+        searches. This data remains on your device and is not transmitted to
+        any server. No tracking cookies are used.
       </>
     ),
   },
@@ -79,46 +81,13 @@ const SECTIONS = [
 
 export default function PrivacyPage() {
   return (
-    <section className="py-20">
-      <div className="max-w-3xl mx-auto px-5 md:px-8">
-        <h1 className="font-swiss font-black text-5xl md:text-6xl tracking-tighter uppercase text-swiss-fg mb-4">
-          Privacy Policy
-        </h1>
-        <p className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/40 mb-12">
-          Last updated: August 2026
-        </p>
-
-        <div className="space-y-0 border-2 border-swiss-border">
-          {SECTIONS.map((section, i) => (
-            <section
-              key={section.title}
-              className={`py-6 px-6 border-b-2 border-swiss-border last:border-0 ${i % 2 === 0 ? "bg-swiss-bg" : "bg-swiss-muted"}`}
-            >
-              <h2 className="font-swiss font-black text-xl md:text-2xl tracking-tighter uppercase text-swiss-fg mb-3">
-                {section.title}
-              </h2>
-              <p className="font-swiss text-sm text-swiss-fg/70 leading-relaxed">
-                {section.body}
-              </p>
-            </section>
-          ))}
-
-          <section className="py-6 px-6 border-b-2 border-swiss-border bg-swiss-accent text-swiss-bg">
-            <h2 className="font-swiss font-black text-xl md:text-2xl tracking-tighter uppercase text-swiss-bg mb-3">
-              Contact
-            </h2>
-            <p className="font-swiss text-sm text-swiss-bg/80 leading-relaxed">
-              For privacy-related questions, contact:{" "}
-              <a
-                href="mailto:lorenzlanz28@gmail.com"
-                className="text-swiss-bg font-bold underline underline-offset-4 decoration-swiss-bg hover:text-swiss-fg transition-colors duration-150 break-all"
-              >
-                lorenzlanz28@gmail.com
-              </a>
-            </p>
-          </section>
-        </div>
-      </div>
-    </section>
+    <LegalPage
+      title="Privacy Policy"
+      href="/privacy"
+      lede="What this website does — and does not do — with your data."
+      updated="September 2026"
+      sections={SECTIONS}
+      contactTopic="privacy"
+    />
   );
 }
