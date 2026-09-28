@@ -20,14 +20,14 @@ export function BrowserPreview({
   return (
     <div
       className={cn(
-        "surface-elevated overflow-hidden rounded-lg shadow-[0_40px_120px_-40px_rgb(0_0_0/0.9)]",
+        "surface-elevated overflow-hidden rounded-lg",
         className
       )}
     >
       {/* Window chrome */}
       <div className="flex h-11 items-center gap-4 border-b border-ink/10 px-4">
         <div aria-hidden="true" className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-accent" />
+          <span className="h-2.5 w-2.5 rounded-full bg-ink/20" />
           <span className="h-2.5 w-2.5 rounded-full bg-ink/20" />
           <span className="h-2.5 w-2.5 rounded-full bg-ink/10" />
         </div>

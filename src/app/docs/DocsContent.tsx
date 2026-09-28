@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { allDocSections, docsByProject } from "@/data/docs";
@@ -9,7 +8,6 @@ import { DocsSearch } from "@/components/docs/DocsSearch";
 import { Badge } from "@/components/ui/Badge";
 import { Surface } from "@/components/ui/Surface";
 import { useReveal } from "@/hooks/useReveal";
-import { asset } from "@/lib/constants";
 
 const recentlyUpdated = Object.entries(docsByProject)
   .flatMap(([project, docs]) =>
@@ -30,26 +28,11 @@ export function DocsContent() {
 
   return (
     <div ref={sectionRef}>
-      {/* Hero — generated cinematic art, same treatment as the homepage hero */}
-      <section className="relative overflow-hidden border-b border-ink/10 bg-swiss-bg">
-        <div className="absolute inset-0 z-0 animate-drift">
-          <Image
-            src={asset("/images/docs-hero-cinematic.webp")}
-            alt="An open notebook glowing in a dark studio, its pages sketched with the Tala interface"
-            fill
-            priority
-            sizes="(min-width: 1280px) 1040px, 100vw"
-            className="object-cover object-[72%_center] opacity-80"
-          />
-        </div>
-        <div aria-hidden="true" className="surface-glow absolute inset-0 z-[1]" />
-        <div aria-hidden="true" className="absolute inset-0 z-[1] bg-gradient-to-t from-swiss-bg via-swiss-bg/30 to-transparent" />
-        <div aria-hidden="true" className="absolute inset-0 z-[1] bg-gradient-to-r from-swiss-bg from-0% via-swiss-bg/90 via-40% to-transparent to-85% lg:via-45% lg:to-80%" />
-
-        <div className="relative z-[2] px-5 py-16 md:px-10 md:py-20 lg:px-14 lg:py-24">
+      <section className="border-b border-dotted border-ink/30">
+        <div className="px-5 pb-12 pt-16 md:px-10 md:pb-16 md:pt-24 lg:px-14">
           <div className="max-w-2xl">
-            <span className="reveal section-number block">00. Documentation</span>
-            <h1 className="reveal mt-6 font-swiss text-4xl font-black uppercase tracking-tighter text-swiss-fg sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="reveal section-number block">Documentation</span>
+            <h1 className="reveal mt-8 font-display text-display font-light text-ink">
               Documentation
             </h1>
             <p className="reveal mt-6 max-w-lg font-swiss text-base leading-relaxed text-swiss-fg/70 md:text-lg">
@@ -60,7 +43,7 @@ export function DocsContent() {
             <div className="reveal mt-8">
               <DocsSearch />
             </div>
-            <dl className="reveal mt-8 flex flex-wrap gap-x-8 gap-y-2 font-mono text-xs text-swiss-fg/50">
+            <dl className="t-label reveal mt-10 flex flex-wrap gap-x-10 gap-y-2 text-ink/60">
               <div className="flex gap-2">
                 <dt>Documents</dt>
                 <dd className="text-swiss-fg">{pad(allDocSections.length)}</dd>
@@ -91,9 +74,9 @@ export function DocsContent() {
                 <div className="max-w-xl">
                   <div className="mb-4 flex items-center gap-4">
                     <span className="section-number">{pad(i + 1)}</span>
-                    <span className="h-[2px] w-10 bg-swiss-accent" />
+                    <span aria-hidden="true" className="h-px flex-1 border-t border-dotted border-ink/30" />
                   </div>
-                  <h2 id={`docs-${projectKey}`} className="font-swiss text-3xl font-black uppercase tracking-tighter text-swiss-fg md:text-4xl">
+                  <h2 id={`docs-${projectKey}`} className="font-display font-light tracking-tight text-3xl text-swiss-fg md:text-4xl">
                     {projectLabel(projectKey)}
                   </h2>
                   {meta && <p className="mt-3 font-swiss text-sm leading-relaxed text-swiss-fg/70 md:text-base">{meta.tagline}</p>}
@@ -109,7 +92,7 @@ export function DocsContent() {
                       .filter(([, v]) => v)
                       .map(([k, v]) => (
                         <div key={k}>
-                          <dt className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">{k}</dt>
+                          <dt className="t-label text-swiss-fg/60">{k}</dt>
                           <dd className="mt-1 font-mono text-xs text-swiss-fg">{v}</dd>
                         </div>
                       ))}
@@ -122,7 +105,7 @@ export function DocsContent() {
                   <Link key={item.slug} href={`/docs/${item.slug}`} className="group block">
                     <Surface tier="solid" tactile className="flex h-full flex-col rounded-md p-5 transition-colors duration-fast group-hover:border-accent/50">
                       <div className="flex items-start justify-between gap-3">
-                        <span className="font-mono text-[11px] font-bold tracking-widest text-swiss-fg/40 transition-colors duration-fast group-hover:text-swiss-accent">
+                        <span className="t-label text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
                           {pad(idx + 1)}
                         </span>
                         {item.slug === meta?.featured && <Badge variant="released">Start here</Badge>}
@@ -133,7 +116,7 @@ export function DocsContent() {
                       <p className="mt-1.5 line-clamp-2 font-swiss text-sm leading-relaxed text-swiss-fg/60">
                         {docMeta[item.slug]?.description}
                       </p>
-                      <span className="mt-auto inline-flex items-center gap-1.5 pt-5 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast group-hover:text-swiss-accent">
+                      <span className="t-label mt-auto inline-flex items-center gap-1.5 pt-5 text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
                         Read
                         <ArrowRight size={12} className="transition-transform duration-fast group-hover:translate-x-1" />
                       </span>
@@ -150,16 +133,16 @@ export function DocsContent() {
       <section className="reveal border-t border-ink/10 px-5 py-14 md:px-10 md:py-20 lg:px-14" aria-labelledby="docs-recent">
         <div className="mb-4 flex items-center gap-4">
           <span className="section-number">{pad(projects.length + 1)}</span>
-          <span className="h-[2px] w-10 bg-swiss-accent" />
+          <span aria-hidden="true" className="h-px flex-1 border-t border-dotted border-ink/30" />
         </div>
-        <h2 id="docs-recent" className="mb-8 font-swiss text-3xl font-black uppercase tracking-tighter text-swiss-fg md:text-4xl">
+        <h2 id="docs-recent" className="font-display font-light tracking-tight mb-8 text-3xl text-swiss-fg md:text-4xl">
           Recently updated
         </h2>
         <ul className="divide-y divide-ink/10 border-y border-ink/10">
           {recentlyUpdated.map((row) => (
             <li key={row.slug}>
               <Link href={`/docs/${row.slug}`} className="group flex h-14 items-center gap-4 transition-colors duration-fast hover:bg-ink/[0.03] sm:gap-6 sm:px-2">
-                <span className="w-20 shrink-0 font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-accent">
+                <span className="t-label w-20 shrink-0 text-swiss-accent">
                   {projectLabel(row.project)}
                 </span>
                 <span className="min-w-0 flex-1 truncate font-swiss text-sm text-swiss-fg/80 transition-colors duration-fast group-hover:text-swiss-fg">

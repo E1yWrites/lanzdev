@@ -2,147 +2,88 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { rightNav } from "@/data/navigation";
-import { Menu, X } from "lucide-react";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
-import { MobileMenu } from "./MobileMenu";
+import { COMMAND_PALETTE_EVENT } from "@/hooks/useCommandPalette";
 import { CommandPalette } from "@/components/ui/CommandPalette";
-import { RouteLoader } from "@/components/ui/RouteLoader";
-import { ProjectDropdown } from "./ProjectDropdown";
+import { MobileMenu } from "./MobileMenu";
+import { isActivePath, mainNav } from "@/data/navigation";
 import type { ProjectSummary } from "@/lib/githubProjects";
-
-const DESKTOP_NAV_ITEMS = [
-  { label: "ABOUT", href: "/about" },
-  { label: "DOWNLOADS", href: "/downloads" },
-  { label: "DOCS", href: "/docs" },
-  { label: "CONTACT", href: "/contact" },
-];
 
 interface NavigationProps {
   projects: ProjectSummary[];
 }
 
+/** Six even columns of mono links, like a spec sheet's header row. */
 export function Navigation({ projects }: NavigationProps) {
   const pathname = usePathname();
   const { isOpen, close, toggle } = useMobileMenu();
   const [scrolled, setScrolled] = useState(false);
-  const navRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 10);
+    const handler = () => setScrolled(window.scrollY > 8);
+    handler();
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  useLayoutEffect(() => {
-    if (!navRef.current || !indicatorRef.current) return;
-
-    // Find the active link or dropdown trigger
-    const activeLink = navRef.current.querySelector('[data-active="true"]');
-    if (activeLink) {
-      const rect = activeLink.getBoundingClientRect();
-      const navRect = navRef.current.getBoundingClientRect();
-      indicatorRef.current.style.width = `${rect.width}px`;
-      indicatorRef.current.style.transform = `translateX(${rect.left - navRect.left}px)`;
-      indicatorRef.current.style.opacity = "1";
-    } else {
-      indicatorRef.current.style.opacity = "0";
-    }
-  }, [pathname, isOpen]);
-
   return (
     <>
-      <nav
+      <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 h-14",
-          "flex items-center justify-between px-5 md:px-8",
-          "bg-paper/70 backdrop-blur-xl backdrop-saturate-150",
-          "border-b border-ink/10",
-          "transition-all duration-normal ease-standard",
-          scrolled && "shadow-[0_1px_0_0_rgb(var(--ink)/0.1),0_12px_24px_-16px_rgb(var(--ink)/0.25)]"
+          "fixed inset-x-0 top-0 z-40 h-14 transition-colors duration-normal ease-standard",
+          scrolled || isOpen ? "border-b border-dotted border-ink/25 bg-paper/90 backdrop-blur-md" : "border-b border-transparent"
         )}
       >
-        {/* Logo */}
-        <Link
-          href="/"
-          className="group font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg shrink-0"
-        >
-          Lorenz
-          <span className="text-swiss-accent">.</span>
-          <span className="transition-colors duration-150 group-hover:text-swiss-accent">
-            dev
-          </span>
-        </Link>
+        <nav aria-label="Main" className="t-label mx-auto flex h-full max-w-7xl items-center px-5 md:px-8 lg:grid lg:grid-cols-6">
+          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} className="text-ink transition-colors duration-fast hover:text-accent">
+            Lorenz<span className="text-accent">.</span>dev
+          </Link>
 
-        {/* Center nav — desktop */}
-        <div
-          ref={navRef}
-          className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
-        >
-          <ProjectDropdown projects={projects} />
-          {DESKTOP_NAV_ITEMS.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              pathname.startsWith(item.href + "/");
+          {mainNav.map((item) => {
+            const active = isActivePath(pathname, item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                data-active={isActive}
-                className={cn(
-                  "font-swiss text-[11px] font-bold tracking-widest uppercase py-1",
-                  "relative transition-colors duration-150",
-                  isActive ? "text-swiss-fg" : "text-swiss-fg/50 hover:text-swiss-fg"
-                )}
+                aria-current={active ? "page" : undefined}
+                className="group hidden items-center gap-2 text-ink transition-colors duration-fast hover:text-accent lg:inline-flex lg:justify-self-start"
               >
+                <span
+                  aria-hidden="true"
+                  className={cn("h-1.5 w-1.5 transition-colors duration-fast", active ? "bg-accent" : "bg-transparent group-hover:bg-ink/30")}
+                />
                 {item.label}
               </Link>
             );
           })}
-          <span
-            ref={indicatorRef}
-            aria-hidden="true"
-            className="absolute bottom-[-8px] left-0 h-[6px] rounded-full bg-accent/15 shadow-[0_0_0_1px_rgb(var(--accent)/0.25)] transition-all duration-normal ease-out-back pointer-events-none opacity-0"
-          />
-        </div>
 
-        {/* Right nav — desktop */}
-        <div className="hidden lg:flex items-center gap-6">
-          {rightNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-              className={cn(
-                "font-swiss text-[11px] font-bold tracking-widest uppercase py-1",
-                "text-swiss-fg/50 hover:text-swiss-fg transition-colors duration-150"
-              )}
+          <div className="ml-auto flex items-center gap-2 lg:hidden">
+            <button
+              type="button"
+              onClick={toggle}
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              className="t-label -mr-2 h-11 px-2 text-ink transition-colors duration-fast hover:text-accent"
             >
-              {item.label}
-            </Link>
-          ))}
-        </div>
+              {isOpen ? "Close" : "Menu"}
+            </button>
+          </div>
+        </nav>
 
-        {/* Mobile controls */}
-        <div className="flex lg:hidden items-center gap-2">
-          <button
-            onClick={toggle}
-            aria-label="Toggle menu"
-            aria-expanded={isOpen}
-            aria-controls="mobile-menu"
-            className="tactile w-12 h-12 flex items-center justify-center text-swiss-fg border border-ink/15 rounded-md hover:bg-swiss-fg hover:text-swiss-bg transition-all duration-fast"
-          >
-            {isOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}
-          </button>
-        </div>
-      </nav>
+        {/* ⌘K — the palette, pinned to the right edge on large screens. */}
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new Event(COMMAND_PALETTE_EVENT))}
+          aria-label="Open command palette"
+          className="t-label absolute right-5 top-1/2 hidden h-7 -translate-y-1/2 items-center rounded-sm border border-ink/25 px-2 text-ink/70 transition-colors duration-fast hover:border-ink/60 hover:text-ink md:right-8 lg:inline-flex"
+        >
+          ⌘K
+        </button>
+      </header>
 
-      <RouteLoader />
-      <MobileMenu isOpen={isOpen} onClose={close} projects={projects} />
+      <MobileMenu isOpen={isOpen} onClose={close} />
       <CommandPalette projects={projects} />
     </>
   );

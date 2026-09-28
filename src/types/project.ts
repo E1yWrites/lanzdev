@@ -52,6 +52,8 @@ export interface Project {
   license: string;
   /** Square app icon, shown on a light tile (downloads panel). */
   icon?: string;
+  /** Transparent object render (art/ Remotion project) used when there's no screenshot. */
+  cover?: string;
   heroImage?: string;
   screenshots: ProjectScreenshot[];
   features: ProjectFeature[];

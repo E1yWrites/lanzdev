@@ -20,6 +20,7 @@ Add an entry to `src/data/projects.ts`. Follow the existing `Project` type:
   technologies: ["Tauri", "React", "TypeScript"],
   license: "MIT",
   icon: "/images/my-app-icon.png", // optional square icon for the downloads page
+  cover: "/art/my-app.webp", // optional transparent object render (see art/README.md) when there's no screenshot
   heroImage: "/images/my-app.png",
   screenshots: [
     {

@@ -23,14 +23,14 @@ export function TimelineEntry({ version, date, latest = false, tags = [], childr
           />
           <h3 className="font-mono text-base font-bold normal-case tracking-normal text-swiss-fg">{version}</h3>
         </div>
-        <p className="mt-2 pl-5 font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">{date}</p>
+        <p className="t-label mt-2 pl-5 text-swiss-fg/60">{date}</p>
         {tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2 pl-5">
             {tags.map((tag) => (
               <span
                 key={tag}
                 className={cn(
-                  "rounded-full border px-2 py-0.5 font-swiss text-[10px] font-bold uppercase tracking-widest",
+                  "t-label rounded-sm border px-1.5 py-0.5",
                   latest ? "border-accent/30 bg-accent/10 text-swiss-accent" : "border-ink/15 text-swiss-fg/60"
                 )}
               >
@@ -50,7 +50,7 @@ export function NoteGroup({ label, items }: { label?: React.ReactNode; items: Re
   return (
     <div className="mb-6 last:mb-0">
       {label && (
-        <h4 className="mb-3 font-swiss text-[10px] font-bold uppercase leading-normal tracking-widest text-swiss-fg/40">
+        <h4 className="t-label mb-3 leading-normal text-swiss-fg/60">
           {label}
         </h4>
       )}
@@ -163,7 +163,7 @@ export function ReleaseNotes({ body }: { body: string }) {
       i++;
     } else if (block.type === "label") {
       nodes.push(
-        <h4 key={i} className="mb-3 mt-6 font-swiss text-[10px] font-bold uppercase leading-normal tracking-widest text-swiss-fg/40 first:mt-0">
+        <h4 key={i} className="t-label mb-3 mt-6 leading-normal text-swiss-fg/60 first:mt-0">
           {block.text}
         </h4>
       );

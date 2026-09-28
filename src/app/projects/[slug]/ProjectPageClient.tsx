@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
@@ -41,12 +42,12 @@ function Section({
     <section id={id} aria-labelledby={headingId} className={cn("scroll-mt-20 border-t border-ink/10 py-16 md:py-24", className)}>
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4 md:mb-14">
-          <div>
-            <div className="mb-4 flex items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <div className="mb-6 flex items-center gap-4">
               <span className="section-number">{pad(index)}</span>
-              <span aria-hidden="true" className="h-[2px] w-10 bg-swiss-accent" />
+              <span aria-hidden="true" className="h-px flex-1 border-t border-dotted border-ink/30" />
             </div>
-            <h2 id={headingId} className="font-swiss text-3xl font-black uppercase tracking-tighter text-swiss-fg md:text-4xl">
+            <h2 id={headingId} className="font-display font-light tracking-tight text-3xl text-swiss-fg md:text-4xl">
               {title}
             </h2>
           </div>
@@ -92,12 +93,11 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
     <>
       {/* Hero */}
       <section ref={heroRef} className="relative overflow-hidden">
-        <div aria-hidden="true" className="page-glow pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-10 md:px-8 md:pb-24 md:pt-14">
           <nav aria-label="Breadcrumb" className="reveal mb-12 flex items-center gap-3 md:mb-16">
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent"
+              className="t-label inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
             >
               <ArrowLeft size={12} strokeWidth={2.5} aria-hidden="true" />
               Projects
@@ -115,7 +115,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                 </Badge>
               </div>
 
-              <h1 className="reveal font-swiss text-6xl font-black uppercase tracking-tighter text-swiss-fg sm:text-7xl lg:text-8xl">
+              <h1 className="font-display font-light tracking-tight reveal text-6xl text-swiss-fg sm:text-7xl lg:text-8xl">
                 {project.name}
               </h1>
 
@@ -152,7 +152,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
               <dl className="mt-5 divide-y divide-ink/10">
                 {spec.map(([label, value]) => (
                   <div key={label} className="grid grid-cols-[6.5rem_1fr] gap-4 py-3 first:pt-0 last:pb-0">
-                    <dt className="font-swiss text-[10px] font-bold uppercase leading-5 tracking-widest text-swiss-fg/40">{label}</dt>
+                    <dt className="t-label leading-5 text-swiss-fg/60">{label}</dt>
                     <dd className="font-mono text-xs leading-5 text-swiss-fg">{value}</dd>
                   </div>
                 ))}
@@ -162,7 +162,6 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
 
           {project.heroImage && (
             <div className="reveal relative mt-16 md:mt-20">
-              <div aria-hidden="true" className="surface-glow pointer-events-none absolute -inset-x-10 -inset-y-16 opacity-70" />
               <BrowserPreview
                 title={project.name}
                 url={hostOf(project.demoUrl) ?? hostOf(project.githubUrl)}
@@ -170,6 +169,11 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                 imageAlt={`${project.name} application interface`}
                 className="relative"
               />
+            </div>
+          )}
+          {!project.heroImage && project.cover && (
+            <div className="reveal relative mt-16 aspect-[16/10] overflow-hidden rounded-lg bg-sheet md:mt-20 md:aspect-[2/1]">
+              <Image src={project.cover} alt="" fill priority sizes="(min-width: 1280px) 1216px, 100vw" className="object-contain p-6 md:p-10" />
             </div>
           )}
         </div>
@@ -180,8 +184,8 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
         <Section index={num()} title="The story">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <span className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">Why it exists</span>
-              <p className="mt-4 font-swiss text-xl font-medium leading-snug tracking-tight text-swiss-fg sm:text-2xl md:text-3xl">
+              <span className="t-label text-swiss-fg/60">Why it exists</span>
+              <p className="mt-4 font-display text-2xl font-light leading-snug tracking-tight text-ink sm:text-3xl md:text-4xl">
                 {project.story.whyItExists}
               </p>
             </div>
@@ -243,7 +247,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
           aside={
             <Link
               href={project.slug === "tala" ? "/releases" : `/releases?project=${project.slug}`}
-              className="inline-flex items-center gap-2 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent"
+              className="t-label inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
             >
               All releases
               <ArrowRight size={12} strokeWidth={2.5} aria-hidden="true" />
@@ -269,8 +273,8 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
             className="group mx-auto flex max-w-7xl flex-col gap-3 px-5 py-14 md:flex-row md:items-end md:justify-between md:px-8 md:py-20"
           >
             <div>
-              <span className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">Next project</span>
-              <span className="mt-3 block font-swiss text-4xl font-black uppercase tracking-tighter text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent md:text-6xl">
+              <span className="t-label text-swiss-fg/60">Next project</span>
+              <span className="font-display font-light tracking-tight mt-3 block text-4xl text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent md:text-6xl">
                 {next.name}
               </span>
               <span className="mt-2 block font-swiss text-sm text-swiss-fg/60">{next.tagline}</span>

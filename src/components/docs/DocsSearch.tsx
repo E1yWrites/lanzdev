@@ -148,7 +148,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
     }
   };
 
-  const kbd = "shrink-0 rounded-[4px] border border-ink/15 bg-ink/5 px-1.5 py-0.5 font-mono text-[10px] text-swiss-fg/60";
+  const kbd = "shrink-0 rounded-[4px] border border-ink/15 bg-ink/5 px-1.5 py-0.5 font-mono text-[11px] text-ink/70";
 
   return (
     <>
@@ -199,7 +199,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
                     setActive(0);
                   }}
                   className={cn(
-                    "rounded-[4px] px-2.5 py-1 font-swiss text-[10px] font-bold uppercase tracking-widest transition-colors duration-fast",
+                    "t-label rounded-[4px] px-2.5 py-1 transition-colors duration-fast",
                     project === p.key ? "bg-swiss-fg text-swiss-bg" : "text-swiss-fg/50 hover:bg-ink/10 hover:text-swiss-fg"
                   )}
                 >
@@ -232,7 +232,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
                   >
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-2">
-                        <span className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-accent">{e.label}</span>
+                        <span className="t-label text-swiss-accent">{e.label}</span>
                         <span className={cn("truncate text-sm", isActive ? "text-swiss-fg" : "text-swiss-fg/80")}>{e.title}</span>
                       </span>
                       {e.description && <span className="mt-0.5 block truncate text-xs text-swiss-fg/50">{e.description}</span>}
@@ -243,7 +243,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
               })}
             </div>
 
-            <div className="flex items-center gap-4 border-t border-ink/10 px-4 py-2.5 font-mono text-[10px] text-swiss-fg/40">
+            <div className="flex items-center gap-4 border-t border-ink/10 px-4 py-2.5 t-label text-ink/60">
               <span>↑↓ navigate</span>
               <span>↵ open</span>
               <span className="ml-auto">/ search · ⌘K commands</span>

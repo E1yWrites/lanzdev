@@ -1,14 +1,18 @@
 # Lorenz.dev — Portfolio & Software Studio
 
-The personal site for Lorenz Malabanan — a Swiss-design–inspired portfolio built
-with **Next.js 14 (App Router)**, **React 18**, and **Tailwind CSS**.
+The personal site for Lorenz Malabanan — a minimal, spec-sheet–styled portfolio
+built with **Next.js 14 (App Router)**, **React 18**, and **Tailwind CSS**.
+See [`DESIGN.md`](DESIGN.md) for the design system and its Dieter Rams audit.
 
 ## Tech
 
 - Next.js 14 App Router (ISR enabled — data revalidates on a schedule)
 - React 18 + TypeScript
-- Tailwind CSS (custom "swiss" design tokens)
+- Tailwind CSS (tokens in `src/app/globals.css`)
+- Newsreader, Instrument Sans, JetBrains Mono (and Kalam once) via `next/font`
 - lucide-react icons
+- Generated art (hero loop, project objects, share image) rendered with
+  Remotion from [`art/`](art/README.md) into `public/art/`
 
 ## Getting started
 

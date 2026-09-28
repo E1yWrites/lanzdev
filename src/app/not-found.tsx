@@ -10,12 +10,10 @@ const SUGGESTIONS = [
 export default function NotFound() {
   return (
     <section className="relative flex min-h-[calc(100vh-56px)] items-center justify-center overflow-hidden py-20">
-      <div aria-hidden="true" className="surface-glow pointer-events-none absolute inset-0" />
-      <div aria-hidden="true" className="swiss-grid-pattern pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
       <div className="relative px-6 text-center">
         <span className="section-number">Error / Not found</span>
         <h1
-          className="mt-6 font-swiss font-black uppercase leading-[0.85] tracking-tighter text-swiss-fg"
+          className="font-display font-light tracking-tight mt-6 leading-[0.85] text-swiss-fg"
           style={{ fontSize: "clamp(80px, 20vw, 224px)" }}
         >
           4<span className="text-swiss-accent">0</span>4
@@ -31,7 +29,7 @@ export default function NotFound() {
             <Link
               key={s.href}
               href={s.href}
-              className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent"
+              className="t-label text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
             >
               {s.label}
             </Link>

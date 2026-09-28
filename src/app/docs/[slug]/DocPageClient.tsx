@@ -68,14 +68,14 @@ export function DocPageClient({ doc }: { doc: DocSection }) {
   return (
     <article ref={sectionRef} className="flex gap-12 px-5 py-10 md:px-10 md:py-14 lg:px-14">
       <div className="min-w-0 max-w-[720px] flex-1">
-        <nav aria-label="Breadcrumb" className="reveal flex items-center gap-2 font-swiss text-[11px] font-bold uppercase tracking-widest">
+        <nav aria-label="Breadcrumb" className="t-label reveal flex items-center gap-2">
           <Link href="/docs" className="text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent">
             Docs
           </Link>
           <span className="text-swiss-fg/30">/</span>
           <span className="text-swiss-accent">{projectLabel(doc.project)}</span>
         </nav>
-        <h1 className="reveal mt-5 font-swiss text-4xl font-black uppercase tracking-tighter text-swiss-fg md:text-5xl">{doc.title}</h1>
+        <h1 className="font-display font-light tracking-tight reveal mt-5 text-4xl text-swiss-fg md:text-5xl">{doc.title}</h1>
         {(docMeta[doc.slug]?.description || updated) && (
           <div className="reveal mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1">
             {docMeta[doc.slug]?.description && (
@@ -95,22 +95,22 @@ export function DocPageClient({ doc }: { doc: DocSection }) {
           <nav aria-label="Adjacent documents" className="reveal mt-16 grid gap-3 border-t border-ink/10 pt-8 sm:grid-cols-2">
             {prev ? (
               <Link href={`/docs/${prev.slug}`} className="group surface-solid tactile flex flex-col gap-2 rounded-md p-5 transition-colors duration-fast hover:border-accent/50">
-                <span className="inline-flex items-center gap-1.5 font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">
+                <span className="t-label inline-flex items-center gap-1.5 text-swiss-fg/60">
                   <ArrowLeft size={11} className="transition-transform duration-fast group-hover:-translate-x-1" />
                   Previous
                 </span>
-                <span className="font-swiss text-sm font-bold uppercase tracking-tight text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent">{prev.title}</span>
+                <span className="font-display text-xl font-light text-ink transition-colors duration-fast group-hover:text-accent">{prev.title}</span>
               </Link>
             ) : (
               <span />
             )}
             {next && (
               <Link href={`/docs/${next.slug}`} className="group surface-solid tactile flex flex-col gap-2 rounded-md p-5 text-right transition-colors duration-fast hover:border-accent/50">
-                <span className="inline-flex items-center justify-end gap-1.5 font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">
+                <span className="t-label inline-flex items-center justify-end gap-1.5 text-swiss-fg/60">
                   Next
                   <ArrowRight size={11} className="transition-transform duration-fast group-hover:translate-x-1" />
                 </span>
-                <span className="font-swiss text-sm font-bold uppercase tracking-tight text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent">{next.title}</span>
+                <span className="font-display text-xl font-light text-ink transition-colors duration-fast group-hover:text-accent">{next.title}</span>
               </Link>
             )}
           </nav>
@@ -163,9 +163,8 @@ function renderMarkdown(content: string): string {
     const title = parts[1 + i * 2];
     const body = parts[2 + i * 2] ?? "";
     html +=
-      `<section class="mt-10 border-t border-ink/10 pt-8 first:mt-0 first:border-t-0 first:pt-0">` +
-      `<h2 id="doc-${i}" class="mb-5 flex scroll-mt-24 items-center gap-3 font-swiss text-lg font-black uppercase tracking-tight text-swiss-fg">` +
-      `<span class="h-[2px] w-5 shrink-0 bg-swiss-accent"></span>${title}</h2>` +
+      `<section class="mt-12 border-t border-dotted border-ink/30 pt-10 first:mt-0 first:border-t-0 first:pt-0">` +
+      `<h2 id="doc-${i}" class="mb-5 scroll-mt-24 font-display text-3xl font-light tracking-tight text-ink">${title}</h2>` +
       renderBody(body, () => ++codeCounter) +
       `</section>`;
   }
@@ -181,14 +180,14 @@ function renderBody(raw: string, nextCode: () => number): string {
     const isShell = /^(bash|sh|shell|zsh)$/.test(lang ?? "");
     const body = esc(code.trim())
       .split("\n")
-      .map((l) => (isShell ? l.replace(/(^|\s)(#.*)$/, '$1<span class="text-swiss-fg/40">$2</span>') : l))
+      .map((l) => (isShell ? l.replace(/(^|\s)(#.*)$/, '$1<span class="text-ink/55">$2</span>') : l))
       .join("\n");
     return (
       `<figure class="my-6 overflow-hidden rounded-md border border-ink/10 bg-swiss-muted">` +
       `<figcaption class="flex h-10 items-center gap-2 border-b border-ink/10 px-4">` +
-      `<span class="h-2.5 w-2.5 rounded-full bg-accent"></span><span class="h-2.5 w-2.5 rounded-full bg-ink/20"></span><span class="h-2.5 w-2.5 rounded-full bg-ink/10"></span>` +
-      `<span class="ml-2 font-mono text-[11px] tracking-wide text-swiss-fg/40">${lang || "text"}</span>` +
-      `<button type="button" data-copy-target="${id}" class="ml-auto rounded-[4px] border border-ink/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-swiss-fg/60 transition-colors duration-fast hover:border-accent/60 hover:text-swiss-fg">Copy</button>` +
+      `<span class="h-2.5 w-2.5 rounded-full bg-ink/20"></span><span class="h-2.5 w-2.5 rounded-full bg-ink/20"></span><span class="h-2.5 w-2.5 rounded-full bg-ink/10"></span>` +
+      `<span class="t-label ml-2 text-ink/60">${lang || "text"}</span>` +
+      `<button type="button" data-copy-target="${id}" class="t-label ml-auto rounded-[4px] border border-ink/15 px-2.5 py-1 text-swiss-fg/60 transition-colors duration-fast hover:border-accent/60 hover:text-swiss-fg">Copy</button>` +
       `</figcaption>` +
       `<pre class="overflow-x-auto p-4 font-mono text-[13px] leading-6 text-swiss-fg/90"><code id="${id}">${body}</code></pre>` +
       `</figure>`
@@ -204,7 +203,7 @@ function renderBody(raw: string, nextCode: () => number): string {
     const hasHeader = rows.length > 1 && rows[1].every((c) => /^:?-+:?$/.test(c));
     const head = hasHeader ? rows[0] : null;
     const body = hasHeader ? rows.slice(2) : rows;
-    const th = (c: string) => `<th class="px-4 py-2.5 text-left font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/50">${c}</th>`;
+    const th = (c: string) => `<th class="t-label px-4 py-2.5 text-left text-swiss-fg/60">${c}</th>`;
     const td = (c: string) => `<td class="px-4 py-2.5 align-top font-swiss text-sm leading-6 text-swiss-fg/70">${c}</td>`;
     return (
       `<div class="my-6 overflow-x-auto rounded-md border border-ink/10"><table class="w-full">` +
@@ -217,7 +216,7 @@ function renderBody(raw: string, nextCode: () => number): string {
   // List items — tagged so runs can be wrapped in the right list element below.
   html = html.replace(
     /^- (.+)$/gm,
-    `<li data-li="ul" class="flex gap-3 font-swiss text-[15px] leading-7 text-swiss-fg/70"><span class="mt-[13px] h-[2px] w-3 shrink-0 bg-swiss-accent"></span><span class="min-w-0">$1</span></li>`
+    `<li data-li="ul" class="flex gap-3 font-swiss text-[15px] leading-7 text-swiss-fg/70"><span class="mt-[14px] h-px w-3 shrink-0 bg-accent"></span><span class="min-w-0">$1</span></li>`
   );
   html = html.replace(
     /^(\d+)\. (.+)$/gm,

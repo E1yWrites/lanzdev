@@ -20,7 +20,7 @@ export function DocsSidebar() {
       {/* Mobile — native disclosure listing the current project's docs (article pages only). */}
       {activeGroup && (
         <details className="group border-b border-ink/10 md:hidden">
-          <summary className="flex h-12 cursor-pointer list-none items-center justify-between px-5 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/70 [&::-webkit-details-marker]:hidden">
+          <summary className="t-label flex h-12 cursor-pointer list-none items-center justify-between px-5 text-swiss-fg/70 [&::-webkit-details-marker]:hidden">
             <span>
               Browse docs <span className="text-swiss-fg/40">/</span>{" "}
               <span className="text-swiss-accent">{projectLabel(activeGroup[0])}</span>
@@ -45,7 +45,7 @@ export function DocsSidebar() {
             ))}
             <Link
               href="/docs"
-              className="mt-3 block font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 hover:text-swiss-accent"
+              className="t-label mt-3 block text-swiss-fg/60 hover:text-swiss-accent"
             >
               ← All documentation
             </Link>
@@ -74,8 +74,8 @@ export function DocsSidebar() {
         {groups.map(([projectKey, projectDocs], i) => (
           <div key={projectKey} className="mt-8">
             <div className="mb-2 flex items-baseline gap-2">
-              <span className="font-mono text-[10px] text-swiss-fg/40">{String(i + 1).padStart(2, "0")}</span>
-              <span className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/60">
+              <span className="t-label text-ink/60">{String(i + 1).padStart(2, "0")}</span>
+              <span className="t-label text-swiss-fg/60">
                 {projectLabel(projectKey)}
               </span>
             </div>
