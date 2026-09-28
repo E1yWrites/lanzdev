@@ -30,7 +30,7 @@ function FooterColumn({ title, items }: { title: string; items: NavItem[] }) {
 export function Footer() {
   return (
     <footer className="border-t border-ink/10 bg-ink/[0.02] swiss-dots">
-      <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <FooterColumn title="Projects" items={footerNav.projects} />
           <FooterColumn title="Resources" items={footerNav.resources} />

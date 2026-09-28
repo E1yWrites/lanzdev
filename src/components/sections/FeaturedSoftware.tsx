@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ImagePreview } from "@/components/ui/ImagePreview";
 import { formatDate } from "@/lib/utils";
+import { platformSummary } from "@/lib/projectDisplay";
 import { asset } from "@/lib/constants";
 import { useReveal } from "@/hooks/useReveal";
 import type { Project } from "@/types/project";
@@ -18,7 +18,7 @@ export function FeaturedSoftware({ project }: FeaturedSoftwareProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
 
   const meta = [
-    { label: "Platform", value: project.platforms.join(" / ") },
+    { label: "Platform", value: platformSummary(project) },
     { label: "Type", value: "Desktop Application" },
     { label: "Stack", value: project.technologies.join(" / ") },
     { label: "Status", value: project.status, capitalize: true },
@@ -51,12 +51,8 @@ export function FeaturedSoftware({ project }: FeaturedSoftwareProps) {
             </p>
 
             <div className="reveal flex flex-wrap gap-3 mb-10">
-              <Link href={`/projects/${project.slug}`}>
-                <Button variant="primary">View Project</Button>
-              </Link>
-              <Link href="/downloads">
-                <Button variant="secondary">Download</Button>
-              </Link>
+              <ButtonLink href={`/projects/${project.slug}`} variant="primary">View Project</ButtonLink>
+              <ButtonLink href="/downloads" variant="secondary">Download</ButtonLink>
             </div>
 
             {/* Metadata grid */}

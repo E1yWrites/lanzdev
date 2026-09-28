@@ -19,6 +19,7 @@ Add an entry to `src/data/projects.ts`. Follow the existing `Project` type:
   platforms: ["windows", "macos"],
   technologies: ["Tauri", "React", "TypeScript"],
   license: "MIT",
+  icon: "/images/my-app-icon.png", // optional square icon for the downloads page
   heroImage: "/images/my-app.png",
   screenshots: [
     {

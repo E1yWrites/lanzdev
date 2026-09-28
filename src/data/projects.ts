@@ -15,6 +15,7 @@ export const projects: Project[] = [
     platforms: ["windows", "macos"],
     technologies: ["Tauri", "React", "TypeScript", "Vite", "Tiptap", "Zustand", "Dexie"],
     license: "MIT",
+    icon: asset("/images/tala-app-icon.png"),
     heroImage: asset("/images/tala-liveapp.png"),
     screenshots: [
       {

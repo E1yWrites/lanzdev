@@ -1,21 +1,42 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
+
+const SUGGESTIONS = [
+  { href: "/projects", label: "Projects" },
+  { href: "/downloads", label: "Downloads" },
+  { href: "/docs", label: "Documentation" },
+];
 
 export default function NotFound() {
   return (
-    <section className="min-h-[calc(100vh-56px)] flex items-center justify-center py-20 swiss-grid-pattern">
-      <div className="text-center px-6">
-        <h1 className="font-swiss font-black tracking-tighter uppercase text-swiss-fg mb-6 leading-[0.85]" style={{ fontSize: "clamp(80px, 20vw, 224px)" }}>
+    <section className="relative flex min-h-[calc(100vh-56px)] items-center justify-center overflow-hidden py-20">
+      <div aria-hidden="true" className="surface-glow pointer-events-none absolute inset-0" />
+      <div aria-hidden="true" className="swiss-grid-pattern pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+      <div className="relative px-6 text-center">
+        <span className="section-number">Error / Not found</span>
+        <h1
+          className="mt-6 font-swiss font-black uppercase leading-[0.85] tracking-tighter text-swiss-fg"
+          style={{ fontSize: "clamp(80px, 20vw, 224px)" }}
+        >
           4<span className="text-swiss-accent">0</span>4
         </h1>
-        <p className="font-swiss text-lg md:text-xl text-swiss-fg/70 mb-10 mt-8 max-w-md mx-auto">
+        <p className="mx-auto mt-8 max-w-md font-swiss text-lg text-swiss-fg/70 md:text-xl">
           This page doesn&apos;t exist. Let&apos;s head back home.
         </p>
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center h-16 px-8 font-swiss text-sm font-bold tracking-widest uppercase bg-swiss-fg text-swiss-bg border-2 border-swiss-border hover:bg-swiss-accent hover:border-swiss-accent transition-all duration-150"
-        >
+        <ButtonLink href="/" variant="primary" size="lg" className="mt-10">
           Go home
-        </Link>
+        </ButtonLink>
+        <nav aria-label="Suggested pages" className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3">
+          {SUGGESTIONS.map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent"
+            >
+              {s.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </section>
   );

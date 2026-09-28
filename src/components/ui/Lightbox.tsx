@@ -28,18 +28,19 @@ export function Lightbox({ src, alt, onClose }: LightboxProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Image preview"
-      className="fixed inset-0 z-[55] flex items-center justify-center bg-swiss-fg/80"
+      className="fixed inset-0 z-[55] flex animate-fade-in items-center justify-center bg-black/85 backdrop-blur-sm"
       onClick={onClose}
     >
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-swiss-bg text-swiss-fg border-2 border-swiss-border hover:bg-swiss-accent hover:text-swiss-bg hover:border-swiss-accent transition-all duration-150"
+        className="surface-glass absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full text-swiss-fg transition-colors duration-fast hover:bg-accent hover:text-swiss-bg"
+        autoFocus
         aria-label="Close lightbox"
       >
         <X size={20} strokeWidth={2.5} />
       </button>
       <div
-        className="relative max-w-[90vw] max-h-[85vh] border-2 border-swiss-border overflow-hidden"
+        className="relative max-h-[85vh] max-w-[90vw] overflow-hidden rounded-lg border border-ink/10 shadow-[0_40px_120px_-30px_rgb(0_0_0/0.9)]"
         onClick={(e) => e.stopPropagation()}
       >
         <Image

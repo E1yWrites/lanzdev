@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import { asset } from "@/lib/constants";
 import { useReveal } from "@/hooks/useReveal";
 
@@ -83,12 +82,8 @@ export function Hero() {
             </p>
 
             <div className="flex flex-wrap items-center gap-4 mb-10">
-              <Link href="/projects">
-                <Button variant="primary" size="lg">View Projects</Button>
-              </Link>
-              <Link href="/downloads">
-                <Button variant="secondary" size="lg">Download Software</Button>
-              </Link>
+              <ButtonLink href="/projects" variant="primary" size="lg">View Projects</ButtonLink>
+              <ButtonLink href="/downloads" variant="secondary" size="lg">Download Software</ButtonLink>
             </div>
 
             <div className="flex items-center gap-6 flex-wrap">
