@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { siteConfig } from "@/data/config";
+import { useFinePointer, useReducedMotion } from "@/hooks/useMedia";
 import { asset } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 // Stepped by hand with ‹ › — nothing moves on its own.
-const WORDS = ["desktop software", "web apps", "secure systems", "useful tools"];
+const WORDS = ["smart parking", "note-taking apps", "web apps", "mobile apps", "desktop software"];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const cell = "border-dotted border-on-sheet/45";
@@ -21,10 +22,27 @@ function Hole() {
 export function AboutCard() {
   const [i, setI] = useState(0);
   const step = (d: number) => setI((v) => (v + d + WORDS.length) % WORDS.length);
+  const card = useRef<HTMLElement>(null);
+  const fine = useFinePointer();
+  const reduced = useReducedMotion();
+
+  // The card leans toward the pointer, like a sheet picked up off the desk.
+  const tilt = (e: React.PointerEvent) => {
+    if (!fine || reduced || !card.current) return;
+    const r = card.current.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.current.style.transform = `perspective(1400px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg)`;
+    card.current.style.setProperty("--gx", `${((x + 0.5) * 100).toFixed(1)}%`);
+    card.current.style.setProperty("--gy", `${((y + 0.5) * 100).toFixed(1)}%`);
+  };
+  const untilt = () => {
+    if (card.current) card.current.style.transform = "";
+  };
 
   return (
-    <section aria-labelledby="about-title" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
-      <article className="grid overflow-hidden rounded-lg bg-sheet text-on-sheet md:grid-cols-[2.75rem_minmax(0,5fr)_minmax(0,7fr)_2.75rem]">
+    <section aria-labelledby="about-title" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32" onPointerMove={tilt} onPointerLeave={untilt}>
+      <article ref={card} className="tilt-card grid overflow-hidden rounded-lg bg-sheet text-on-sheet md:grid-cols-[2.75rem_minmax(0,5fr)_minmax(0,7fr)_2.75rem]">
         {/* Header row */}
         <div className={cn("hidden items-center justify-center border-b border-r md:flex", cell)}>
           <Hole />
@@ -86,11 +104,12 @@ export function AboutCard() {
 
           <div className="flex flex-1 flex-col gap-4 px-5 py-6 font-mono text-[13px] leading-relaxed md:px-6">
             <p>
-              An independent developer and {siteConfig.education.level.toLowerCase()} IT student at {siteConfig.education.institution}.
-              I design and build practical software across desktop, web and security.
+              A {siteConfig.education.level.toLowerCase()} BS Information Technology student at {siteConfig.education.institution}. I build web, mobile and
+              desktop apps with React, TypeScript and Tauri, and I’m trained in Cisco networking and cybersecurity.
             </p>
             <p className="text-on-sheet/70">
-              Tala, a note-taking app, is out now. PARADA, a smart-parking capstone, is in progress.
+              PARADA, my smart-parking capstone, is being deployed. Tala, a note-taking app, is at v1.1.0. In 2025 I presented a paper as a
+              finalist at INSECOM in Malang, Indonesia. {siteConfig.availability}.
             </p>
             <Link href="/about" className="t-label mt-auto self-start pt-4 underline decoration-on-sheet/40 underline-offset-[6px] hover:decoration-on-sheet">
               More about me →

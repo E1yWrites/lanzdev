@@ -1,63 +1,49 @@
-import { useEffect, useState } from "react";
-import { AbsoluteFill, continueRender, delayRender, staticFile } from "remotion";
-import { MacropadObject } from "./Macropad";
-import { Studio, useFontsReady } from "../shared/studio";
+import { AbsoluteFill, useVideoConfig } from "remotion";
+import { MARK_L, MARK_STAR } from "../../../src/components/brand/mark";
+import { Macropad } from "../../../src/three/Macropad";
+import { SITE } from "../../../src/three/palette";
+import { MONO, SERIF, Studio, useFontsReady } from "../shared/studio";
+import { MACROPAD_YAW, VIEWS } from "../../../src/three/views";
 
-const INK = "#EDEDEA";
-
-function useSerif() {
-  const [handle] = useState(() => delayRender("serif font"));
-  useEffect(() => {
-    new FontFace("Display", `url(${staticFile("fonts/newsreader-300.woff")})`, { weight: "300" })
-      .load()
-      .then((face) => {
-        document.fonts.add(face);
-        continueRender(handle);
-      });
-  }, [handle]);
-}
+const INK = SITE.ink;
 
 const label: React.CSSProperties = {
-  fontFamily: "KeyMono",
+  fontFamily: MONO,
   fontWeight: 500,
-  fontSize: 20,
-  letterSpacing: "0.04em",
+  fontSize: 19,
+  letterSpacing: "0.06em",
   textTransform: "uppercase",
   color: INK,
 };
 
-/** 1200×630 Open Graph image: statement on the left, the macropad at rest on the right. */
+/** 1200×630 Open Graph image: the mark and statement on the left, the macropad on the right. */
 export function ShareImage() {
-  useSerif();
+  const { height } = useVideoConfig();
   const ready = useFontsReady();
   return (
-    <AbsoluteFill style={{ background: "#000" }}>
-      <AbsoluteFill style={{ left: 470 }}>
-        <Studio width={730} height={630} background={null} camera={{ position: [0, 9, 8.2], fov: 30 }}>
-          <MacropadObject ready={ready} sway={false} />
+    <AbsoluteFill style={{ background: SITE.paper }}>
+      <AbsoluteFill style={{ left: 440 }}>
+        <Studio width={760} height={height} background={null} camera={{ ...VIEWS.macropad, fov: 33 }}>
+          <group rotation={[0, MACROPAD_YAW, 0]}>
+            <Macropad font={MONO} ready={ready} knob={0.6} screen={{ title: "LORENZ.DEV", sub: "PARADA · TALA · ABOUT", meter: 0.5 }} />
+          </group>
         </Studio>
       </AbsoluteFill>
-      <div style={{ ...label, position: "absolute", left: 64, top: 56 }}>Lorenz.dev</div>
-      <div
-        style={{
-          position: "absolute",
-          left: 60,
-          top: 210,
-          fontFamily: "Display",
-          fontWeight: 300,
-          fontSize: 84,
-          lineHeight: 1,
-          letterSpacing: "-0.03em",
-          color: INK,
-        }}
-      >
+      <div style={{ position: "absolute", left: 60, top: 52, display: "flex", alignItems: "center", gap: 14 }}>
+        <svg width={34} height={34} viewBox="6 5 52 53">
+          <path d={MARK_L} fill={INK} />
+          <path d={MARK_STAR} fill={SITE.accent} />
+        </svg>
+        <span style={label}>
+          lorenz<span style={{ color: SITE.accent }}>.</span>dev
+        </span>
+      </div>
+      <div style={{ position: "absolute", left: 56, top: 196, fontFamily: SERIF, fontWeight: 300, fontSize: 82, lineHeight: 1, letterSpacing: "-0.03em", color: INK }}>
         Software for
         <br />
-        curious people<span style={{ color: "#FF4C29" }}>.</span>
+        curious people<span style={{ color: SITE.accent }}>.</span>
       </div>
-      <div style={{ ...label, position: "absolute", left: 64, bottom: 56, opacity: 0.6 }}>
-        Tala · Parada · Modpack — Batangas, PH
-      </div>
+      <div style={{ ...label, position: "absolute", left: 60, bottom: 54, opacity: 0.65 }}>Lorenz Malabanan · PARADA · Tala — Batangas, PH</div>
     </AbsoluteFill>
   );
 }

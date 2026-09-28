@@ -3,7 +3,7 @@ import { getAllProjects } from "@/lib/githubProjects";
 
 export const metadata = {
   title: "About",
-  description: "About Lorenz Malabanan — independent software developer.",
+  description: "Lorenz “Lanz” Malabanan — BSIT student at LPU-Batangas and independent developer: education, recognition, certifications and organisations.",
 };
 
 export default async function AboutPage() {

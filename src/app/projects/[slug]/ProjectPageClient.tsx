@@ -1,12 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { BrowserPreview } from "@/components/ui/BrowserPreview";
 import { ImagePreview } from "@/components/ui/ImagePreview";
+import { CountUp } from "@/components/motion/CountUp";
+import { FilmPlayer } from "@/components/motion/FilmPlayer";
+import { KineticText } from "@/components/motion/KineticText";
+import { ModelStage } from "@/components/three/ModelStage";
+import { Roadmap } from "@/components/project/Roadmap";
+import { useFinePointer } from "@/hooks/useMedia";
 import { Surface } from "@/components/ui/Surface";
 import { ChangelogView } from "@/components/project/ChangelogView";
 import { PlatformDownloads } from "@/components/project/PlatformDownloads";
@@ -76,14 +82,24 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
   // The hero already shows heroImage — don't repeat it as the only screenshot.
   const screenshots = project.screenshots.filter((shot) => shot.src !== project.heroImage);
 
+  const [night, setNight] = useState(false);
+  const isTala = project.model === "tala";
+  const fine = useFinePointer();
+  const hint = isTala
+    ? fine
+      ? "Hover to write · click for night · drag to turn"
+      : "Tap for night · drag to turn"
+    : fine
+      ? "Hover to play · drag to turn"
+      : "Plays on its own · drag to turn";
   const spec = [
     ["Version", project.version ? `v${project.version}` : "—"],
     ["Status", status.label],
-    ["Platform", platformSummary(project)],
+    ["Runs on", platformSummary(project)],
     ["Built with", project.technologies.join(" / ") || "—"],
-    ["License", project.license],
+    ["Licence", project.license],
     ["Updated", project.releaseDate ? formatDate(project.releaseDate) : "—"],
-  ];
+  ].filter(([, value]) => value);
 
   // Section numbers follow whatever this project actually has.
   let n = 0;
@@ -115,9 +131,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                 </Badge>
               </div>
 
-              <h1 className="font-display font-light tracking-tight reveal text-6xl text-swiss-fg sm:text-7xl lg:text-8xl">
-                {project.name}
-              </h1>
+              <KineticText lines={[project.name]} className="font-display text-6xl font-light tracking-tight text-swiss-fg sm:text-7xl lg:text-8xl" />
 
               <p className="reveal mt-6 max-w-xl font-swiss text-xl leading-snug text-swiss-fg md:text-2xl">{project.tagline}</p>
               <p className="reveal mt-4 max-w-xl font-swiss text-base leading-relaxed text-swiss-fg/60">{project.description}</p>
@@ -131,14 +145,25 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                 )}
                 {project.demoUrl && (
                   <ButtonLink href={project.demoUrl} external variant={downloadable ? "secondary" : "primary"}>
-                    Live demo
+                    {project.model === "parada" ? "Landing page" : "Live demo"}
                     <ArrowUpRight size={14} strokeWidth={2.5} aria-hidden="true" />
+                  </ButtonLink>
+                )}
+                {project.film && (
+                  <ButtonLink href="#film" variant="secondary">
+                    Watch the film
                   </ButtonLink>
                 )}
                 <ButtonLink href={project.githubUrl} external variant="secondary">
                   Source
                   <ArrowUpRight size={14} strokeWidth={2.5} aria-hidden="true" />
                 </ButtonLink>
+                {project.links?.map((link) => (
+                  <ButtonLink key={link.href} href={link.href} external variant="ghost">
+                    {link.label}
+                    <ArrowUpRight size={14} strokeWidth={2.5} aria-hidden="true" />
+                  </ButtonLink>
+                ))}
                 {project.documentationUrl && (
                   <ButtonLink href={project.documentationUrl} variant="ghost">
                     Docs
@@ -172,12 +197,49 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
             </div>
           )}
           {!project.heroImage && project.cover && (
-            <div className="reveal relative mt-16 aspect-[16/10] overflow-hidden rounded-lg bg-sheet md:mt-20 md:aspect-[2/1]">
-              <Image src={project.cover} alt="" fill priority sizes="(min-width: 1280px) 1216px, 100vw" className="object-contain p-6 md:p-10" />
+            <div className={cn("reveal relative mt-16 overflow-hidden rounded-xl md:mt-20", project.tone === "accent" ? "bg-accent" : "bg-sheet")}>
+              {project.model ? (
+                <ModelStage
+                  model={project.model}
+                  poster={project.cover}
+                  alt={`${project.name} as a 3D model`}
+                  priority
+                  sizes="(min-width: 1280px) 1024px, 100vw"
+                  draggable
+                  night={night}
+                  cursor={isTala ? "Drag · click for night" : "Drag · hover to play"}
+                  onClick={isTala ? () => setNight((v) => !v) : undefined}
+                  className="mx-auto aspect-[4/3] w-full max-w-5xl"
+                />
+              ) : null}
+              <p className="t-label pointer-events-none absolute left-5 top-5 text-on-sheet/70">
+                {hint}
+              </p>
             </div>
+          )}
+
+          {project.stats && (
+            <dl className="reveal mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-dotted border-ink/25 pt-8 md:grid-cols-4">
+              {project.stats.map((stat) => (
+                <div key={stat.label} className="flex flex-col-reverse">
+                  <dt className="t-label mt-2 text-ink/60">{stat.label}</dt>
+                  <dd className="font-display text-5xl font-light leading-none text-ink md:text-6xl">
+                    <CountUp value={stat.value} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
           )}
         </div>
       </section>
+
+      {/* Film */}
+      {project.film && (
+        <Section id="film" index={num()} title={`${project.film.duration} seconds of ${project.name}`}>
+          <FilmPlayer film={project.film} title={project.name} className="rounded-xl border border-ink/10" />
+          <p className="t-label mt-3 text-ink/55">Rendered with Remotion from the same 3D model as above. No sound.</p>
+        </Section>
+      )}
 
       {/* Story */}
       {project.story && (
@@ -193,6 +255,21 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
               <p className="font-swiss text-base leading-relaxed text-swiss-fg/70">{project.story.content}</p>
             </div>
           </div>
+        </Section>
+      )}
+
+      {/* Roadmap */}
+      {project.milestones && project.milestones.length > 0 && (
+        <Section
+          index={num()}
+          title="Roadmap"
+          aside={
+            <span className="font-mono text-xs text-swiss-fg/50">
+              <span className="text-swiss-fg">{pad(project.milestones.filter((m) => m.status === "done").length)}</span> / {pad(project.milestones.length)} phases done
+            </span>
+          }
+        >
+          <Roadmap milestones={project.milestones} />
         </Section>
       )}
 
@@ -230,7 +307,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
 
       {/* Screenshots */}
       {screenshots.length > 0 && (
-        <Section index={num()} title="Screenshots">
+        <Section index={num()} title="Inside the app">
           <div className={cn("grid gap-8", screenshots.length > 1 && "md:grid-cols-2")}>
             {screenshots.map((shot) => (
               <ImagePreview key={shot.src} src={shot.src} alt={shot.alt} caption={shot.caption} />

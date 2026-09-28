@@ -36,7 +36,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           {mainNav.map((item, i) => {
             const active = isActivePath(pathname, item.href);
             return (
-              <li key={item.href} className="border-b border-dotted border-ink/25">
+              <li key={item.href} className="menu-row border-b border-dotted border-ink/25" style={{ "--i": i } as React.CSSProperties}>
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}

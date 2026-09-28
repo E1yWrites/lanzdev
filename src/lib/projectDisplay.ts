@@ -20,9 +20,10 @@ const STATUS: Record<ProjectStatus, { variant: BadgeVariant; label: string }> = 
 
 export const projectStatus = (status: ProjectStatus) => STATUS[status];
 
-/** "Windows / macOS" for desktop builds, "Web" for a live demo, otherwise "Source". */
-export function platformSummary(project: Pick<Project, "platforms" | "demoUrl">) {
+/** "Windows / macOS" for desktop builds, then the project's own surfaces, "Web" for a live demo, otherwise "Source". */
+export function platformSummary(project: Pick<Project, "platforms" | "demoUrl" | "surfaces">) {
   if (project.platforms.length) return project.platforms.map(platformLabel).join(" / ");
+  if (project.surfaces) return project.surfaces;
   return project.demoUrl ? "Web" : "Source";
 }
 

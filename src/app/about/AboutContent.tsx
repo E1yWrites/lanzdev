@@ -2,378 +2,222 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "@/components/ui/Badge";
-import { BrowserPreview } from "@/components/ui/BrowserPreview";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { useRef } from "react";
+import { KineticText } from "@/components/motion/KineticText";
+import { Magnetic } from "@/components/motion/Magnetic";
 import { siteConfig } from "@/data/config";
-import { useParallax } from "@/hooks/useParallax";
+import { useFinePointer, useReducedMotion } from "@/hooks/useMedia";
 import { useReveal } from "@/hooks/useReveal";
 import { asset } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { projectStatus } from "@/lib/projectDisplay";
 import type { Project } from "@/types/project";
 
 interface AboutContentProps {
   projects: Project[];
 }
 
-// Order in which the curated projects appear on the About page.
-const SELECTED_ORDER = ["tala", "parada-landing", "modpack-development"];
-
-const capabilities = [
-  {
-    title: "Web Development",
-    text: "Interfaces, web applications, APIs and interactive experiences.",
-  },
-  {
-    title: "Desktop Software",
-    text: "Cross-platform tools and focused native-like experiences.",
-  },
-  {
-    title: "Product Engineering",
-    text: "Architecture, systems, implementation and turning ideas into working software.",
-  },
-  {
-    title: "Cybersecurity",
-    text: "Networking, secure systems and security-conscious engineering.",
-  },
-];
-
 const principles = [
-  {
-    title: "Make it useful.",
-    text: "Software should solve a real problem before it tries to impress.",
-  },
-  {
-    title: "Make it clear.",
-    text: "Complex systems should feel simple to the person using them.",
-  },
-  {
-    title: "Make it deliberate.",
-    text: "Every interaction, transition and piece of architecture should have a reason.",
-  },
+  { title: "Make it useful.", text: "Software should solve a real problem before it tries to impress." },
+  { title: "Make it honest.", text: "Show what the system actually knows — PARADA counts zones, not slots, and says so." },
+  { title: "Make it deliberate.", text: "Every interaction, transition and piece of architecture should have a reason." },
 ];
 
-const milestones = [
-  { year: "2024", label: "LPU-B", text: "Started building software seriously." },
-  { year: "2025", label: "TALA", text: "Built a desktop note-taking application." },
-  { year: "2026", label: "PARADA", text: "Designed and engineered a smart parking platform." },
-  { year: "2026", label: "LORENZ.DEV", text: "Independent software development and design." },
+// Dated from the résumé and the repositories.
+const timeline = [
+  { when: "2022", what: "LPU-B Senior High School" },
+  { when: "2024", what: "Started BS Information Technology at LPU-Batangas; joined the Computer Society, ALCA, the CCAS Student Council and the Microsoft Student Community" },
+  { when: "Nov 2024", what: "DataBiz: Innovation with AI & Data Science — Lipa Convention Center" },
+  { when: "May 2025", what: "Microsoft Office Specialist: Word Associate" },
+  { when: "2025", what: "Visual Graphic Design NC III (TESDA); CodeChum C++ Data Structures and Java OOP" },
+  { when: "2025", what: "Finalist paper presenter, INSECOM 2025 — Universitas Brawijaya, Malang, Indonesia" },
+  { when: "Sep–Nov 2025", what: "AI+X: Understanding & Applying AI — Universitas Brawijaya" },
+  { when: "Aug 2026", what: "Tala 1.0 released; PARADA's monorepo scaffolded (Phase 1)" },
+  { when: "Sep 2026", what: "Tala 1.1.0; PARADA's Phase 14 accuracy evaluation; deployment under way" },
 ];
 
-function statusBadge(project: Project) {
-  if (project.status === "released") return { variant: "released" as const, label: "Released" };
-  if (project.status === "archived") return { variant: "archived" as const, label: "Archived" };
-  return { variant: "in-progress" as const, label: "Work in progress" };
-}
-
-function EditorialFrame({ project }: { project: Project }) {
+/** Portrait in grey; a lens follows the pointer and shows it in colour. */
+function Portrait() {
+  const ref = useRef<HTMLDivElement>(null);
+  const fine = useFinePointer();
+  const reduced = useReducedMotion();
   return (
-    <div className="relative flex aspect-[4/3] flex-col justify-between overflow-hidden rounded-lg border border-ink/10 bg-ink/[0.02] p-6 md:p-8">
-      <span className="t-label relative z-[1] text-ink/60">{statusBadge(project).label}</span>
-      {project.cover ? (
-        <Image src={project.cover} alt="" fill sizes="(min-width: 768px) 45vw, 100vw" className="object-contain p-6" />
-      ) : (
-        <span className="select-none font-display text-5xl font-light leading-none tracking-tight text-ink/15 md:text-6xl">{project.name}</span>
-      )}
-      <div className="t-label relative z-[1] flex flex-wrap gap-x-6 gap-y-1 text-ink/60">
-        {project.technologies.slice(0, 4).map((tech) => (
-          <span key={tech}>{tech}</span>
-        ))}
-      </div>
+    <div
+      ref={ref}
+      className="portrait relative aspect-[4/5] overflow-hidden rounded-lg bg-paper-elevated"
+      data-cursor={fine && !reduced ? "Colour" : undefined}
+      onPointerMove={(e) => {
+        if (!fine || reduced || !ref.current) return;
+        const r = ref.current.getBoundingClientRect();
+        ref.current.style.setProperty("--px", `${e.clientX - r.left}px`);
+        ref.current.style.setProperty("--py", `${e.clientY - r.top}px`);
+        ref.current.style.setProperty("--pr", "150px");
+      }}
+      onPointerLeave={() => ref.current?.style.setProperty("--pr", "0px")}
+    >
+      <Image src={asset("/images/profilepic.png")} alt="Lorenz Malabanan in a studio portrait" fill priority className="object-cover object-[50%_20%] grayscale" sizes="(max-width: 768px) 100vw, 420px" />
+      <Image src={asset("/images/profilepic.png")} alt="" aria-hidden="true" fill className="portrait-lens object-cover object-[50%_20%]" sizes="(max-width: 768px) 100vw, 420px" />
     </div>
   );
 }
 
-export function AboutContent({ projects }: AboutContentProps) {
-  const heroRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const portraitRef = useParallax({ speed: 0.08 });
-  const whatRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const workRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const thinkRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const storyRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-  const certRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
-
-  const selected = SELECTED_ORDER.map((slug) => projects.find((p) => p.slug === slug)).filter(
-    (p): p is Project => Boolean(p)
+function Section({ number, title, children, id }: { number: string; title: string; children: React.ReactNode; id?: string }) {
+  return (
+    <section id={id} className="border-t border-dotted border-ink/25 py-16 md:py-24">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-12 md:px-8">
+        <div className="reveal md:col-span-4">
+          <span className="section-number">{number}</span>
+          <h2 className="mt-5 font-display text-4xl font-light tracking-tight text-ink md:text-5xl">{title}</h2>
+        </div>
+        <div className="md:col-span-8">{children}</div>
+      </div>
+    </section>
   );
+}
+
+function Rows({ rows }: { rows: { main: string; detail: string; aside?: string }[] }) {
+  return (
+    <ol className="border-t border-dotted border-ink/25">
+      {rows.map((r, i) => (
+        <li key={r.main + i} className="reveal group grid grid-cols-[2rem_1fr] gap-x-4 border-b border-dotted border-ink/25 py-4 md:grid-cols-[2.5rem_1fr_auto]">
+          <span className="t-label pt-1 text-ink/45 transition-colors group-hover:text-accent">{String(i + 1).padStart(2, "0")}</span>
+          <div>
+            <p className="font-display text-xl font-light leading-snug text-ink transition-transform duration-normal ease-out group-hover:translate-x-1 md:text-2xl">{r.main}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink/60">{r.detail}</p>
+          </div>
+          {r.aside && <span className="t-label col-start-2 mt-2 text-ink/55 md:col-start-auto md:mt-1 md:text-right">{r.aside}</span>}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export function AboutContent({ projects }: AboutContentProps) {
+  const ref = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 50 });
+  const selected = projects.filter((p) => p.model && p.cover);
 
   return (
-    <>
-      {/* 01 — HERO */}
-      <section ref={heroRef} className="py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="reveal mb-12 md:mb-16">
-            <span className="section-number">About / Lorenz</span>
-          </div>
-
-          <div className="grid md:grid-cols-12 gap-12 lg:gap-16 items-start">
-            {/* Left — name + statement */}
-            <div className="md:col-span-7">
-              <div className="reveal">
-                <h1 className="font-display font-light tracking-tight text-swiss-fg text-display leading-[0.88]">
-                  Lorenz
-                  <br />
-                  Malabanan
-                </h1>
-              </div>
-
-              <p className="t-label reveal mt-8 text-ink/60 md:mt-10">Independent software developer</p>
-
-              <div className="reveal mt-8 md:mt-10 max-w-xl">
-                <p className="font-swiss text-xl md:text-2xl text-swiss-fg leading-snug">
-                  I build software at the intersection of engineering and design.
-                </p>
-                <p className="font-swiss text-base md:text-lg text-swiss-fg/60 mt-4 leading-relaxed">
-                  From desktop tools to web applications and complex systems, I enjoy
-                  turning complicated ideas into software that feels deliberate,
-                  understandable, and useful.
-                </p>
-              </div>
-
-              <div className="reveal mt-10">
-                <a
-                  href="#selected-work"
-                  className="t-label group inline-flex items-center gap-3 text-swiss-fg/60 hover:text-swiss-accent transition-colors duration-150"
-                >
-                  Explore selected work
-                  <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">
-                    →
-                  </span>
+    <div ref={ref}>
+      {/* Hero */}
+      <section className="pb-16 pt-12 md:pb-24 md:pt-20">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-12 md:px-8 lg:gap-16">
+          <div className="md:col-span-7">
+            <span className="section-number">About</span>
+            <KineticText lines={["Lorenz", "Malabanan"]} accent="." className="mt-8 font-display text-display font-light text-ink" />
+            <p className="t-label mt-6 text-ink/60">
+              {siteConfig.alias} · Independent developer · BSIT, {siteConfig.education.level.toLowerCase()}
+            </p>
+            <p className="reveal mt-8 max-w-xl font-display text-2xl font-light leading-snug text-ink md:text-3xl">{siteConfig.profile}</p>
+            <p className="reveal mt-5 max-w-xl text-base leading-relaxed text-ink/65 md:text-lg">
+              I study at {siteConfig.education.institution}. Outside class I’m the LPU-B Computer Society’s Director for Community Extensions and VP
+              for Public Media &amp; Relations at the Association of Lycean Career Ambassadors.
+            </p>
+            <div className="reveal mt-9 flex flex-wrap items-center gap-3">
+              <Magnetic>
+                <a href={`mailto:${siteConfig.email}`} data-cursor="Say hi" className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-on-sheet">
+                  <span className="live-dot" aria-hidden="true" /> {siteConfig.availability}
                 </a>
-              </div>
-            </div>
-
-            {/* Right — portrait */}
-            <div className="md:col-span-5">
-              <div className="reveal">
-                <figure className="relative lg:translate-x-4">
-                  <div ref={portraitRef} className="relative aspect-[4/5] overflow-hidden rounded-lg bg-paper-elevated">
-                    <Image
-                      src={asset("/images/profilepic.png")}
-                      alt="Lorenz Malabanan, seated, in a black-and-white studio portrait"
-                      fill
-                      priority
-                      className="object-cover grayscale"
-                      sizes="(max-width: 768px) 100vw, 400px"
-                    />
-                  </div>
-                  <figcaption className="t-label mt-3 text-swiss-fg/60 flex items-center justify-between">
-                    <span>Lorenz / 2026</span>
-                    <span>{siteConfig.education.location}</span>
-                  </figcaption>
-                </figure>
-              </div>
+              </Magnetic>
+              <Magnetic>
+                <a href={siteConfig.github.url} target="_blank" rel="noopener noreferrer" className="t-label inline-flex h-11 items-center gap-2 rounded-full border border-ink/30 px-5 text-ink transition-colors hover:border-ink">
+                  GitHub ↗
+                </a>
+              </Magnetic>
             </div>
           </div>
+          <figure className="reveal md:col-span-5">
+            <Portrait />
+            <figcaption className="t-label mt-3 flex items-center justify-between text-ink/60">
+              <span>Lanz / 2026</span>
+              <span>{siteConfig.education.location}</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      {/* 02 — WHAT I DO */}
-      <section ref={whatRef} className="py-20 border-t border-ink/10">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="reveal">
-            <SectionHeader number="01" title="What I Do" />
-          </div>
+      {/* Work */}
+      <Section number="01" title="Selected work" id="selected-work">
+        <div className="grid gap-6 sm:grid-cols-2">
+          {selected.map((project, i) => (
+            <Link key={project.id} href={`/projects/${project.slug}`} data-cursor="Open" className="reveal group block">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-ink/10 bg-ink/[0.03]">
+                <Image src={project.cover!} alt="" fill sizes="(min-width: 640px) 33vw, 100vw" className="object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
+                <span className="t-label absolute left-4 top-4 text-ink/60">{String(i + 1).padStart(2, "0")}</span>
+                <span className="t-label absolute right-4 top-4 text-ink/60">{projectStatus(project.status).label}</span>
+              </div>
+              <p className="mt-4 font-display text-3xl font-light text-ink transition-colors group-hover:text-accent">{project.name}</p>
+              <p className="mt-1 text-sm text-ink/60">{project.tagline}</p>
+            </Link>
+          ))}
+        </div>
+      </Section>
 
-          <ol>
-            {capabilities.map((cap, i) => (
-              <li key={cap.title} className="group border-t border-ink/10 last:border-b">
-                <div className="py-8 md:py-10 flex items-start gap-6 md:gap-10">
-                  <span className="font-mono text-xs text-swiss-fg/30 pt-2 group-hover:text-swiss-accent transition-colors duration-150">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between gap-4">
-                      <h2 className="font-display font-light tracking-tight text-3xl md:text-5xl text-swiss-fg leading-none transition-all duration-300 group-hover:translate-x-1 md:group-hover:translate-x-2 group-hover:text-swiss-accent">
-                        {cap.title}
-                      </h2>
-                      <span aria-hidden="true" className="font-swiss text-lg text-swiss-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                        →
-                      </span>
-                    </div>
-                    <p className="font-swiss text-sm md:text-base text-swiss-fg/50 group-hover:text-swiss-fg/80 mt-3 max-w-md leading-relaxed transition-colors duration-300">
-                      {cap.text}
-                    </p>
-                  </div>
-                </div>
-              </li>
+      <Section number="02" title="Education">
+        <Rows rows={siteConfig.schooling.map((s) => ({ main: s.school, detail: s.detail, aside: s.years }))} />
+      </Section>
+
+      <Section number="03" title="Recognition">
+        <Rows rows={siteConfig.recognition.map((r) => ({ main: r.title, detail: r.detail, aside: r.year }))} />
+      </Section>
+
+      <Section number="04" title="Certifications & training">
+        <Rows
+          rows={[
+            ...siteConfig.certifications.map((c) => ({ main: c.title, detail: c.issuer, aside: c.year })),
+            ...siteConfig.training.map((t) => ({ main: t.title, detail: t.issuer })),
+          ]}
+        />
+      </Section>
+
+      <Section number="05" title="Organisations">
+        <Rows rows={siteConfig.organizations.map((o) => ({ main: o.name, detail: o.role, aside: o.years }))} />
+      </Section>
+
+      <Section number="06" title="Skills">
+        <ul className="grid gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 sm:grid-cols-2">
+          {siteConfig.skills.map((s) => (
+            <li key={s.name} className="reveal group bg-paper p-5 transition-colors duration-normal hover:bg-accent hover:text-on-sheet">
+              <p className="font-display text-2xl font-light">{s.name}</p>
+              <p className="t-label mt-2 text-ink/55 transition-colors group-hover:text-on-sheet/75">{s.detail}</p>
+            </li>
+          ))}
+        </ul>
+        <div className="reveal mt-8 flex flex-wrap gap-2">
+          {Object.values(siteConfig.technologies)
+            .flat()
+            .filter((t, i, all) => all.indexOf(t) === i)
+            .map((t) => (
+              <span key={t} className="t-label rounded-full border border-ink/20 px-3 py-1.5 text-ink/75 transition-colors hover:border-accent hover:text-accent">
+                {t}
+              </span>
             ))}
-          </ol>
         </div>
-      </section>
+      </Section>
 
-      {/* 03 — SELECTED WORK */}
-      <section ref={workRef} id="selected-work" className="py-20 border-t border-ink/10 bg-ink/[0.02]">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="reveal">
-            <SectionHeader number="02" title="Selected Work" />
-          </div>
-
-          <div className="space-y-16 md:space-y-24">
-            {selected.map((project, i) => {
-              const reversed = i % 2 === 1;
-              return (
-                <article key={project.id} className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-                  {/* Content */}
-                  <div className={cn("lg:col-span-5 min-w-0", reversed && "lg:order-2")}>
-                    <div className="reveal">
-                      <div className="flex items-center justify-between mb-5">
-                        <span className="t-label text-swiss-fg/60">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <Badge variant={statusBadge(project).variant}>
-                          {statusBadge(project).label}
-                        </Badge>
-                      </div>
-
-                      <h2 className="font-display font-light tracking-tight text-4xl md:text-5xl lg:text-6xl text-swiss-fg leading-none">
-                        {project.name}
-                      </h2>
-
-                      <p className="font-swiss text-base text-swiss-fg/60 mt-5 leading-relaxed">
-                        {project.description}
-                      </p>
-
-                      <div className="mt-6 flex flex-wrap gap-x-6 gap-y-1">
-                        {project.technologies.slice(0, 3).map((tech) => (
-                          <span key={tech} className="t-label text-swiss-fg/60">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-
-                      <Link
-                        href={`/projects/${project.slug}`}
-                        className="t-label group inline-flex items-center gap-3 mt-8 text-swiss-fg/60 hover:text-swiss-accent transition-colors duration-150"
-                      >
-                        View project
-                        <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1">
-                          →
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Visual */}
-                  <div className={cn("lg:col-span-7 min-w-0", reversed && "lg:order-1")}>
-                    <div className="reveal">
-                      {project.heroImage ? (
-                        <BrowserPreview
-                          title={project.name}
-                          url={`${project.name.split(" ")[0].toLowerCase()}.app`}
-                          image={project.heroImage}
-                          imageAlt={`${project.name} application interface`}
-                        />
-                      ) : (
-                        <EditorialFrame project={project} />
-                      )}
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 04 — HOW I THINK */}
-      <section ref={thinkRef} className="py-20 border-t border-ink/10">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="reveal">
-            <SectionHeader number="03" title="How I Think" />
-          </div>
-
-          <ol>
-            {principles.map((principle, i) => (
-              <li key={principle.title} className="group border-t border-ink/10 last:border-b">
-                <div className="py-10 md:py-14 grid md:grid-cols-12 gap-4 md:gap-8 items-start">
-                  <div className="md:col-span-2">
-                    <span className="font-display font-light tracking-tight text-6xl md:text-7xl text-swiss-fg/15 group-hover:text-swiss-accent/80 transition-colors duration-300">
-                      {i + 1}
-                    </span>
-                  </div>
-                  <div className="md:col-span-10">
-                    <h2 className="font-display font-light tracking-tight text-4xl md:text-5xl lg:text-6xl text-swiss-fg leading-none group-hover:text-swiss-accent transition-colors duration-300">
-                      {principle.title}
-                    </h2>
-                    <p className="font-swiss text-base text-swiss-fg/50 group-hover:text-swiss-fg/80 mt-4 max-w-lg leading-relaxed transition-colors duration-300">
-                      {principle.text}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* 05 — BUILDING */}
-      <section ref={storyRef} className="py-20 border-t border-ink/10 bg-ink/[0.02]">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-start">
-            <div className="md:col-span-5">
-              <div className="reveal">
-                <span className="editorial-label block mb-5">Building</span>
-                <h2 className="font-display font-light tracking-tight text-4xl md:text-5xl text-swiss-fg">
-                  The story so far
-                </h2>
+      <Section number="07" title="How I think">
+        <ol className="border-t border-dotted border-ink/25">
+          {principles.map((p, i) => (
+            <li key={p.title} className="reveal group grid grid-cols-[3rem_1fr] gap-4 border-b border-dotted border-ink/25 py-6">
+              <span className="font-display text-4xl font-light text-ink/20 transition-colors group-hover:text-accent">{i + 1}</span>
+              <div>
+                <p className="font-display text-3xl font-light text-ink md:text-4xl">{p.title}</p>
+                <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink/60 md:text-base">{p.text}</p>
               </div>
-            </div>
-            <div className="md:col-span-7">
-              <ol>
-                {milestones.map((m) => (
-                  <li key={m.year + m.label} className="group border-t border-ink/10 last:border-b">
-                    <div className="py-5 flex items-baseline gap-6">
-                      <span className="t-label text-swiss-fg/60 group-hover:text-swiss-accent transition-colors duration-150 shrink-0">
-                        {m.year}
-                      </span>
-                      <span className="font-swiss font-bold text-base tracking-[0.15em] uppercase text-swiss-fg shrink-0">
-                        {m.label}
-                      </span>
-                      <span className="font-swiss text-sm text-swiss-fg/50 group-hover:text-swiss-fg/80 leading-relaxed transition-colors duration-300">
-                        {m.text}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </div>
-      </section>
+            </li>
+          ))}
+        </ol>
+      </Section>
 
-      {/* 06 — CERTIFICATIONS */}
-      <section ref={certRef} className="py-20 border-t border-ink/10">
-        <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="reveal">
-            <SectionHeader number="04" title="Certifications" />
-          </div>
-
-          <ol className="max-w-2xl">
-            {siteConfig.certifications.map((cert, i) => {
-              const [issuer, ...rest] = cert.split(" ");
-              const name = rest.join(" ") || issuer;
-              return (
-                <li key={cert} className="group border-t border-ink/10 last:border-b">
-                  <div className="py-4 flex items-baseline justify-between gap-6">
-                    <div className="flex items-baseline gap-4">
-                      <span className="font-mono text-xs text-swiss-fg/30">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="font-swiss text-sm font-medium text-swiss-fg/80 group-hover:text-swiss-accent transition-colors duration-150">
-                        {name}
-                      </span>
-                    </div>
-                    <span className="t-label text-swiss-fg/60 shrink-0">
-                      {issuer}
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
-    </>
+      <Section number="08" title="The story so far">
+        <ol className="relative border-l border-dotted border-ink/30 pl-6">
+          {timeline.map((t, i) => (
+            <li key={t.when + i} className="reveal group relative pb-7 last:pb-0">
+              <span aria-hidden="true" className="absolute -left-[29px] top-1.5 h-2.5 w-2.5 rotate-45 bg-ink/40 transition-colors group-hover:bg-accent" />
+              <p className="t-label text-accent">{t.when}</p>
+              <p className="mt-1 max-w-xl text-base leading-relaxed text-ink/80">{t.what}</p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+    </div>
   );
 }

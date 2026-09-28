@@ -36,9 +36,9 @@ export function DocsContent() {
               Documentation
             </h1>
             <p className="reveal mt-6 max-w-lg font-swiss text-base leading-relaxed text-swiss-fg/70 md:text-lg">
-              Guides, references and setup notes for LanzDev software —{" "}
-              <span className="text-swiss-fg">Tala</span>, <span className="text-swiss-fg">PARADA</span> and the{" "}
-              <span className="text-swiss-fg">Fabric modpack</span> workspace.
+              Guides, references and setup notes for{" "}
+              <span className="text-swiss-fg">PARADA</span>, the smart parking system, and{" "}
+              <span className="text-swiss-fg">Tala</span>, the note-taking app.
             </p>
             <div className="reveal mt-8">
               <DocsSearch />

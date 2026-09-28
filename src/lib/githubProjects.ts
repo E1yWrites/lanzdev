@@ -20,8 +20,9 @@ export interface ProjectSummary {
   status: ProjectStatus;
 }
 
-// Repos that should never appear as projects on the site.
-const EXCLUDED_REPO_NAMES = new Set(["lanzdev", "e1ywrites"]);
+// Repos that should never appear as projects on the site. parada-landing is
+// PARADA's marketing page and is linked from the PARADA project instead.
+const EXCLUDED_REPO_NAMES = new Set(["lanzdev", "e1ywrites", "parada-landing"]);
 
 function toTitleCase(name: string): string {
   return name

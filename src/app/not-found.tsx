@@ -13,10 +13,16 @@ export default function NotFound() {
       <div className="relative px-6 text-center">
         <span className="section-number">Error / Not found</span>
         <h1
-          className="font-display font-light tracking-tight mt-6 leading-[0.85] text-swiss-fg"
+          aria-label="404"
+          className="mt-6 inline-flex items-center font-display font-light leading-[0.85] tracking-tight text-swiss-fg"
           style={{ fontSize: "clamp(80px, 20vw, 224px)" }}
         >
-          4<span className="text-swiss-accent">0</span>4
+          <span aria-hidden="true">4</span>
+          {/* the zero is a star — lost, but still shining */}
+          <svg aria-hidden="true" viewBox="-1 -1 2 2" className="spin-slow mx-[0.04em] h-[0.72em] w-[0.72em] text-accent">
+            <path d="M0-1C.1-.2.2-.1 1 0 .2.1.1.2 0 1-.1.2-.2.1-1 0-.2-.1-.1-.2 0-1Z" fill="currentColor" />
+          </svg>
+          <span aria-hidden="true">4</span>
         </h1>
         <p className="mx-auto mt-8 max-w-md font-swiss text-lg text-swiss-fg/70 md:text-xl">
           This page doesn&apos;t exist. Let&apos;s head back home.

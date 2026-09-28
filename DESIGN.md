@@ -1,78 +1,95 @@
-# Design — the spec sheet
+# Design — the spec sheet, in motion
 
-The site reads like a technical spec sheet for a maker's work: monospace
-interface text, a light serif for names and statements, dotted rules, one
-accent, and a single tactile object in the hero.
+The site reads like a technical spec sheet for a maker's work (monospace interface
+text, a light serif for names, dotted rules, one accent), and then it moves: each
+project is a small 3D object you can play with, the type reacts to the pointer, and
+two 15-second films show the projects doing what they do.
 
-Inspired by the structure of [wildyriftian.com](https://www.wildyriftian.com)
-(one object with compass-point labels, project "folders" with tabs, a
-spec-card about section). The ideas are borrowed; the object, palette, type
-and content are Lorenz.dev's own.
+Structure borrowed from [wildyriftian.com](https://www.wildyriftian.com) (an object
+in the hero, project "folders" with tabs, a spec-card about section). The objects,
+palette, type, motion and content are Lorenz.dev's own.
 
 ## Tokens (`src/app/globals.css`, `tailwind.config.ts`)
 
-| Token             | Value     | Use                                        |
-| ----------------- | --------- | ------------------------------------------ |
-| `paper`           | `#0C0C0C` | Page                                       |
-| `paper-elevated`  | `#161616` | Menus, palette, raised panels              |
-| `ink`             | `#EDEDEA` | Text on dark                               |
-| `accent`          | `#FF4C29` | The one colour: eyebrows, markers, one folder |
-| `sheet`           | `#EFEEE9` | Light surfaces (folders, spec card)        |
-| `sheet-grey`      | `#D3D2CC` | Second light surface                       |
-| `on-sheet`        | `#111111` | Text on sheets and on accent               |
+| Token             | Value     | Use                                            |
+| ----------------- | --------- | ---------------------------------------------- |
+| `paper`           | `#0C0C0C` | Page                                           |
+| `paper-elevated`  | `#161616` | Menus, palette, raised panels                  |
+| `ink`             | `#EDEDEA` | Text on dark                                   |
+| `accent`          | `#FF4C29` | The accent: eyebrows, markers, PARADA's folder |
+| `solar`           | `#E8B84A` | Tala's gold (keycap, pencil, notebook)         |
+| `sheet`           | `#EFEEE9` | Light surfaces (Tala's folder, spec card)      |
+| `sheet-grey`      | `#D3D2CC` | Second light surface                           |
+| `on-sheet`        | `#111111` | Text on sheets and on accent                   |
 
-Text opacity floors (WCAG AA, 4.5:1): `ink/60` on dark (6.4:1),
-`on-sheet/65` on sheet (5.6:1), `on-sheet/85` on accent (4.8:1).
+Text opacity floors (WCAG AA, 4.5:1): `ink/60` on dark (6.4:1), `on-sheet/65` on
+sheet (5.6:1), `on-sheet/85` on accent (4.8:1).
 
-**Type.** Newsreader (light, optical sizing) for titles and statements, in
-sentence case. Instrument Sans for reading. JetBrains Mono for interface text
-through `.t-label` (11px, uppercase, +0.06em). Kalam, Tala's own handwriting
-face, appears once (the About card) and isn't preloaded.
+**Type.** Newsreader (variable weight + optical size) for titles; Instrument Sans for
+reading; JetBrains Mono for interface text via `.t-label`. Kalam appears once (the
+About card) and isn't preloaded.
 
-**Shape.** Radius 4 / 6 / 10 / 14px. Surfaces are flat with a 1px hairline:
-no blur, glow or drop shadow. Dotted rules (`border-dotted border-ink/30`)
-separate sections and cells.
+**Mark.** An L cut at a slant like a pen nib, and a four-point star — "tala" is
+Filipino for star (`src/components/brand/`). It's the favicon (`src/app/favicon.ico`,
+`icon.svg`, `apple-icon.png`), sits in the nav and footer, draws itself in on load,
+and the star turns over on hover.
 
-**Motion.** Scroll reveals (12px rise + fade, 600ms), press feedback
-(`scale(0.98)`), the hero loop, and the folder ticker. All stop under
-`prefers-reduced-motion`; the ticker then wraps instead of clipping.
+## Motion system
+
+Every moving thing has one job, and all of it stops under `prefers-reduced-motion`.
+
+| Piece | Where | What it does |
+| --- | --- | --- |
+| **Macropad** (live 3D) | Home hero | The site index as an object: four keys → PARADA, Tala, About, Say hi. Hover a key and it dips and glows and the OLED reads out where it goes; click to open. The pad leans toward the pointer, and the knob turns with the scroll. The list of links beside it is the same index — hovering either lights the other. |
+| **PARADA lot** (live 3D) | PARADA folder + page | Hover and the story plays: the waiting car's plate is read, the barrier lifts, it parks, **Zone A drops from 12 to 11 free**, a new car arrives. Drag to turn. |
+| **Tala desk** (live 3D) | Tala folder + page | Hover and the pencil writes *tala* in cursive; click (or the Day/Night chip) to flip the sun to the moon. Drag to turn. |
+| **Films** (Remotion, 15 s each) | Showreel, film dialog, project pages | Rendered from the same models: PARADA's gate-to-zone pipeline and Tala's writing / day-to-night / v1.1.0 features. Play while on screen, hand over like stories. |
+| **Kinetic type** | Hero and every page title | Letters rise in when on screen; near the pointer the variable weight thickens and letters lift. |
+| **Velocity marquee** | Under the hero | Drifts on its own, speeds up and leans with scroll velocity, reverses on the way back up. |
+| **Cursor ring** | Mouse/trackpad only | Trails the pointer; grows over links; shows a label ("Open", "Play", "Drag · hover to play") over things that do something. The system cursor stays. |
+| **Magnetic buttons, rolling links, filling rows, tilting card, colour lens** | Throughout | Small hover rewards that confirm what's interactive. |
+| **Scroll progress, page rise, count-ups, roadmap track** | Throughout | Orientation: how far down, which page arrived, which numbers matter. |
+
+### How the 3D works
+
+- **One model, two drivers.** `src/three/*` are procedural models — keycaps, a
+  knurled knob, a coiled cable, extruded car profiles, PARADA's ribbon "P", a page
+  block that curves into its spine, a handwriting tube, a crescent traced from two
+  arcs — and each is a pure function of its props. `src/components/three/scenes.tsx`
+  drives them from pointer, hover and time; `art/` drives them from the frame number.
+- **Poster first.** `ModelStage` paints a transparent render of the same model and
+  camera (`src/three/views.ts`), mounts the WebGL scene when the stage nears the
+  viewport — one at a time, in idle time — renders only while visible, and cross-fades
+  over the poster once it has drawn. Reduced motion or no WebGL: the poster stays.
+- **Weight.** Home first-load JS is 124 kB. three.js and the scenes (~215 kB gzipped)
+  load lazily after first paint and never under reduced motion. The films are
+  1.3–2 MB each and only download when played or on screen (`preload="none"` until
+  then; H.264 first, VP9 as fallback).
 
 ## Motifs
 
 - `.section-number`: a 6px square, then a mono label, in the accent.
-- Project folders (`components/home/WorkFolders.tsx`): sticky from `md` up,
-  tabs staggered so every tab stays visible as folders stack.
-- Spec card (`components/home/AboutCard.tsx`): binder-hole rails, dotted
-  cells, coordinates in the footer row.
-- `PageHeader`: eyebrow, `text-display` serif title, lede, mono stats strip.
+- Project folders (`components/home/WorkFolders.tsx`): one screen tall from `md` up,
+  sticky, tabs staggered so every tab stays visible as folders stack.
+- Spec card (`components/home/AboutCard.tsx`): binder-hole rails, dotted cells,
+  coordinates in the footer row; it tilts toward the pointer.
+- Roadmap (`components/project/Roadmap.tsx`): PARADA's 17 phases as one track, dated
+  from the repository history.
 
-## Art
+## Content
 
-Generated with Remotion in [`art/`](art/README.md): the macropad hero loop
-(each project is a key), PARADA's parking tile, the Modpack voxels and the
-share image. Renders are committed to `public/art/`.
+- Projects follow the repositories: PARADA (01) and Tala (02), in that order.
+  `parada-landing` is PARADA's landing page, not a separate project; Modpack is gone.
+- PARADA's numbers are quoted as published in its repo (Phase 14 evaluation on a
+  synthetic dataset — never rounded up, never presented as field accuracy).
+- Personal details come from the résumé; the site publishes email and city only.
 
-## Dieter Rams audit
+## Checks
 
-Scored against Rams' ten principles of good design, before (commit
-`579b679`) and after this redesign.
-
-| # | Principle | Before | After |
-|---|-----------|--------|-------|
-| 1 | **Innovative** | Trend-driven: a generated "cinematic" hero, glassmorphism, glows. | The hero object *is* the index: each project is a key, pressed in turn. Live GitHub data and OS-aware downloads kept. |
-| 2 | **Useful** | Home repeated Tala three times; "How I build" and a closing wordmark did no work; three routes to the same three projects (dropdown, palette, grid). | Home is three things: object, work, person. The dropdown is gone; the projects page is one click away and ⌘K is visible in the nav. |
-| 3 | **Aesthetic** | 42 `font-black` uppercase headings, so nothing led. 8 kinds of decorative background, used 22 times. | 0 and 0. Hierarchy comes from the serif/mono contrast and whitespace; colour is the orange folder and small markers. |
-| 4 | **Understandable** | Home had **no `<h1>`**. 72 tiny bold tracked labels, many at 3.58:1 (or 2.48:1). | Every page has exactly one `<h1>`. All text pairings pass AA; the labels' minimum is 6.4:1. Active page marked with a square and `aria-current`. |
-| 5 | **Unobtrusive** | 77 blur-in reveals, 60s drift, pointer-follow highlights, hover-lift on cards. | 49 plain fade/rise reveals, no pointer effects, no hover lift. The hero loop is silent and slow, and holds still under reduced motion. |
-| 6 | **Honest** | The hero implied a physical device; a "Download CV — coming soon" card; a fake 400ms progress bar after every navigation. | Placeholder card and fake loader removed. The About card uses the real portrait. Privacy copy matches what the site stores. |
-| 7 | **Long-lasting** | Glass, glow gradients and an AI cinematic render date fast. | Spec-sheet grammar (mono, serif, rules, one accent) is decades old and will stay old. |
-| 8 | **Thorough** | No skip link, no share image, no home `<h1>`. | Skip link, Open Graph/Twitter image, ⌘K button, Esc-closable mobile menu, `whitespace-nowrap` coordinates; 14 pages checked at 1440px and 390px with no overflow. |
-| 9 | **Environmentally friendly** | A forced 400ms loading overlay on every visit; Inter in six weights; `backdrop-filter` on many surfaces. | Overlay removed. Inter replaced by two variable fonts plus JetBrains Mono; Kalam loads only when used. Blur is on the nav bar only. Home first-load JS: 121 → 114 kB. **Trade-off:** the hero loop is ~450 kB (WebM), versus a 65 kB image before. The poster (41 kB) paints first, with `preload="metadata"`. |
-| 10 | **As little design as possible** | 4 surface tiers (30 uses), 4 button variants plus a separate download style, 7 home sections. | Surfaces are flat hairline boxes; buttons share one style function; the home page has 3 sections. `Card`, `TerminalPreview`, `InitialLoader`, `RouteLoader`, `ProjectDropdown` and seven home sections deleted. |
-
-### Still open
-
-- Icons are still Lucide, in a few places (arrows, download, check). They're
-  consistent in stroke; swapping the set isn't worth a new dependency yet.
-- The hero loop could be served at 720px to halve its weight, at some cost on
-  retina screens.
+`tsc --noEmit`, `next lint` and `next build` pass. Browser checks (Playwright, 1440 px
+and 390 px): one `<h1>` per page, no nested interactive elements, no horizontal
+overflow, no images without `alt`, no canvases under reduced motion, no console errors.
+Interactions verified: 3D key hover lights its link and a click navigates; film dialog
+opens and closes on Esc; Tala's day/night toggle; showreel tabs; command palette;
+`/projects/parada-landing` redirects to `/projects/parada`; mobile menu opens and
+closes on Esc; no cursor ring on touch.

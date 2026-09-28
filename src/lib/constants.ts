@@ -1,7 +1,7 @@
 export const SITE_NAME = "Lorenz.dev";
 export const SITE_URL = "https://lorenzmalabanan.dev";
 export const SITE_DESCRIPTION =
-  "Software made by a maker, for people who need something.";
+  "Lorenz “Lanz” Malabanan — web, mobile and desktop software from Batangas: PARADA smart parking and Tala notes.";
 
 export const GITHUB_USERNAME = "E1yWrites";
 export const GITHUB_REPO = "tala";

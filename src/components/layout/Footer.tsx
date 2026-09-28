@@ -2,6 +2,7 @@ import Link from "next/link";
 import { footerNav } from "@/data/navigation";
 import { siteConfig } from "@/data/config";
 import type { NavItem } from "@/types/navigation";
+import { LogoMark } from "@/components/brand/Logo";
 import { FooterInvitation } from "./FooterInvitation";
 
 function FooterColumn({ title, items }: { title: string; items: NavItem[] }) {
@@ -15,10 +16,18 @@ function FooterColumn({ title, items }: { title: string; items: NavItem[] }) {
               href={item.href}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
-              className="t-label text-ink transition-colors duration-fast hover:text-accent"
+              className="t-label group inline-flex text-ink"
             >
-              {item.label}
-              {item.external && " ↗"}
+              <span className="roll">
+                <span>
+                  {item.label}
+                  {item.external && " ↗"}
+                </span>
+                <span aria-hidden="true">
+                  {item.label}
+                  {item.external && " ↗"}
+                </span>
+              </span>
             </Link>
           </li>
         ))}
@@ -33,12 +42,23 @@ export function Footer() {
       <FooterInvitation email={siteConfig.email} github={siteConfig.github.url} />
 
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-5 py-12 md:px-8 lg:grid-cols-6">
-        <Link href="/" className="t-label col-span-2 self-start text-ink lg:col-span-1">
-          Lorenz<span className="text-accent">.</span>dev
+        <Link href="/" className="t-label group col-span-2 inline-flex items-center gap-2.5 self-start text-ink lg:col-span-1">
+          <LogoMark size={20} />
+          <span>
+            Lorenz<span className="text-accent">.</span>dev
+          </span>
         </Link>
         <FooterColumn title="Index" items={footerNav.index} />
         <FooterColumn title="Studio" items={footerNav.studio} />
         <FooterColumn title="Legal" items={footerNav.legal} />
+      </div>
+
+      {/* The sign-off: the mark, big. Hover it. */}
+      <div aria-hidden="true" className="group mx-auto flex max-w-7xl items-end gap-[2vw] overflow-hidden px-5 md:px-8">
+        <LogoMark size="css" className="h-[15vw] max-h-48 w-auto shrink-0 translate-y-[6%] text-ink" />
+        <span className="translate-y-[18%] select-none font-display text-[16vw] font-light leading-none tracking-[-0.05em] text-ink/[0.07] transition-colors duration-slow group-hover:text-ink/[0.14] xl:text-[13rem]">
+          lorenz.dev
+        </span>
       </div>
 
       <div className="border-t border-dotted border-ink/30">

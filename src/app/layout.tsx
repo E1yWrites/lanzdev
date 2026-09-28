@@ -3,6 +3,9 @@ import { Instrument_Sans, JetBrains_Mono, Kalam, Newsreader } from "next/font/go
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
+import { Cursor } from "@/components/motion/Cursor";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { siteConfig } from "@/data/config";
 import { getProjectSummaries } from "@/lib/githubProjects";
 
 const sans = Instrument_Sans({
@@ -37,15 +40,14 @@ const hand = Kalam({
 
 export const metadata: Metadata = {
   title: {
-    default: "Lorenz.dev — Software Studio",
+    default: "Lorenz Malabanan — Software for curious people",
     template: "%s — Lorenz.dev",
   },
-  description:
-    "Software made by a maker, for people who need something. Independent developer building practical software across web, desktop, and security.",
+  description: siteConfig.description,
   metadataBase: new URL("https://lorenzmalabanan.dev"),
   openGraph: {
-    title: "Lorenz.dev — Software Studio",
-    description: "Software made by a maker, for people who need something.",
+    title: "Lorenz Malabanan — Software for curious people",
+    description: siteConfig.description,
     url: "https://lorenzmalabanan.dev",
     siteName: "Lorenz.dev",
     locale: "en_US",
@@ -66,8 +68,14 @@ export default async function RootLayout({
   const summaries = await getProjectSummaries();
 
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable} ${hand.variable}`}>
+    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable} ${hand.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Lets CSS hold entrance animations until JS can start them on scroll (no-JS visitors see everything). */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="grain min-h-screen">
+        <ScrollProgress />
+        <Cursor />
         <a
           href="#main"
           className="t-label sr-only z-[70] rounded-sm bg-ink px-3 py-2 text-paper focus:not-sr-only focus:fixed focus:left-4 focus:top-3"

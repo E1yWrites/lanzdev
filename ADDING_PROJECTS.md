@@ -20,7 +20,15 @@ Add an entry to `src/data/projects.ts`. Follow the existing `Project` type:
   technologies: ["Tauri", "React", "TypeScript"],
   license: "MIT",
   icon: "/images/my-app-icon.png", // optional square icon for the downloads page
-  cover: "/art/my-app.webp", // optional transparent object render (see art/README.md) when there's no screenshot
+  cover: "/art/my-app.webp", // transparent render of the project's 3D model (see art/README.md)
+  model: "my-app",            // optional: a live model in src/three + a scene in src/components/three/scenes.tsx
+  tone: "sheet",              // folder colour on the home page: "accent" | "sheet" | "solar"
+  role: "What it is · Where it runs",
+  surfaces: "Mobile · Web",   // shown as "Runs on" when there are no desktop downloads
+  film: { webm: "/art/films/my-app.webm", mp4: "/art/films/my-app.mp4", poster: "/art/films/my-app.jpg", duration: 15 },
+  stats: [{ value: "801", label: "Tests passing" }], // numbers count up on scroll
+  milestones: [{ id: "1", title: "Phase one", status: "done", date: "2026-01-01" }],
+  links: [{ label: "Landing page source", href: "https://github.com/..." }],
   heroImage: "/images/my-app.png",
   screenshots: [
     {
@@ -39,7 +47,7 @@ Add an entry to `src/data/projects.ts`. Follow the existing `Project` type:
     macos: { available: false },
     linux: { available: false },
   },
-  featured: false,            // true if this is the hero project
+  featured: false,            // true for the downloadable app /downloads and /releases lead with
   story: { whyItExists: "...", content: "..." },
   changelog: [
     {
@@ -54,7 +62,9 @@ Add an entry to `src/data/projects.ts`. Follow the existing `Project` type:
 
 Place hero/screenshot images in `public/images/` and reference them as `/images/filename.png`.
 
-To make a project appear as the **Featured Software** on the homepage, set `featured: true`. Only one project should be featured — the rest show in Selected Work.
+The order of `projects` is the order on the site (folders on the home page, rows on
+/projects). `featured: true` marks the one downloadable app that /downloads and
+/releases lead with — only one project should have it.
 
 ## 2. Add documentation (optional)
 
@@ -83,11 +93,12 @@ export const myAppDocs: DocPage = {
 };
 
 export const docsByProject: Record<string, ProjectDocs> = {
-  notely: notelyDocs,
+  parada: paradaDocs,
+  tala: talaDocs,
   "my-app": myAppDocs,
 };
 
-export const allDocSections: DocSection[] = [...notelySections, ...myAppSections];
+export const allDocSections: DocSection[] = [...paradaSections, ...talaSections, ...myAppSections];
 ```
 
 The docs sidebar automatically renders all keys in `docsByProject`. Adding a new key to the record is enough — no layout changes needed.
