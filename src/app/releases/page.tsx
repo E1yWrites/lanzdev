@@ -44,7 +44,7 @@ function assetPlatform(name: string) {
 function AssetList({ assets }: { assets: ReleaseAsset[] }) {
   return (
     <div className="mt-8 max-w-2xl">
-      <h4 className="mb-3 font-swiss text-[10px] font-bold uppercase leading-normal tracking-widest text-swiss-fg/40">
+      <h4 className="t-label mb-3 leading-normal text-swiss-fg/60">
         Assets · {assets.length}
       </h4>
       <ul className="divide-y divide-ink/10 overflow-hidden rounded-md border border-ink/10">
@@ -54,7 +54,7 @@ function AssetList({ assets }: { assets: ReleaseAsset[] }) {
               href={asset.downloadUrl}
               className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 px-4 py-3 transition-colors duration-fast hover:bg-ink/[0.04]"
             >
-              <span className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">
+              <span className="t-label text-swiss-fg/60">
                 {assetPlatform(asset.name)}
               </span>
               <span className="min-w-0 truncate font-mono text-xs text-swiss-fg/80 group-hover:text-swiss-fg">{asset.name}</span>
@@ -102,7 +102,7 @@ export default async function ReleasesPage({
       <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
         {releases.length === 0 ? (
           <div className="rounded-lg border border-dashed border-ink/15 p-10 text-center">
-            <span className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/40">
+            <span className="t-label text-swiss-fg/60">
               No releases published yet.
             </span>
           </div>
@@ -122,7 +122,7 @@ export default async function ReleasesPage({
                 tags={tags}
               >
                 {title && (
-                  <p className="mb-6 font-swiss text-xl font-black uppercase tracking-tighter text-swiss-fg md:text-2xl">{title}</p>
+                  <p className="font-display font-light tracking-tight mb-6 text-xl text-swiss-fg md:text-2xl">{title}</p>
                 )}
                 {release.body ? (
                   <ReleaseNotes body={release.body} />

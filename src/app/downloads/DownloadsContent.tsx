@@ -18,7 +18,7 @@ interface DownloadsContentProps {
 }
 
 const linkClass =
-  "inline-flex items-center gap-1.5 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/50 transition-colors duration-fast hover:text-swiss-accent";
+  "t-label inline-flex items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent";
 
 export function DownloadsContent({ project, others }: DownloadsContentProps) {
   const sectionRef = useReveal({ threshold: 0.05, stagger: true, staggerDelay: 60 });
@@ -47,14 +47,14 @@ export function DownloadsContent({ project, others }: DownloadsContentProps) {
                 {project.icon ? (
                   <Image src={project.icon} alt="" fill sizes="64px" className="object-contain p-1.5" />
                 ) : (
-                  <span aria-hidden="true" className="font-swiss text-3xl font-black uppercase text-swiss-bg">
+                  <span aria-hidden="true" className="font-display font-light tracking-tight text-3xl text-swiss-bg">
                     {project.name.charAt(0)}
                   </span>
                 )}
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="font-swiss text-3xl font-black uppercase tracking-tighter text-swiss-fg">{project.name}</h2>
+                  <h2 className="font-display font-light tracking-tight text-3xl text-swiss-fg">{project.name}</h2>
                   <Badge variant={status.variant}>{status.label}</Badge>
                 </div>
                 <p className="mt-1.5 font-mono text-xs text-swiss-fg/50">
@@ -100,7 +100,7 @@ export function DownloadsContent({ project, others }: DownloadsContentProps) {
                     href={`/projects/${p.slug}`}
                     className="group grid gap-1 py-5 sm:grid-cols-12 sm:items-center sm:gap-6"
                   >
-                    <span className="font-swiss text-lg font-black uppercase tracking-tighter text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent sm:col-span-4">
+                    <span className="font-display font-light tracking-tight text-lg text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent sm:col-span-4">
                       {p.name}
                     </span>
                     <span className="font-swiss text-sm text-swiss-fg/60 sm:col-span-5">{p.tagline}</span>

@@ -33,14 +33,14 @@ export function Lightbox({ src, alt, onClose }: LightboxProps) {
     >
       <button
         onClick={onClose}
-        className="surface-glass absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full text-swiss-fg transition-colors duration-fast hover:bg-accent hover:text-swiss-bg"
+        className="surface-glass absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-md text-swiss-fg transition-colors duration-fast hover:bg-accent hover:text-swiss-bg"
         autoFocus
         aria-label="Close lightbox"
       >
         <X size={20} strokeWidth={2.5} />
       </button>
       <div
-        className="relative max-h-[85vh] max-w-[90vw] overflow-hidden rounded-lg border border-ink/10 shadow-[0_40px_120px_-30px_rgb(0_0_0/0.9)]"
+        className="relative max-h-[85vh] max-w-[90vw] overflow-hidden rounded-lg border border-ink/10"
         onClick={(e) => e.stopPropagation()}
       >
         <Image

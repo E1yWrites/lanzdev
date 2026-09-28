@@ -36,7 +36,7 @@ export function LegalPage({ title, href, lede, updated, sections, contactTopic }
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-14 md:px-8 md:py-20 lg:grid-cols-12">
         <aside className="lg:col-span-3">
           <nav aria-label="Legal pages" className="lg:sticky lg:top-24">
-            <span className="font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-fg/40">Documents</span>
+            <span className="t-label text-swiss-fg/60">Documents</span>
             <ul className="mt-4 flex flex-wrap gap-2 lg:flex-col lg:gap-0">
               {LEGAL_PAGES.map((page) => {
                 const active = page.href === href;
@@ -70,7 +70,7 @@ export function LegalPage({ title, href, lede, updated, sections, contactTopic }
             >
               <span className="font-mono text-xs text-swiss-accent md:pt-1">{pad(i + 1)}</span>
               <div>
-                <h2 className="font-swiss text-xl font-black uppercase tracking-tighter text-swiss-fg md:text-2xl">
+                <h2 className="font-display font-light tracking-tight text-xl text-swiss-fg md:text-2xl">
                   {section.title}
                 </h2>
                 <div className="mt-3 font-swiss text-[15px] leading-relaxed text-swiss-fg/70">{section.body}</div>
@@ -79,7 +79,7 @@ export function LegalPage({ title, href, lede, updated, sections, contactTopic }
           ))}
 
           <div className="mt-8 rounded-lg border border-accent/25 bg-accent/[0.06] p-6 md:ml-[5.5rem]">
-            <h2 className="font-swiss text-[11px] font-bold uppercase leading-normal tracking-widest text-swiss-accent">Contact</h2>
+            <h2 className="t-label leading-normal text-swiss-accent">Contact</h2>
             <p className="mt-2 font-swiss text-sm leading-relaxed text-swiss-fg/80">
               For questions about {contactTopic}, email{" "}
               <a

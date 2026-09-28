@@ -29,7 +29,7 @@ function LeadProject({ project }: { project: Project }) {
   return (
     <Link href={`/projects/${project.slug}`} className="group block rounded-lg">
       <Surface tier="elevated" className="grid overflow-hidden rounded-lg transition-colors duration-normal group-hover:border-ink/20 lg:grid-cols-12">
-        <div className="relative order-1 aspect-[16/10] overflow-hidden border-b border-ink/10 bg-ink/[0.02] swiss-grid-pattern lg:order-2 lg:col-span-7 lg:aspect-auto lg:min-h-[420px] lg:border-b-0 lg:border-l">
+        <div className="relative order-1 aspect-[16/10] overflow-hidden border-b border-ink/10 bg-ink/[0.02] lg:order-2 lg:col-span-7 lg:aspect-auto lg:min-h-[420px] lg:border-b-0 lg:border-l">
           {project.heroImage ? (
             <Image
               src={project.heroImage}
@@ -39,7 +39,7 @@ function LeadProject({ project }: { project: Project }) {
               className="object-cover object-left-top transition-transform duration-slow ease-standard group-hover:scale-[1.02]"
             />
           ) : (
-            <span className="absolute inset-0 flex items-end p-8 font-swiss text-6xl font-black uppercase leading-none tracking-tighter text-swiss-fg/10">
+            <span className="font-display font-light tracking-tight absolute inset-0 flex items-end p-8 text-6xl leading-none text-swiss-fg/10">
               {project.name}
             </span>
           )}
@@ -48,10 +48,10 @@ function LeadProject({ project }: { project: Project }) {
 
         <div className="order-2 flex flex-col p-6 md:p-10 lg:order-1 lg:col-span-5">
           <div className="mb-8 flex items-center justify-between gap-4">
-            <span className="font-mono text-[11px] font-bold tracking-widest text-swiss-accent">01 — Featured</span>
+            <span className="t-label text-swiss-accent">01 — Featured</span>
             <Badge variant={status.variant}>{status.label}</Badge>
           </div>
-          <h2 className="font-swiss text-5xl font-black uppercase tracking-tighter text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent md:text-6xl">
+          <h2 className="font-display font-light tracking-tight text-5xl text-swiss-fg transition-colors duration-fast group-hover:text-swiss-accent md:text-6xl">
             {project.name}
           </h2>
           <p className="mt-4 font-swiss text-lg leading-snug text-swiss-fg">{project.tagline}</p>
@@ -61,13 +61,13 @@ function LeadProject({ project }: { project: Project }) {
           <dl className="mb-8 grid grid-cols-[5.5rem_1fr] gap-y-2 border-t border-ink/10 pt-5">
             {meta.map(([label, value]) => (
               <div key={label} className="contents">
-                <dt className="font-swiss text-[10px] font-bold uppercase leading-5 tracking-widest text-swiss-fg/40">{label}</dt>
+                <dt className="t-label leading-5 text-swiss-fg/60">{label}</dt>
                 <dd className="font-mono text-xs leading-5 text-swiss-fg">{value}</dd>
               </div>
             ))}
           </dl>
 
-          <span className="inline-flex items-center gap-2 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
+          <span className="t-label inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
             Open project
             <ArrowRight size={12} strokeWidth={2.5} aria-hidden="true" className="transition-transform duration-fast group-hover:translate-x-1" />
           </span>
@@ -113,14 +113,14 @@ export function ProjectsContent({ projects }: ProjectsContentProps) {
         )}
 
         <div className="reveal mt-14 flex flex-col items-start justify-between gap-4 border-t border-ink/10 pt-8 sm:flex-row sm:items-center">
-          <span className="font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/40">
+          <span className="t-label text-swiss-fg/60">
             More software in development
           </span>
           <a
             href={siteConfig.github.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
+            className="t-label inline-flex items-center gap-1.5 text-swiss-fg/60 transition-colors duration-fast hover:text-swiss-accent"
           >
             All repositories on GitHub
             <ArrowUpRight size={12} strokeWidth={2.5} aria-hidden="true" />

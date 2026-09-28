@@ -128,6 +128,7 @@ export const projects: Project[] = [
     platforms: [],
     technologies: ["HTML", "JavaScript", "GSAP", "Vercel"],
     license: "MIT",
+    cover: asset("/art/parada.webp"),
     screenshots: [],
     features: [
       { name: "Animated hero with interactive scan-canvas", available: true },
@@ -163,6 +164,7 @@ export const projects: Project[] = [
     platforms: [],
     technologies: ["Java", "Fabric", "Gradle", "Minecraft"],
     license: "MIT",
+    cover: asset("/art/modpack.webp"),
     screenshots: [],
     features: [
       { name: "Modern Fabric modpack environment", available: true },

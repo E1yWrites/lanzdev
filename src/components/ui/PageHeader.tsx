@@ -4,7 +4,7 @@ interface PageHeaderProps {
   eyebrow: string;
   title: React.ReactNode;
   lede?: React.ReactNode;
-  /** Mono key/value strip under the lede, e.g. [["Projects", "03"]]. Falsy values are dropped. */
+  /** Mono key/value strip, e.g. [["Projects", "03"]]. Falsy values are dropped. */
   stats?: [string, React.ReactNode][];
   /** Extra content (actions, search) under the lede. */
   children?: React.ReactNode;
@@ -13,36 +13,24 @@ interface PageHeaderProps {
   className?: string;
 }
 
-/** Interior page header — eyebrow, display title, lede and stats, over the corner key light. */
+/** Interior page header — eyebrow, light serif title, lede, and a mono stats strip on a dotted rule. */
 export function PageHeader({ eyebrow, title, lede, stats, children, reveal = false, className }: PageHeaderProps) {
   const r = reveal ? "reveal" : undefined;
   const shownStats = stats?.filter(([, value]) => value);
 
   return (
-    <header className={cn("relative overflow-hidden border-b border-ink/10", className)}>
-      <div aria-hidden="true" className="page-glow pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto max-w-7xl px-5 pb-12 pt-16 md:px-8 md:pb-16 md:pt-24">
+    <header className={cn("border-b border-dotted border-ink/30", className)}>
+      <div className="mx-auto max-w-7xl px-5 pb-12 pt-20 md:px-8 md:pb-16 md:pt-28">
         <span className={cn("section-number block", r)}>{eyebrow}</span>
-        <h1
-          className={cn(
-            "mt-6 max-w-5xl font-swiss text-5xl font-black uppercase tracking-tighter text-swiss-fg sm:text-6xl md:text-7xl lg:text-8xl",
-            r
-          )}
-        >
-          {title}
-        </h1>
-        {lede && (
-          <p className={cn("mt-6 max-w-xl font-swiss text-base leading-relaxed text-swiss-fg/70 md:text-lg", r)}>
-            {lede}
-          </p>
-        )}
-        {children && <div className={cn("mt-8", r)}>{children}</div>}
+        <h1 className={cn("mt-8 max-w-5xl font-display text-display font-light text-ink", r)}>{title}</h1>
+        {lede && <p className={cn("mt-8 max-w-xl text-base leading-relaxed text-ink/70 md:text-lg", r)}>{lede}</p>}
+        {children && <div className={cn("mt-10", r)}>{children}</div>}
         {shownStats && shownStats.length > 0 && (
-          <dl className={cn("mt-8 flex flex-wrap gap-x-8 gap-y-2 font-mono text-xs text-swiss-fg/50", r)}>
+          <dl className={cn("t-label mt-12 flex flex-wrap gap-x-10 gap-y-2 text-ink/60", r)}>
             {shownStats.map(([label, value]) => (
-              <div key={label} className="flex gap-2">
+              <div key={label} className="flex gap-3">
                 <dt>{label}</dt>
-                <dd className="text-swiss-fg">{value}</dd>
+                <dd className="text-ink">{value}</dd>
               </div>
             ))}
           </dl>

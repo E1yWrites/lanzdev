@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 
 import type { LucideIcon } from "lucide-react";
 
+export const COMMAND_PALETTE_EVENT = "command-palette:open";
+
 interface Command {
   label: string;
   action: () => void;
@@ -44,7 +46,12 @@ export function useCommandPalette(commands: Command[]) {
       }
     };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    // Lets a visible button (the nav's ⌘K key) open the palette.
+    window.addEventListener(COMMAND_PALETTE_EVENT, open);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      window.removeEventListener(COMMAND_PALETTE_EVENT, open);
+    };
   }, [isOpen, open, close]);
 
   useEffect(() => {

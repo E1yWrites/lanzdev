@@ -36,9 +36,9 @@ export function PlatformDownloads({ project, className }: PlatformDownloadsProps
             )}
           >
             <div className="flex items-start justify-between gap-3">
-              <h3 className="font-swiss text-xl font-black uppercase tracking-tighter text-swiss-fg">{label}</h3>
+              <h3 className="font-display font-light tracking-tight text-xl text-swiss-fg">{label}</h3>
               {recommended && (
-                <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 font-swiss text-[10px] font-bold uppercase tracking-widest text-swiss-accent">
+                <span className="t-label shrink-0 rounded-full bg-accent/15 px-2 py-0.5 text-swiss-accent">
                   Your system
                 </span>
               )}

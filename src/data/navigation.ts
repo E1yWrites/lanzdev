@@ -1,23 +1,26 @@
 import type { NavItem } from "@/types/navigation";
 
-export const rightNav: NavItem[] = [
-  { label: "GITHUB", href: "https://github.com/E1yWrites", external: true },
-  { label: "DOWNLOAD", href: "/downloads" },
+export const mainNav: NavItem[] = [
+  { label: "Projects", href: "/projects" },
+  { label: "Downloads", href: "/downloads" },
+  { label: "Docs", href: "/docs" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
+export const isActivePath = (pathname: string, href: string) => pathname === href || pathname.startsWith(href + "/");
+
 export const footerNav = {
-  projects: [
+  index: [
     { label: "Projects", href: "/projects" },
     { label: "Downloads", href: "/downloads" },
     { label: "Releases", href: "/releases" },
+    { label: "Docs", href: "/docs" },
   ],
-  resources: [
-    { label: "Documentation", href: "/docs" },
-    { label: "GitHub", href: "https://github.com/E1yWrites", external: true },
-  ],
-  about: [
+  studio: [
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
+    { label: "GitHub", href: "https://github.com/E1yWrites", external: true },
   ],
   legal: [
     { label: "Terms", href: "/terms" },

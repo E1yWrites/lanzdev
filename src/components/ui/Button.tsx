@@ -11,20 +11,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary:
-    "bg-swiss-fg text-swiss-bg border-2 border-swiss-border hover:bg-swiss-accent hover:border-swiss-accent hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.35)]",
-  secondary:
-    "bg-swiss-bg text-swiss-fg border-2 border-swiss-border hover:bg-swiss-fg hover:text-swiss-bg hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.25)]",
-  ghost:
-    "bg-transparent text-swiss-fg border-2 border-transparent hover:border-swiss-border",
-  accent:
-    "bg-swiss-accent text-swiss-bg border-2 border-swiss-accent hover:bg-swiss-fg hover:border-swiss-fg hover:shadow-[0_10px_24px_-10px_rgba(255,48,0,0.4)]",
+  primary: "bg-ink text-paper hover:bg-accent hover:text-on-sheet",
+  secondary: "border border-ink/25 text-ink hover:border-ink/60 hover:bg-ink/[0.04]",
+  ghost: "text-ink/70 hover:text-ink",
+  accent: "bg-accent text-on-sheet hover:bg-ink",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "h-10 px-4 text-xs",
-  md: "h-12 px-6 text-sm",
-  lg: "h-16 px-8 text-sm",
+  sm: "h-9 px-3.5",
+  md: "h-11 px-5",
+  lg: "h-12 px-6",
 };
 
 /** Class list shared by <Button> and <ButtonLink> so links never wrap a <button>. */
@@ -34,10 +30,9 @@ export function buttonStyles({
   className,
 }: { variant?: ButtonVariant; size?: ButtonSize; className?: string } = {}) {
   return cn(
-    "tactile inline-flex items-center justify-center gap-2",
-    "font-swiss font-bold tracking-widest uppercase",
-    "transition-all duration-fast ease-standard",
-    "disabled:opacity-30 disabled:pointer-events-none",
+    "tactile t-label inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md",
+    "transition-colors duration-fast ease-standard",
+    "disabled:pointer-events-none disabled:opacity-30",
     variantStyles[variant],
     sizeStyles[size],
     className

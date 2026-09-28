@@ -21,7 +21,7 @@ function CopyEmail() {
     <button
       type="button"
       onClick={() => navigator.clipboard?.writeText(siteConfig.email).then(() => setCopied(true), () => {})}
-      className="tactile inline-flex h-10 items-center gap-2 self-start rounded-md border border-ink/25 px-4 font-swiss text-[11px] font-bold uppercase tracking-widest text-swiss-fg transition-colors duration-fast hover:border-ink/30 hover:bg-ink/[0.04]"
+      className="t-label tactile inline-flex h-10 items-center gap-2 self-start rounded-md border border-ink/25 px-4 text-swiss-fg transition-colors duration-fast hover:border-ink/30 hover:bg-ink/[0.04]"
     >
       {copied ? (
         <Check size={14} strokeWidth={2.5} aria-hidden="true" className="doc-copy-pop text-swiss-accent" />

@@ -20,7 +20,7 @@ interface DownloadButtonProps {
 }
 
 const disabledStyles =
-  "inline-flex items-center justify-center gap-2 h-12 px-5 font-swiss text-xs font-bold tracking-widest uppercase text-swiss-fg/40 border border-dashed border-ink/20 cursor-not-allowed select-none";
+  "t-label inline-flex items-center justify-center gap-2 h-12 px-5 text-swiss-fg/60 border border-dashed border-ink/20 cursor-not-allowed select-none";
 
 export function DownloadButton({
   state = "available",

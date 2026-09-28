@@ -43,7 +43,7 @@ export function ImagePreview({
           </span>
         </button>
         {caption && (
-          <figcaption className="mt-3 font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/50">
+          <figcaption className="t-label mt-3 text-swiss-fg/60">
             {caption}
           </figcaption>
         )}

@@ -1,24 +1,24 @@
 import Link from "next/link";
 import { footerNav } from "@/data/navigation";
+import { siteConfig } from "@/data/config";
 import type { NavItem } from "@/types/navigation";
-import { Hairline } from "@/components/ui/Hairline";
+import { FooterInvitation } from "./FooterInvitation";
 
 function FooterColumn({ title, items }: { title: string; items: NavItem[] }) {
   return (
     <div>
-      <h3 className="font-swiss text-[11px] font-bold tracking-widest uppercase text-swiss-fg/40 mb-4">
-        {title}
-      </h3>
-      <ul className="space-y-2">
+      <h2 className="t-label text-ink/60">{title}</h2>
+      <ul className="mt-4 space-y-2">
         {items.map((item) => (
           <li key={item.href}>
             <Link
               href={item.href}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
-              className="font-swiss text-sm font-medium text-swiss-fg/70 hover:text-swiss-accent transition-colors duration-150"
+              className="t-label text-ink transition-colors duration-fast hover:text-accent"
             >
               {item.label}
+              {item.external && " ↗"}
             </Link>
           </li>
         ))}
@@ -29,27 +29,24 @@ function FooterColumn({ title, items }: { title: string; items: NavItem[] }) {
 
 export function Footer() {
   return (
-    <footer className="border-t border-ink/10 bg-ink/[0.02] swiss-dots">
-      <div className="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <FooterColumn title="Projects" items={footerNav.projects} />
-          <FooterColumn title="Resources" items={footerNav.resources} />
-          <FooterColumn title="About" items={footerNav.about} />
-          <FooterColumn title="Legal" items={footerNav.legal} />
-        </div>
+    <footer className="relative z-[1] border-t border-dotted border-ink/30">
+      <FooterInvitation email={siteConfig.email} github={siteConfig.github.url} />
 
-        <Hairline className="mt-10 mb-6" />
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-5 py-12 md:px-8 lg:grid-cols-6">
+        <Link href="/" className="t-label col-span-2 self-start text-ink lg:col-span-1">
+          Lorenz<span className="text-accent">.</span>dev
+        </Link>
+        <FooterColumn title="Index" items={footerNav.index} />
+        <FooterColumn title="Studio" items={footerNav.studio} />
+        <FooterColumn title="Legal" items={footerNav.legal} />
+      </div>
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <div className="font-swiss font-black text-xl tracking-tighter uppercase text-swiss-fg">
-            Lorenz<span className="text-swiss-accent">.</span>dev
-          </div>
-          <div className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
-            &copy; 2026 Lorenz.dev — Built with precision
-          </div>
-          <div className="font-swiss text-[10px] font-bold tracking-widest uppercase text-swiss-fg/40">
-            Software / Design / Development
-          </div>
+      <div className="border-t border-dotted border-ink/30">
+        <div className="t-label mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-ink/60 md:flex-row md:justify-between md:px-8">
+          <span>© 2026 {siteConfig.personalName}</span>
+          <span>
+            {siteConfig.education.location} — <span className="tabular whitespace-nowrap">13.7565° N, 121.0583° E</span>
+          </span>
         </div>
       </div>
     </footer>

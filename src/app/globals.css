@@ -4,33 +4,22 @@
 
 @layer base {
   :root {
-    --swiss-bg: #0B0B0C;
-    --swiss-fg: #F5F5F5;
-    --swiss-muted: #1B1B1E;
-    --swiss-accent: #FF4C29;
-    --swiss-border: #F5F5F5;
-
-    /* Semantic material tokens — space-separated rgb, composed via rgb(var(..) / alpha) */
-    --paper: 11 11 12;
-    --paper-elevated: 19 19 21;
-    --ink: 245 245 245;
-    --surface-1: 27 27 30;
-    --accent: 255 76 41;
-
-    /* Cinematic key-light glow behind hero art */
-    --glow: 255 108 61;
+    /* Space-separated rgb, composed via rgb(var(..) / alpha) */
+    --paper: 12 12 12; /* #0C0C0C page */
+    --paper-elevated: 22 22 22; /* #161616 raised surfaces, overlays */
+    --ink: 237 237 234; /* #EDEDEA warm off-white */
+    --accent: 255 76 41; /* #FF4C29 the one accent */
+    --sheet: 239 238 233; /* #EFEEE9 light "sheet" surfaces */
+    --sheet-grey: 211 210 204; /* #D3D2CC */
+    --on-sheet: 17 17 17; /* #111111 ink printed on sheets and on accent */
 
     /* Motion */
     --duration-instant: 100ms;
     --duration-fast: 160ms;
     --duration-normal: 240ms;
-    --duration-slow: 420ms;
+    --duration-slow: 600ms;
     --ease-standard: cubic-bezier(.4, 0, .2, 1);
-    --ease-out-back: cubic-bezier(.34, 1.2, .64, 1);
-
-    /* Pointer position for interactive glass, set via onPointerMove */
-    --pointer-x: 50%;
-    --pointer-y: 50%;
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
   }
 
   *,
@@ -48,18 +37,16 @@
   }
 
   body {
-    background-color: var(--swiss-bg);
-    color: var(--swiss-fg);
-    font-family: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: rgb(var(--paper));
+    color: rgb(var(--ink));
+    font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.5;
-    letter-spacing: -0.01em;
-    position: relative;
+    line-height: 1.6;
   }
 
   ::selection {
-    background-color: var(--swiss-accent);
-    color: #0B0B0C;
+    background-color: rgb(var(--accent));
+    color: rgb(var(--on-sheet));
   }
 
   a {
@@ -67,7 +54,8 @@
     text-decoration: none;
   }
 
-  img {
+  img,
+  video {
     max-width: 100%;
     height: auto;
     display: block;
@@ -89,12 +77,8 @@
     color: inherit;
   }
 
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible,
-  button:focus-visible,
-  a:focus-visible {
-    outline: 2px solid var(--swiss-accent);
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
     outline-offset: 2px;
   }
 
@@ -104,143 +88,111 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
 @layer components {
+  /* Interface text: monospace, uppercase, a touch of tracking. */
+  .t-label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Section eyebrow — a small square, then the label, in the accent. */
+  .section-number {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(var(--accent));
+  }
+
+  .section-number::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.7em;
+    vertical-align: 0.1em;
+    background: currentColor;
+  }
+
+  .editorial-label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(var(--ink));
+  }
+
   /* Docs — copy-button feedback */
   .doc-copy-pop {
-    animation: docPop 320ms var(--ease-out-back);
+    animation: docPop 320ms var(--ease-standard);
   }
 
   .reveal {
     opacity: 0;
-    transform: translateY(6px) translateX(-6px);
-    filter: blur(4px);
+    transform: translateY(12px);
     transition:
-      opacity var(--duration-slow) var(--ease-standard),
-      transform var(--duration-slow) var(--ease-standard),
-      filter var(--duration-slow) var(--ease-standard);
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
   }
 
   .reveal.visible {
     opacity: 1;
-    transform: translateY(0) translateX(0);
-    filter: blur(0);
+    transform: none;
   }
 
-  /* Material tiers — depth via surface, not decoration */
+  /* Surfaces — flat, hairline-bordered. Depth comes from tone, not blur or shadow. */
   .surface-solid {
-    background: rgb(var(--paper) / 0.7);
+    background: rgb(var(--ink) / 0.025);
     border: 1px solid rgb(var(--ink) / 0.1);
-    backdrop-filter: blur(24px) saturate(150%);
-    -webkit-backdrop-filter: blur(24px) saturate(150%);
   }
 
   .surface-subtle {
     background: rgb(var(--ink) / 0.03);
   }
 
-  .surface-glass {
-    background: rgb(var(--paper) / 0.6);
-    border: 1px solid rgb(var(--ink) / 0.1);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow:
-      inset 0 1px 0 rgb(var(--ink) / 0.08),
-      0 8px 30px -12px rgb(0 0 0 / 0.5);
-  }
-
+  /* Overlays (menus, palette) need an opaque ground. */
+  .surface-glass,
   .surface-elevated {
     background: rgb(var(--paper-elevated));
-    border: 1px solid rgb(var(--ink) / 0.08);
-    box-shadow: 0 12px 40px -16px rgb(0 0 0 / 0.6);
+    border: 1px solid rgb(var(--ink) / 0.12);
   }
 
-  /* Cinematic key-light glow — hero backdrop */
-  .surface-glow {
-    background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      rgb(var(--glow) / 0.22),
-      transparent 70%
-    );
-  }
-
-  /* Interior page header — the same key light, pushed into the top-left corner */
-  .page-glow {
-    background:
-      radial-gradient(ellipse 55% 70% at 12% 0%, rgb(var(--glow) / 0.13), transparent 70%),
-      radial-gradient(ellipse 40% 50% at 95% 10%, rgb(var(--ink) / 0.035), transparent 70%);
-  }
-
-  /* Pointer-reactive highlight — glass surfaces only, updated via onPointerMove writing --pointer-x/y */
-  .glass-interactive {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .glass-interactive::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      280px circle at var(--pointer-x) var(--pointer-y),
-      rgb(var(--ink) / 0.06),
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity var(--duration-normal) var(--ease-standard);
-    pointer-events: none;
-  }
-
-  .glass-interactive:hover::before {
-    opacity: 1;
-  }
-
-  /* Tactile press — hover lift, active compress, spring settle */
+  /* Press feedback only — no hover lift. */
   .tactile {
-    transition: transform var(--duration-fast) var(--ease-out-back), box-shadow var(--duration-fast) var(--ease-standard);
-  }
-
-  .tactile:hover {
-    transform: translateY(-2px);
+    transition: transform var(--duration-instant) var(--ease-standard);
   }
 
   .tactile:active {
-    transform: translateY(0) scale(0.98);
-    transition-duration: var(--duration-instant);
+    transform: scale(0.98);
   }
 
   .skeleton {
     background: linear-gradient(
       90deg,
-      var(--swiss-muted) 25%,
-      #2A2A2E 50%,
-      var(--swiss-muted) 75%
+      rgb(var(--ink) / 0.04) 25%,
+      rgb(var(--ink) / 0.08) 50%,
+      rgb(var(--ink) / 0.04) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s ease-in-out infinite;
-  }
-
-  .skeleton-text {
-    height: 12px;
-    margin-bottom: 8px;
-  }
-
-  .skeleton-heading {
-    height: 28px;
-    width: 50%;
-    margin-bottom: 12px;
-  }
-
-  .skeleton-line {
-    height: 1px;
-    width: 100%;
   }
 
   .scrollbar-hide {
@@ -252,57 +204,26 @@
     display: none;
   }
 
-  .section-number {
-    font-family: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--swiss-accent);
-  }
-
-  .editorial-label {
-    font-family: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--swiss-fg);
+  /* Spec-sheet binder holes down a card's edge. */
+  .punch-rail {
+    background-image: radial-gradient(circle, currentColor 3.5px, transparent 4px);
+    background-size: 100% 25%;
+    background-position: center;
+    background-repeat: repeat-y;
   }
 }
 
 @layer utilities {
-  .swiss-grid-pattern {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 72px 72px;
-  }
-
-  .swiss-dots {
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 16px 16px;
-  }
-
-  .swiss-diagonal {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 10px,
-      rgba(255, 255, 255, 0.025) 10px,
-      rgba(255, 255, 255, 0.025) 11px
-    );
-  }
-
-  .swiss-noise {
+  /* A fixed, very faint grain over everything — texture without decoration. */
+  .grain {
     position: relative;
   }
 
-  .swiss-noise::before {
+  .grain::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
-    opacity: 0.03;
+    opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 0;
@@ -317,6 +238,10 @@
 
   .doc-content :is(ul, ol) {
     padding-left: 0;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
 
@@ -377,11 +302,22 @@
   .reveal {
     opacity: 1;
     transform: none;
-    filter: none;
     transition: none;
   }
 
-  .skeleton {
+  /* A still ticker wraps instead of clipping mid-word. */
+  .ticker {
+    white-space: normal;
+  }
+
+  .ticker-dup {
+    display: none;
+  }
+
+  .skeleton,
+  .animate-ticker,
+  .animate-pulse,
+  .doc-copy-pop {
     animation: none;
   }
 
@@ -390,27 +326,10 @@
     opacity: 1;
   }
 
-  .animate-pulse {
-    animation: none;
-  }
-
-  .glass-interactive::before {
-    display: none;
-  }
-
   .tactile,
-  .tactile:hover,
   .tactile:active {
     transition: none;
     transform: none;
-  }
-
-  .animate-drift {
-    animation: none;
-  }
-
-  .doc-copy-pop {
-    animation: none;
   }
 
   html {

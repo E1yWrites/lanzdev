@@ -9,28 +9,18 @@ interface BadgeProps {
 }
 
 const dotStyles: Record<BadgeVariant, string> = {
-  released: "bg-swiss-accent",
-  "in-progress": "bg-swiss-fg",
-  prototype: "bg-swiss-fg/50",
-  archived: "bg-swiss-fg/30",
-  planned: "bg-swiss-fg/50",
+  released: "bg-accent",
+  "in-progress": "bg-current",
+  prototype: "bg-current opacity-60",
+  archived: "border border-current bg-transparent",
+  planned: "border border-current bg-transparent",
 };
 
+/** Status marker: a small square and a mono label, like a spec-sheet field. */
 export function Badge({ variant = "released", children, className }: BadgeProps) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5",
-        "font-swiss text-[10px] font-bold tracking-widest uppercase",
-        className
-      )}
-    >
-      <span
-        className={cn(
-          "w-1.5 h-1.5",
-          dotStyles[variant]
-        )}
-      />
+    <span className={cn("t-label inline-flex items-center gap-2", className)}>
+      <span aria-hidden="true" className={cn("h-1.5 w-1.5 shrink-0", dotStyles[variant])} />
       {children}
     </span>
   );
