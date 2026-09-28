@@ -543,6 +543,15 @@
     animation: fadeIn 240ms var(--ease-out);
   }
 
+  /* Loader pill (components/motion/Loader.tsx) */
+  .loader {
+    animation: fadeIn 300ms var(--ease-out) 150ms backwards;
+  }
+
+  .loader-star {
+    animation: loaderStar 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
   .menu-row {
     animation: fadeRise 520ms var(--ease-out) backwards;
     animation-delay: calc(var(--i, 0) * 55ms);
@@ -617,6 +626,18 @@
   }
   100% {
     transform: translateY(100%);
+  }
+}
+
+@keyframes loaderStar {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.7);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
   }
 }
 
@@ -705,6 +726,8 @@
   .scroll-cue::after,
   .live-dot::after,
   .roadmap-active,
+  .loader,
+  .loader-star,
   .menu-row,
   .spin-slow,
   .film-dialog {

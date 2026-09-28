@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useFilmLoading, type FilmState } from "@/components/motion/FilmPlayer";
 import { KineticText } from "@/components/motion/KineticText";
+import { Loader } from "@/components/motion/Loader";
 import { useReducedMotion } from "@/hooks/useMedia";
 import { useInView } from "@/hooks/useInView";
 import { cn } from "@/lib/utils";
@@ -15,33 +17,92 @@ export interface ReelItem {
 }
 
 /**
- * The 15-second films, back to back, like stories: they play (muted) while the
- * player is on screen, one hands over to the next, and the tabs double as progress.
- * Under reduced motion nothing starts until you press play.
+ * One film in the stack. Every film buffers as the player nears the screen, so
+ * switching is instant; the active one reports when it can play straight through.
+ */
+function ReelVideo({
+  item,
+  active,
+  load,
+  videoRef,
+  onState,
+  onEnded,
+  onToggle,
+}: {
+  item: ReelItem;
+  active: boolean;
+  load: boolean;
+  videoRef: (el: HTMLVideoElement | null) => void;
+  onState: (s: FilmState) => void;
+  onEnded: () => void;
+  onToggle: () => void;
+}) {
+  const ref = useRef<HTMLVideoElement | null>(null);
+  const state = useFilmLoading(ref, load);
+  useEffect(() => {
+    if (active) onState(state);
+  }, [active, state, onState]);
+
+  return (
+    <video
+      ref={(el) => {
+        ref.current = el;
+        videoRef(el);
+      }}
+      className={cn("absolute inset-0 h-full w-full cursor-pointer transition-opacity duration-500", active ? "opacity-100" : "pointer-events-none opacity-0")}
+      poster={item.film.poster}
+      muted
+      playsInline
+      preload="none"
+      onClick={onToggle}
+      onEnded={onEnded}
+      aria-hidden={!active}
+      aria-label={`${item.name} — ${item.caption}`}
+    >
+      <source src={item.film.mp4} type="video/mp4" />
+      <source src={item.film.webm} type="video/webm" />
+    </video>
+  );
+}
+
+/**
+ * The 15-second films, back to back, like stories. They buffer before the player
+ * reaches the screen, each starts only once it can play through without stalling
+ * (a loader shows until then), and one hands over to the next. Under reduced motion
+ * nothing starts until you press play.
  */
 export function Showreel({ items }: { items: ReelItem[] }) {
   const frame = useRef<HTMLDivElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
+  const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const bars = useRef<(HTMLSpanElement | null)[]>([]);
   const reduced = useReducedMotion();
+  const near = useInView(frame, "900px 0px");
   const inView = useInView(frame, "0px", 0.35);
   const [current, setCurrent] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
+  const [status, setStatus] = useState<FilmState>({ ready: false, buffering: false, progress: 0 });
 
-  // Play while on screen (unless paused by hand or reduced motion); pause when off.
+  // Play the current film while on screen — once it's ready — and keep the others still.
   useEffect(() => {
-    const v = video.current;
-    if (!v) return;
-    if (inView && !userPaused && !reduced) v.play().catch(() => setPlaying(false));
-    else v.pause();
-  }, [inView, userPaused, reduced, current]);
+    videos.current.forEach((v, i) => {
+      if (!v) return;
+      if (i !== current) {
+        v.pause();
+        if (v.currentTime) v.currentTime = 0;
+        return;
+      }
+      if (inView && !userPaused && !reduced && status.ready) v.play().catch(() => undefined);
+      else v.pause();
+    });
+  }, [current, inView, userPaused, reduced, status.ready]);
 
-  // Progress bars follow the playhead every frame.
+  // Play state and progress bars follow the current video every frame.
   useEffect(() => {
     let raf = 0;
     const tick = () => {
-      const v = video.current;
+      const v = videos.current[current];
+      setPlaying(Boolean(v && !v.paused));
       bars.current.forEach((bar, i) => {
         if (!bar) return;
         const p = i < current ? 1 : i > current ? 0 : v && v.duration ? v.currentTime / v.duration : 0;
@@ -54,7 +115,7 @@ export function Showreel({ items }: { items: ReelItem[] }) {
   }, [current]);
 
   const toggle = () => {
-    const v = video.current;
+    const v = videos.current[current];
     if (!v) return;
     if (v.paused) {
       setUserPaused(false);
@@ -67,6 +128,8 @@ export function Showreel({ items }: { items: ReelItem[] }) {
 
   const item = items[current];
   if (!item) return null;
+  // Waiting for a smooth start (auto-play only), or stalled mid-play.
+  const loading = status.buffering || (inView && !reduced && !userPaused && !status.ready);
 
   return (
     <section aria-labelledby="reel-title" className="mx-auto max-w-[1600px] px-5 py-24 md:px-8 md:py-32 lg:px-12">
@@ -96,7 +159,12 @@ export function Showreel({ items }: { items: ReelItem[] }) {
               className={cn("group text-left transition-colors duration-fast", i === current ? "text-ink" : "text-ink/45 hover:text-ink/80")}
             >
               <span className="block h-[3px] w-full overflow-hidden rounded-full bg-ink/15">
-                <span ref={(el) => { bars.current[i] = el; }} className="block h-full origin-left scale-x-0 bg-accent" />
+                <span
+                  ref={(el) => {
+                    bars.current[i] = el;
+                  }}
+                  className="block h-full origin-left scale-x-0 bg-accent"
+                />
               </span>
               <span className="t-label mt-3 flex justify-between gap-3">
                 <span>
@@ -108,24 +176,22 @@ export function Showreel({ items }: { items: ReelItem[] }) {
           ))}
         </div>
 
-        <div ref={frame} className="relative mt-5 overflow-hidden rounded-xl border border-ink/10 bg-black" data-cursor={playing ? "Pause" : "Play"}>
-          <video
-            key={item.slug}
-            ref={video}
-            className="aspect-video w-full cursor-pointer"
-            poster={item.film.poster}
-            muted
-            playsInline
-            preload={inView ? "auto" : "none"}
-            onClick={toggle}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            onEnded={() => setCurrent((c) => (c + 1) % items.length)}
-            aria-label={`${item.name} — ${item.caption}`}
-          >
-            <source src={item.film.mp4} type="video/mp4" />
-            <source src={item.film.webm} type="video/webm" />
-          </video>
+        <div ref={frame} className="relative mt-5 aspect-video overflow-hidden rounded-xl border border-ink/10 bg-black" data-cursor={playing ? "Pause" : "Play"}>
+          {items.map((it, i) => (
+            <ReelVideo
+              key={it.slug}
+              item={it}
+              active={i === current}
+              load={near}
+              videoRef={(el) => {
+                videos.current[i] = el;
+              }}
+              onState={setStatus}
+              onEnded={() => setCurrent((c) => (c + 1) % items.length)}
+              onToggle={toggle}
+            />
+          ))}
+          {loading && <Loader label="Loading film" progress={status.progress} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />}
           <button
             type="button"
             onClick={toggle}

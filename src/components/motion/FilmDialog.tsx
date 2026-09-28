@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { ProjectFilm } from "@/types/project";
+import { FilmPlayer } from "./FilmPlayer";
 
 /** Full-screen player for a project's 15-second film. Esc or the backdrop closes it. */
 export function FilmDialog({ film, title, open, onClose }: { film: ProjectFilm; title: string; open: boolean; onClose: () => void }) {
@@ -36,10 +37,7 @@ export function FilmDialog({ film, title, open, onClose }: { film: ProjectFilm; 
             Close
           </button>
         </div>
-        <video className="aspect-video w-full rounded-lg bg-black" poster={film.poster} autoPlay controls playsInline muted>
-          <source src={film.mp4} type="video/mp4" />
-          <source src={film.webm} type="video/webm" />
-        </video>
+        <FilmPlayer film={film} title={title} autoPlay className="rounded-lg" />
       </div>
     </div>,
     document.body

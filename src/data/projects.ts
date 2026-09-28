@@ -120,13 +120,7 @@ export const projects: Project[] = [
       poster: asset("/art/films/tala.jpg"),
       duration: 15,
     },
-    screenshots: [
-      {
-        src: asset("/images/tala-liveapp.png"),
-        alt: "Tala's home screen: a sidebar of notes, folders and tags beside a greeting, quick actions and note counts, in the hand-drawn style",
-        caption: "The home screen in the sunlight theme",
-      },
-    ],
+    screenshots: [],
     stats: [
       { value: "v1.1.0", label: "Latest release" },
       { value: "0", label: "Accounts or servers" },

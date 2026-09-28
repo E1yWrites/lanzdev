@@ -8,6 +8,7 @@ import { useFinePointer, useReducedMotion } from "@/hooks/useMedia";
 import { useInView } from "@/hooks/useInView";
 import { cn } from "@/lib/utils";
 import type { DragState, SceneProps } from "./scenes";
+import { Loader } from "@/components/motion/Loader";
 import { useCanvasFont } from "./useCanvasFont";
 
 // Every model starts as its rendered poster (art/, same camera), so first paint is an
@@ -53,6 +54,13 @@ function scheduleMount(cb: () => void) {
   };
 }
 
+let prefetched = false;
+function prefetchScenes() {
+  if (prefetched) return;
+  prefetched = true;
+  whenIdle(() => void import("./scenes"));
+}
+
 let webgl: boolean | null = null;
 function supportsWebGL() {
   if (webgl !== null) return webgl;
@@ -88,7 +96,7 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
   const router = useRouter();
   const reduced = useReducedMotion();
   const fine = useFinePointer();
-  const near = useInView(ref, "300px 0px");
+  const near = useInView(ref, "700px 0px");
   const visible = useInView(ref, "0px", 0.05);
   const { font, ready: fontReady } = useCanvasFont();
   const [canRender, setCanRender] = useState(false);
@@ -100,6 +108,11 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
   const moved = useRef(0);
 
   useEffect(() => setCanRender(supportsWebGL()), []);
+  // Fetch the 3D code in the background right after load, so it's usually ready
+  // before any stage scrolls near.
+  useEffect(() => {
+    if (canRender && !reduced) prefetchScenes();
+  }, [canRender, reduced]);
 
   const wanted = canRender && !reduced && near;
   const [mounted, setMounted] = useState(false);
@@ -111,6 +124,17 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
     }
     return scheduleMount(() => setMounted(true));
   }, [wanted]);
+
+  // If a scene never draws (lost context, very slow device), stop showing the loader —
+  // the poster is already a complete picture.
+  const [gaveUp, setGaveUp] = useState(false);
+  useEffect(() => {
+    if (!wanted || live) return;
+    setGaveUp(false);
+    const t = window.setTimeout(() => setGaveUp(true), 20000);
+    return () => window.clearTimeout(t);
+  }, [wanted, live]);
+  const loading = wanted && !live && !gaveUp;
 
   const Scene = scenes[model];
 
@@ -183,6 +207,8 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
           />
         </div>
       )}
+      {/* The poster stays until the live model has drawn; this says it's on its way. */}
+      {loading && <Loader label="Loading 3D" className="pointer-events-none absolute bottom-3 left-3" />}
     </div>
   );
 }

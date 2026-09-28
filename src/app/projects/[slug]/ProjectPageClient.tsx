@@ -8,6 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { BrowserPreview } from "@/components/ui/BrowserPreview";
 import { ImagePreview } from "@/components/ui/ImagePreview";
 import { CountUp } from "@/components/motion/CountUp";
+import { FilmPlayer } from "@/components/motion/FilmPlayer";
 import { KineticText } from "@/components/motion/KineticText";
 import { ModelStage } from "@/components/three/ModelStage";
 import { Roadmap } from "@/components/project/Roadmap";
@@ -235,12 +236,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
       {/* Film */}
       {project.film && (
         <Section id="film" index={num()} title={`${project.film.duration} seconds of ${project.name}`}>
-          <div className="overflow-hidden rounded-xl border border-ink/10 bg-black">
-            <video className="aspect-video w-full" poster={project.film.poster} controls playsInline muted preload="none">
-              <source src={project.film.mp4} type="video/mp4" />
-              <source src={project.film.webm} type="video/webm" />
-            </video>
-          </div>
+          <FilmPlayer film={project.film} title={project.name} className="rounded-xl border border-ink/10" />
           <p className="t-label mt-3 text-ink/55">Rendered with Remotion from the same 3D model as above. No sound.</p>
         </Section>
       )}
