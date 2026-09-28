@@ -15,6 +15,8 @@ export interface FilmState {
 /**
  * Buffering bookkeeping for a <video>: starts downloading when `load` turns true,
  * reports how much is buffered, and whether it can play through without stalling.
+ * Some browsers never pre-buffer (data saver, iOS, a slow link), so `ready` also turns
+ * true after a short wait; playing then fetches the film, and `buffering` covers stalls.
  */
 export function useFilmLoading(video: React.RefObject<HTMLVideoElement>, load: boolean) {
   const [state, setState] = useState<FilmState>({ ready: false, buffering: false, progress: 0 });
@@ -34,11 +36,13 @@ export function useFilmLoading(video: React.RefObject<HTMLVideoElement>, load: b
     const waiting = () => setState((s) => ({ ...s, buffering: true }));
     const playing = () => setState((s) => ({ ...s, buffering: false }));
     if (v.readyState >= 4) ready();
+    const giveUp = window.setTimeout(() => setState((s) => (s.ready ? s : { ...s, ready: true, buffering: v.readyState < 3 })), 2500);
     v.addEventListener("progress", progress);
     v.addEventListener("canplaythrough", ready);
     v.addEventListener("waiting", waiting);
     v.addEventListener("playing", playing);
     return () => {
+      window.clearTimeout(giveUp);
       v.removeEventListener("progress", progress);
       v.removeEventListener("canplaythrough", ready);
       v.removeEventListener("waiting", waiting);

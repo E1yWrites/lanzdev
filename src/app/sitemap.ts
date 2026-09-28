@@ -3,7 +3,7 @@ import { getAllProjects } from "@/lib/githubProjects";
 import { getAllDocSlugs } from "@/data/docs";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://lorenzmalabanan.dev";
+  const baseUrl = "https://lorenzmalabanan.com";
 
   const staticPages = ["", "/projects", "/downloads", "/releases", "/docs", "/about", "/contact", "/terms", "/privacy", "/license"].map(
     (path) => ({

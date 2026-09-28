@@ -258,11 +258,21 @@
      for the rise — padded well past the glyphs' ascenders, descenders and overhangs so
      nothing is ever clipped (tight display leading would otherwise cut the tops off
      T and P), with the padding cancelled out by negative margins. */
+  .kinetic {
+    position: relative;
+  }
+
   .kinetic-line {
     display: block;
     overflow: hidden;
     padding: 0.2em 0.08em 0.16em;
     margin: -0.2em -0.08em -0.16em;
+  }
+
+  /* Once every letter has risen, the masks come off, so the hover lens can enlarge a
+     letter past its line without it being cut. */
+  .kinetic[data-settled] .kinetic-line {
+    overflow: visible;
   }
 
   .kinetic-word {
@@ -278,6 +288,14 @@
 
   .js .kinetic:not([data-play]) .kinetic-letter {
     animation-play-state: paused;
+  }
+
+  /* The lens (KineticText): letters near the pointer grow and spread apart. Transform
+     only — nothing reflows, so a line never re-wraps and the words never shift. */
+  .kinetic[data-settled] .kinetic-letter {
+    transform: translate(var(--lx, 0px), var(--ly, 0px)) scale(var(--ls, 1));
+    transform-origin: 50% 80%;
+    transition: transform 240ms var(--ease-out);
   }
 
   /* Hero copy that follows the headline in. */
@@ -480,11 +498,6 @@
     .folder {
       transform: scale(calc(1 - var(--cover) * 0.04));
     }
-
-    /* Lined up: scroll settles on a folder when you stop near one. */
-    html {
-      scroll-snap-type: y proximity;
-    }
   }
 
   .folder-shade {
@@ -494,8 +507,6 @@
 
   .folder-snap {
     height: 0;
-    scroll-snap-align: start;
-    scroll-margin-top: 56px;
   }
 
   .folder-hold {

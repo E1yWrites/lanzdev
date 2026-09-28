@@ -44,11 +44,11 @@ export const metadata: Metadata = {
     template: "%s — Lorenz.dev",
   },
   description: siteConfig.description,
-  metadataBase: new URL("https://lorenzmalabanan.dev"),
+  metadataBase: new URL("https://lorenzmalabanan.com"),
   openGraph: {
     title: "Lorenz Malabanan — Software for curious people",
     description: siteConfig.description,
-    url: "https://lorenzmalabanan.dev",
+    url: "https://lorenzmalabanan.com",
     siteName: "Lorenz.dev",
     locale: "en_US",
     type: "website",
