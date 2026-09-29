@@ -2,17 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --fill {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
 @layer base {
   :root {
     /* Space-separated rgb, composed via rgb(var(..) / alpha) */
-    --paper: 12 12 12; /* #0C0C0C page */
-    --paper-elevated: 22 22 22; /* #161616 raised surfaces, overlays */
-    --ink: 237 237 234; /* #EDEDEA warm off-white */
-    --accent: 255 76 41; /* #FF4C29 the one accent */
-    --sheet: 239 238 233; /* #EFEEE9 light "sheet" surfaces */
-    --sheet-grey: 211 210 204; /* #D3D2CC */
-    --on-sheet: 17 17 17; /* #111111 ink printed on sheets and on accent */
-    --solar: 232 184 74; /* #E8B84A Tala's gold */
+    --paper: 13 16 22; /* #0D1016 midnight page */
+    --paper-elevated: 22 26 34; /* #161A22 raised surfaces, overlays */
+    --ink: 232 233 236; /* #E8E9EC cool bone */
+    --accent: 233 103 63; /* #E9673F ember, the one accent */
+    --sheet: 232 234 238; /* #E8EAEE light "sheet" surfaces */
+    --sheet-grey: 201 206 214; /* #C9CED6 */
+    --on-sheet: 13 16 22; /* #0D1016 ink printed on sheets and on accent */
+    --solar: 230 180 80; /* #E6B450 Tala's gold */
+    --night: 24 29 44; /* #181D2C Tala after dark */
 
     /* Motion */
     --duration-instant: 100ms;
@@ -439,23 +446,6 @@
   }
 
   /* Hero details */
-  .scroll-cue {
-    position: relative;
-    display: inline-block;
-    width: 1px;
-    height: 28px;
-    overflow: hidden;
-    background: rgb(var(--ink) / 0.2);
-  }
-
-  .scroll-cue::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgb(var(--accent));
-    animation: scrollCue 1.8s var(--ease-standard) infinite;
-  }
-
   .live-dot {
     position: relative;
     width: 7px;
@@ -473,31 +463,130 @@
     animation: livePing 2s var(--ease-out) infinite;
   }
 
-  .index-row .index-arrow {
+  /* The nav's sliding highlight (layout/Navigation.tsx). It jumps into place on first
+     paint and slides after that. */
+  .nav-pill-move {
+    transition:
+      transform 420ms var(--ease-out),
+      width 420ms var(--ease-out);
+  }
+
+  /* Hero (components/home/Hero.tsx). A low ember-and-midnight glow under the pad. */
+  .hero-glow {
+    background:
+      radial-gradient(46% 38% at 50% 58%, rgb(var(--accent) / 0.1), transparent 70%),
+      radial-gradient(70% 55% at 50% 62%, rgb(64 86 140 / 0.16), transparent 75%);
+  }
+
+  /* The hero's keycap buttons: the same four keys as the pad, lit together. */
+  .keycap {
+    background: linear-gradient(to bottom, rgb(var(--ink) / 0.06), rgb(var(--ink) / 0.025));
+    box-shadow:
+      inset 0 1px 0 rgb(var(--ink) / 0.08),
+      inset 0 0 0 1px rgb(var(--ink) / 0.08),
+      0 2px 0 rgb(0 0 0 / 0.35);
+    transition:
+      transform 240ms var(--ease-out),
+      box-shadow 240ms var(--ease-out),
+      background-color 240ms var(--ease-out);
+  }
+
+  .keycap:hover,
+  .keycap:focus-visible,
+  .keycap[data-on] {
+    transform: translateY(2px);
+    background-color: rgb(var(--accent) / 0.08);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--ink) / 0.06),
+      inset 0 0 0 1px rgb(var(--accent) / 0.45),
+      0 0 0 rgb(0 0 0 / 0.35);
+  }
+
+  .keycap:active {
+    transform: translateY(3px) scale(0.98);
+  }
+
+  .keycap-arrow {
     opacity: 0;
-    transform: translateX(-8px);
+    transform: translateX(-6px);
     transition:
       opacity 200ms linear,
       transform 400ms var(--ease-out);
   }
 
-  .index-row:hover .index-arrow,
-  .index-row:focus-visible .index-arrow {
+  .keycap:hover .keycap-arrow,
+  .keycap:focus-visible .keycap-arrow,
+  .keycap[data-on] .keycap-arrow {
     opacity: 1;
     transform: none;
+  }
+
+  /* Each readout line re-enters when the key under the pointer changes. */
+  .readout-line {
+    animation: fadeRise 420ms var(--ease-out) backwards;
+  }
+
+  .readout-line + .readout-line {
+    animation-delay: 50ms;
+  }
+
+  .readout-line + .readout-line + .readout-line {
+    animation-delay: 100ms;
   }
 
   /* Folder stack (components/home/WorkFolders.tsx). --cover (0–1) is how far the next
      folder has slid over this one. */
   .folder {
     --cover: 0;
-    transform-origin: 50% 0;
+    --fill: rgb(var(--sheet));
+    /* --fill is a registered colour (below), so day to night eases instead of snapping,
+       while --cover still tracks the scroll exactly. */
+    transition: --fill 700ms var(--ease-out);
   }
 
+  /* The folder's sheet and its tab share one colour. As the next folder covers this
+     one, both dim toward the page by the same amount (the sheet through .folder-shade,
+     the tab by mixing), so the tab row never reads as a separate strip. */
+  .folder-sheet {
+    background-color: var(--fill);
+  }
+
+  .folder-tab {
+    --r: 14px;
+    --tab-fill: color-mix(in srgb, var(--fill) calc(100% - var(--cover) * 50%), rgb(var(--paper)));
+    background-color: var(--tab-fill);
+    border-radius: var(--r) var(--r) 0 0;
+  }
+
+  /* Curved shoulders: the tab flows into the sheet instead of standing on it. Adjacent
+     tabs share a shoulder, so there's no gap or wedge between them. */
+  /* A soft shadow on the arriving folder's top edge. The tab row sits above the sheet,
+     so the sheet's shadow never falls on its own tab. */
   @media (min-width: 768px) {
-    .folder {
-      transform: scale(calc(1 - var(--cover) * 0.04));
+    .folder-arrive .folder-sheet,
+    .folder-arrive .folder-tab {
+      box-shadow: 0 -16px 36px -24px rgb(0 0 0 / 0.6);
     }
+  }
+
+  .folder-tab::before,
+  .folder-tab::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: var(--r);
+    height: var(--r);
+    pointer-events: none;
+  }
+
+  .folder-tab::before {
+    right: 100%;
+    background: radial-gradient(circle at 0 0, transparent calc(var(--r) - 0.5px), var(--tab-fill) var(--r));
+  }
+
+  .folder-tab::after {
+    left: 100%;
+    background: radial-gradient(circle at 100% 0, transparent calc(var(--r) - 0.5px), var(--tab-fill) var(--r));
   }
 
   /* 3D stages fade out over their last few pixels on every side, so a model that
@@ -516,7 +605,7 @@
   }
 
   .folder-shade {
-    background: rgb(0 0 0);
+    background: rgb(var(--paper));
     opacity: calc(var(--cover) * 0.5);
   }
 
@@ -526,15 +615,6 @@
 
   .folder-hold {
     height: 42svh;
-  }
-
-  /* Folders: the tab lifts as its folder is hovered. */
-  .folder-tab {
-    transition: transform 400ms var(--ease-out);
-  }
-
-  .folder:hover .folder-tab {
-    transform: translateY(-3px);
   }
 
   .link-underline {
@@ -684,15 +764,6 @@
   }
 }
 
-@keyframes scrollCue {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
-}
-
 @keyframes loaderStar {
   0% {
     transform: rotate(0deg) scale(1);
@@ -785,9 +856,9 @@
   .page-enter,
   .kinetic-letter,
   .hero-fade,
+  .readout-line,
   .logo-intro .logo-l,
   .logo-intro .logo-star,
-  .scroll-cue::after,
   .live-dot::after,
   .roadmap-active,
   .loader,
@@ -803,7 +874,9 @@
   .logo-star,
   .logo-l,
   .magnetic,
-  .folder-tab,
+  .folder,
+  .keycap,
+  .nav-pill-move,
   .cap-row::before,
   .tilt-card {
     transition: none;
@@ -812,13 +885,8 @@
   .group:hover .logo-star,
   .logo:hover .logo-star,
   .group:hover .logo-l,
-  .logo:hover .logo-l,
-  .folder:hover .folder-tab {
+  .logo:hover .logo-l {
     transform: none;
-  }
-
-  .folder {
-    transform: none !important;
   }
 
   .reveal {

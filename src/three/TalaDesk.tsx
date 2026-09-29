@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo } from "react";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { canvasFont, canvasTexture, clamp01, easeInOut, easeOutBack, lerp, ribbonGeometry, sparkleGeometry, useDisposable } from "./lib";
-import { TALA } from "./palette";
+import { SITE, TALA } from "./palette";
 import { SoftShadow } from "./Studio";
 
 // Tala as a desk: an open notebook where a pencil writes "tala" in cursive, a doodled
@@ -322,7 +322,7 @@ function Sun({ scale, spin }: { scale: number; spin: number }) {
 }
 
 const STARS: { p: [number, number, number]; r: number; color: string; phase: number }[] = [
-  { p: [-1.75, 1.35, -0.5], r: 0.2, color: "#FF4C29", phase: 0 },
+  { p: [-1.75, 1.35, -0.5], r: 0.2, color: SITE.accent, phase: 0 },
   { p: [0.55, 1.75, -0.95], r: 0.13, color: TALA.gold, phase: 1.7 },
   { p: [2.05, 0.95, 0.65], r: 0.11, color: TALA.chalk, phase: 3.1 },
   { p: [-0.6, 1.95, 0.35], r: 0.08, color: TALA.gold, phase: 4.4 },

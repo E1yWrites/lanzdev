@@ -87,11 +87,11 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
   const fine = useFinePointer();
   const hint = isTala
     ? fine
-      ? "Hover to write · click for night · drag to turn"
-      : "Tap for night · drag to turn"
+      ? `Hover to write, click for ${night ? "day" : "night"}, drag to turn`
+      : `Tap for ${night ? "day" : "night"}, drag to turn`
     : fine
-      ? "Hover to play · drag to turn"
-      : "Plays on its own · drag to turn";
+      ? "Hover to play, drag to turn"
+      : "Plays on its own, drag to turn";
   const spec = [
     ["Version", project.version ? `v${project.version}` : "—"],
     ["Status", status.label],
@@ -197,23 +197,32 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
             </div>
           )}
           {!project.heroImage && project.cover && (
-            <div className={cn("reveal relative mt-16 overflow-hidden rounded-xl md:mt-20", { accent: "bg-accent", solar: "bg-solar", sheet: "bg-sheet" }[project.tone ?? "sheet"])}>
-              {project.model ? (
-                <ModelStage
-                  model={project.model}
-                  poster={project.cover}
-                  alt={`${project.name} as a 3D model`}
-                  priority
-                  sizes="(min-width: 1280px) 1024px, 100vw"
-                  draggable
-                  night={night}
-                  onClick={isTala ? () => setNight((v) => !v) : undefined}
-                  className="mx-auto aspect-[4/3] w-full max-w-5xl"
-                />
-              ) : null}
-              <p className="t-label pointer-events-none absolute left-5 top-5 text-on-sheet/70">
-                {hint}
-              </p>
+            // `reveal` adds its class imperatively, so this wrapper's className must stay
+            // static; the day/night colour lives on the inner div.
+            <div className="reveal relative mt-16 md:mt-20">
+              <div
+                className={cn(
+                  "relative overflow-hidden rounded-xl transition-colors duration-700",
+                  isTala && night ? "bg-night" : { accent: "bg-accent", solar: "bg-solar", sheet: "bg-sheet" }[project.tone ?? "sheet"]
+                )}
+              >
+                {project.model ? (
+                  <ModelStage
+                    model={project.model}
+                    poster={project.cover}
+                    alt={`${project.name} as a 3D model`}
+                    priority
+                    sizes="(min-width: 1280px) 1024px, 100vw"
+                    draggable
+                    night={night}
+                    onClick={isTala ? () => setNight((v) => !v) : undefined}
+                    className="mx-auto aspect-[4/3] w-full max-w-5xl"
+                  />
+                ) : null}
+                <p className={cn("t-label pointer-events-none absolute left-5 top-5 transition-colors duration-700", isTala && night ? "text-ink/70" : "text-on-sheet/70")}>
+                  {hint}
+                </p>
+              </div>
             </div>
           )}
 

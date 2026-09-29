@@ -2,12 +2,12 @@
 // Site tokens mirror src/app/globals.css; project colours come from each project's own brand.
 
 export const SITE = {
-  paper: "#0C0C0C",
-  ink: "#EDEDEA",
-  accent: "#FF4C29",
-  sheet: "#EFEEE9",
-  grey: "#D3D2CC",
-  onSheet: "#111111",
+  paper: "#0D1016",
+  ink: "#E8E9EC",
+  accent: "#E9673F",
+  sheet: "#E8EAEE",
+  grey: "#C9CED6",
+  onSheet: "#0D1016",
 };
 
 /** PARADA — navy-and-sunset driver app, orange-led console, status colours. */

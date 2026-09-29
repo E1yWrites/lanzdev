@@ -12,21 +12,58 @@ import { cn } from "@/lib/utils";
 import { hasDownloads, platformSummary, projectStatus } from "@/lib/projectDisplay";
 import type { Project } from "@/types/project";
 
-// `panel` is the soft card the reading text sits on: a lighter wash of the folder's
-// colour, so small text gets more contrast without the folder losing its colour.
+// `fill` is the folder's colour (its tab and its sheet share it). `panel` is the soft
+// card the reading text sits on, so small text gets more contrast without the folder
+// losing its colour. `night` is Tala's folder after its moon comes up.
 const TONES = {
-  accent: { surface: "bg-accent", rule: "border-on-sheet/30", muted: "text-on-sheet/90", chip: "bg-on-sheet text-accent", panel: "bg-sheet/[0.22] ring-on-sheet/10" },
-  sheet: { surface: "bg-sheet", rule: "border-on-sheet/25", muted: "text-on-sheet/70", chip: "bg-on-sheet text-sheet", panel: "bg-white/60 ring-on-sheet/[0.07]" },
-  solar: { surface: "bg-solar", rule: "border-on-sheet/30", muted: "text-on-sheet/85", chip: "bg-on-sheet text-solar", panel: "bg-sheet/30 ring-on-sheet/10" },
+  accent: {
+    fill: "rgb(var(--accent))",
+    text: "text-on-sheet",
+    rule: "border-on-sheet/30",
+    muted: "text-on-sheet/90",
+    chip: "bg-on-sheet text-accent",
+    panel: "bg-sheet/[0.22] ring-on-sheet/10",
+    solid: "bg-on-sheet text-sheet",
+    ghost: "border-on-sheet/50 hover:bg-on-sheet hover:text-sheet",
+  },
+  sheet: {
+    fill: "rgb(var(--sheet))",
+    text: "text-on-sheet",
+    rule: "border-on-sheet/20",
+    muted: "text-on-sheet/70",
+    chip: "bg-on-sheet text-sheet",
+    panel: "bg-white/60 ring-on-sheet/[0.07]",
+    solid: "bg-on-sheet text-sheet",
+    ghost: "border-on-sheet/50 hover:bg-on-sheet hover:text-sheet",
+  },
+  solar: {
+    fill: "rgb(var(--solar))",
+    text: "text-on-sheet",
+    rule: "border-on-sheet/30",
+    muted: "text-on-sheet/85",
+    chip: "bg-on-sheet text-solar",
+    panel: "bg-sheet/30 ring-on-sheet/10",
+    solid: "bg-on-sheet text-sheet",
+    ghost: "border-on-sheet/50 hover:bg-on-sheet hover:text-sheet",
+  },
+  night: {
+    fill: "rgb(var(--night))",
+    text: "text-ink",
+    rule: "border-ink/15",
+    muted: "text-ink/70",
+    chip: "bg-solar text-on-sheet",
+    panel: "bg-ink/[0.05] ring-ink/10",
+    solid: "bg-ink text-on-sheet",
+    ghost: "border-ink/40 hover:bg-ink hover:text-on-sheet",
+  },
 } as const;
 
-const PANEL = "rounded-2xl ring-1 backdrop-blur-[2px]";
+const PANEL = "rounded-2xl ring-1 backdrop-blur-[2px] transition-colors duration-700";
 
-/** Each project's own colour, carried by a small mark on its tab — the folders share one surface. */
+/** Each project's own colour, carried by a small mark on its tab. */
 const MARK = { parada: "bg-accent", tala: "bg-solar", macropad: "bg-ink" } as const;
 
 const pad = (n: number) => String(n).padStart(2, "0");
-const TAB_CLIP = { clipPath: "polygon(0 0, calc(100% - 28px) 0, 100% 100%, 0 100%)" };
 
 /** The stack, still and whole: a line that wraps, never a marquee that cuts words off. */
 function Stack({ items, muted }: { items: string[]; muted: string }) {
@@ -51,10 +88,12 @@ function Stack({ items, muted }: { items: string[]; muted: string }) {
 }
 
 function Folder({ project, index, first, innerRef }: { project: Project; index: number; first: boolean; innerRef: (el: HTMLElement | null) => void }) {
-  const tone = TONES[project.tone ?? "sheet"];
+  const [night, setNight] = useState(false);
+  const isTala = project.model === "tala";
+  // Tala's moon turns the whole folder to night, not just the sky over the desk.
+  const tone = TONES[isTala && night ? "night" : (project.tone ?? "sheet")];
   const status = projectStatus(project.status);
   const [film, setFilm] = useState(false);
-  const [night, setNight] = useState(false);
   const spec = [
     ["Status", status.label],
     ["Runs on", platformSummary(project)],
@@ -62,38 +101,41 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
     ["Licence", project.license],
   ].filter(([, v]) => v);
 
-  const isTala = project.model === "tala";
   const fine = useFinePointer();
   const hint = isTala
     ? fine
-      ? "Hover to write · click for night · drag to turn"
-      : "Tap for night · drag to turn"
+      ? `Hover to write, click for ${night ? "day" : "night"}, drag to turn`
+      : `Tap for ${night ? "day" : "night"}, drag to turn`
     : fine
-      ? "Hover to play · drag to turn"
-      : "Plays on its own · drag to turn";
+      ? "Hover to play, drag to turn"
+      : "Plays on its own, drag to turn";
 
   return (
-    <article ref={innerRef} aria-labelledby={`work-${project.slug}`} className="folder text-on-sheet md:sticky md:top-14">
-      {/* Tab row: transparent except the tab, so earlier folders' tabs stay visible. */}
-      <div className="relative h-10 [--tab-step:calc(var(--tab-w)-10px)] [--tab-w:min(20rem,46vw)]">
-        <span
-          className={cn("folder-tab t-label absolute bottom-0 left-0 flex h-10 w-[var(--tab-w)] items-center gap-3 px-5 md:left-[calc(var(--i)*var(--tab-step))]", tone.surface)}
-          style={{ ...TAB_CLIP, "--i": index } as React.CSSProperties}
-        >
-          {project.model && <span aria-hidden="true" className={cn("h-2 w-2 shrink-0 rounded-[2px]", MARK[project.model])} />}
-          Project {pad(index + 1)}
-          <span className="hidden text-on-sheet/70 sm:inline">— {project.role?.split(" · ")[0]}</span>
-        </span>
-        {first && (
-          <Link href="/projects" className="t-label absolute bottom-0 right-0 hidden h-10 w-[var(--tab-w)] items-center bg-paper-elevated px-5 text-ink transition-colors duration-fast hover:text-accent md:flex" style={TAB_CLIP}>
-            All projects →
-          </Link>
-        )}
+    <article
+      ref={innerRef}
+      aria-labelledby={`work-${project.slug}`}
+      className={cn("folder transition-colors duration-700 md:sticky md:top-14", tone.text, !first && "folder-arrive")}
+      style={{ "--fill": tone.fill } as React.CSSProperties}
+    >
+      {/* Tab row: transparent except the tab, so earlier folders' tabs stay visible
+          beside it. Tabs sit edge to edge and share their curved shoulders. */}
+      <div className="relative z-[4] mx-auto h-11 w-full max-w-[1600px] px-5 md:px-8 lg:px-12">
+        <div className="relative h-full [--tab-step:calc(var(--tab-w)+14px)] [--tab-w:min(19rem,calc(50vw-2.5rem))]">
+          <span
+            className="folder-tab absolute bottom-0 left-0 flex h-full w-[var(--tab-w)] items-center gap-3 px-4 md:left-[calc(var(--i)*var(--tab-step))]"
+            style={{ "--i": index } as React.CSSProperties}
+          >
+            {project.model && <span aria-hidden="true" className={cn("h-2 w-2 shrink-0 rounded-[2px]", MARK[project.model])} />}
+            <span className="t-label">{pad(index + 1)}</span>
+            <span className="truncate font-display text-lg font-light leading-none">{project.name}</span>
+            <span className={cn("t-label ml-auto hidden truncate lg:inline", tone.muted)}>{project.role?.split(" · ")[0]}</span>
+          </span>
+        </div>
       </div>
 
       {/* On md+ each folder is at least one screen tall (minus nav and tab), with the model
-          filling what's left — it grows rather than overflowing on short screens. */}
-      <div className={cn(tone.surface, "relative md:flex md:min-h-[calc(100svh-6rem)] md:flex-col", !first && "md:shadow-[0_-18px_40px_-22px_rgb(0_0_0/0.55)]")}>
+          filling what's left, so it grows rather than overflowing on short screens. */}
+      <div className="folder-sheet relative md:flex md:min-h-[calc(100svh-6.25rem)] md:flex-col">
         {/* darkens as the next folder slides over this one (see WorkFolders) */}
         <div aria-hidden="true" className="folder-shade pointer-events-none absolute inset-0 z-[3]" />
         <div className="mx-auto grid w-full max-w-[1600px] flex-1 grid-cols-1 gap-6 px-5 pb-8 pt-6 md:grid-cols-12 md:gap-8 md:px-8 lg:px-12">
@@ -124,7 +166,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
 
             <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
               <Magnetic>
-                <Link href={`/projects/${project.slug}`} className="t-label inline-flex h-11 items-center gap-2 rounded-full bg-on-sheet px-5 text-sheet transition-transform duration-fast active:scale-95">
+                <Link href={`/projects/${project.slug}`} className={cn("t-label inline-flex h-11 items-center gap-2 rounded-full px-5 transition duration-fast active:scale-95", tone.solid)}>
                   View project <span aria-hidden="true">→</span>
                 </Link>
               </Magnetic>
@@ -133,8 +175,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
                   <button
                     type="button"
                     onClick={() => setFilm(true)}
-                   
-                    className="t-label inline-flex h-11 items-center gap-2 rounded-full border border-on-sheet/50 px-5 transition-colors duration-fast hover:bg-on-sheet hover:text-sheet"
+                    className={cn("t-label inline-flex h-11 items-center gap-2 rounded-full border px-5 transition-colors duration-fast", tone.ghost)}
                   >
                     <span aria-hidden="true" className="play-glyph" />
                     Film · {project.film.duration} s
@@ -164,7 +205,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
             <div className="flex items-center justify-between gap-4">
               <p className={cn("t-label rounded-full px-3 py-1.5 ring-1", tone.panel, tone.muted)}>{hint}</p>
               {isTala && (
-                <button type="button" onClick={() => setNight((v) => !v)} aria-pressed={night} className={cn("t-label shrink-0 rounded-full px-3 py-1.5", tone.chip)}>
+                <button type="button" onClick={() => setNight((v) => !v)} aria-pressed={night} className={cn("t-label shrink-0 rounded-full px-3 py-1.5 transition-colors duration-700", tone.chip)}>
                   {night ? "☾ Night" : "☀ Day"}
                 </button>
               )}
@@ -321,9 +362,9 @@ export function WorkFolders({ projects }: { projects: Project[] }) {
           <div aria-hidden="true" className="folder-hold hidden md:block" />
         </Fragment>
       ))}
-      <div className="mx-auto max-w-7xl px-5 py-8 md:hidden">
-        <Link href="/projects" className="t-label inline-flex min-h-7 items-center text-ink">
-          All projects →
+      <div className="mx-auto max-w-[1600px] px-5 py-10 md:px-8 lg:px-12">
+        <Link href="/projects" className="t-label group inline-flex min-h-7 items-center gap-2 text-ink transition-colors duration-fast hover:text-accent">
+          All projects <span aria-hidden="true" className="transition-transform duration-normal group-hover:translate-x-1">→</span>
         </Link>
       </div>
     </section>

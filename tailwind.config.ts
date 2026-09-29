@@ -28,6 +28,8 @@ const config: Config = {
         "on-sheet": "rgb(var(--on-sheet) / <alpha-value>)",
         // Tala's gold.
         solar: "rgb(var(--solar) / <alpha-value>)",
+        // Tala's folder after dark.
+        night: "rgb(var(--night) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Helvetica Neue", "Arial", "sans-serif"],

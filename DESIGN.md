@@ -11,16 +11,23 @@ palette, type, motion and content are Lorenz.dev's own.
 
 ## Tokens (`src/app/globals.css`, `tailwind.config.ts`)
 
+The palette is borrowed from the projects themselves: PARADA's navy and sunset, Tala's
+gold and night sky. One accent, cool neutrals throughout (no warm/cool mixing).
+
 | Token             | Value     | Use                                            |
 | ----------------- | --------- | ---------------------------------------------- |
-| `paper`           | `#0C0C0C` | Page                                           |
-| `paper-elevated`  | `#161616` | Menus, palette, raised panels                  |
-| `ink`             | `#EDEDEA` | Text on dark                                   |
-| `accent`          | `#FF4C29` | The accent: eyebrows, markers, links in hover |
-| `solar`           | `#E8B84A` | Tala's gold (keycap, pencil, notebook)         |
-| `sheet`           | `#EFEEE9` | Light surfaces (Tala's folder, spec card)      |
-| `sheet-grey`      | `#D3D2CC` | Second light surface                           |
-| `on-sheet`        | `#111111` | Text on sheets and on accent                   |
+| `paper`           | `#0D1016` | Page (midnight, never pure black)              |
+| `paper-elevated`  | `#161A22` | Menus, palette, raised panels                  |
+| `ink`             | `#E8E9EC` | Text on dark (cool bone)                       |
+| `accent`          | `#E9673F` | Ember, the one accent: markers, links in hover |
+| `solar`           | `#E6B450` | Tala's gold (keycap, pencil, notebook)         |
+| `night`           | `#181D2C` | Tala's folder after its moon comes up          |
+| `sheet`           | `#E8EAEE` | Light surfaces (folders, spec card)            |
+| `sheet-grey`      | `#C9CED6` | Second light surface                           |
+| `on-sheet`        | `#0D1016` | Text on sheets and on accent                   |
+
+The 3D models read the same values from `src/three/palette.ts`; after changing a
+token, re-render the posters (`art/`, `ONLY=Macropad,Parada,Tala,ShareImage`).
 
 Text opacity floors (WCAG AA, 4.5:1): `ink/60` on dark (6.4:1), `on-sheet/65` on
 sheet (5.6:1), `on-sheet/85` on accent (4.8:1).
@@ -40,9 +47,9 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
 
 | Piece | Where | What it does |
 | --- | --- | --- |
-| **Macropad** (live 3D) | Home hero | The site index as an object: four keys → PARADA, Tala, About, Say hi. Hover a key and it dips and glows and the OLED reads out where it goes; click to open. The pad leans toward the pointer, and the knob turns with the scroll. The list of links beside it is the same index — hovering either lights the other. |
+| **Macropad** (live 3D) | Home hero | The site index as an object, centred under a one-line headline: four keys → PARADA, Tala, About, Say hi. Hover a key and it dips and glows, the OLED reads out where it goes, and the readout under the pad introduces it (with no key under the pointer it introduces Lanz); click to open. A row of four keycap buttons is the same index for touch and keyboard, and hovering either lights the other. The pad leans toward the pointer, and the knob turns with the scroll. |
 | **PARADA lot** (live 3D) | PARADA folder + page | Hover and the story plays: the waiting car's plate is read, the barrier lifts, it parks, **Zone A drops from 12 to 11 free**, a new car arrives. Drag to turn. |
-| **Tala desk** (live 3D) | Tala folder + page | Hover and the pencil writes *tala* in cursive; click (or the Day/Night chip) to flip the sun to the moon. Drag to turn. |
+| **Tala desk** (live 3D) | Tala folder + page | Hover and the pencil writes *tala* in cursive; click (or the Day/Night chip) to flip the sun to the moon, and the whole folder (sheet, tab, text, buttons) eases to `night` with it. Drag to turn. |
 | **Films** (15 s each, 1080p, with sound) | Showreel, film dialog, project pages | PARADA's is its own motion reel: the problem ("Still circling."), the zone picker, Lottie the attendant, the gate camera reading a plate, and one gate event on the driver app and the admin console. Tala's is rendered with Remotion from its 3D model: writing, day to night, and the v1.1.0 features. They buffer before they're on screen and start once they can play through. Auto-play only ever starts a film; only you (or scrolling away) pause it, so Play always sticks, including with reduced motion, where nothing starts on its own. A browser that won't pre-buffer (data saver, iOS, a slow link) gets them after 2.5 s anyway, with the loader covering any stall. H.264 is served first (the most dependable hardware decoding on PCs), VP9 WebM second, and if a file fails to decode the player switches to the other one and keeps going (`useFilmSource`). The showreel buffers only the current film, and the next while it plays. It plays muted (browser policy) with a **Sound on** toggle; the dialog and project pages play with sound. |
 | **Soundtracks** | In the films | PARADA's reel brings its own. Tala's is synthesised from scratch (`art/audio/compose.py`, no samples or licences): a music bed plus effects cued to the frame — pencil strokes, a dusk sparkle, a pop per feature chip. |
 | **Folder stack** | Home | Each project folder pins under the nav, **holds** for a beat, then the next slides over it while the covered one dims and eases back. Stop scrolling just short of a folder on the way down and it glides the last few pixels into line. It never pulls backwards, so wheels and trackpads scroll freely; CSS scroll-snap was dropped because each wheel notch landed inside its range and snapped back. A folder taller than the screen pins by its bottom edge, so nothing is hidden. Every folder shares one clean sheet, and a soft shadow on the arriving folder's top edge separates the two. The reading text sits on a soft white panel, and each project's colour lives in a small mark on its tab. |
@@ -77,7 +84,11 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
 
 - `.section-number`: a 6px square, then a mono label, in the accent.
 - Project folders (`components/home/WorkFolders.tsx`): one screen tall from `md` up,
-  sticky, tabs staggered so every tab stays visible as folders stack. The stack is a
+  sticky, tabs set edge to edge so every tab stays visible as folders stack. Each tab
+  has rounded corners and curved shoulders that flow into its sheet, and neighbouring
+  tabs share a shoulder, so the row has no gaps or wedges. A covered folder's tab dims
+  with its sheet (the same mix toward `paper`); nothing scales, so tabs never drift out
+  of line. The stack is a
   still "Built with" line (up to eight, then "+N"), never a marquee.
 - Spec card (`components/home/AboutCard.tsx`): binder-hole rails, dotted cells,
   coordinates in the footer row; it tilts toward the pointer.
