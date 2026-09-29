@@ -197,7 +197,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
             </div>
           )}
           {!project.heroImage && project.cover && (
-            <div className={cn("reveal relative mt-16 overflow-hidden rounded-xl md:mt-20", { accent: "bg-accent", solar: "bg-solar", stone: "bg-sheet-grey", sheet: "bg-sheet" }[project.tone ?? "sheet"])}>
+            <div className={cn("reveal relative mt-16 overflow-hidden rounded-xl md:mt-20", { accent: "bg-accent", solar: "bg-solar", sheet: "bg-sheet" }[project.tone ?? "sheet"])}>
               {project.model ? (
                 <ModelStage
                   model={project.model}
@@ -207,7 +207,6 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                   sizes="(min-width: 1280px) 1024px, 100vw"
                   draggable
                   night={night}
-                  cursor={isTala ? "Drag · click for night" : "Drag · hover to play"}
                   onClick={isTala ? () => setNight((v) => !v) : undefined}
                   className="mx-auto aspect-[4/3] w-full max-w-5xl"
                 />

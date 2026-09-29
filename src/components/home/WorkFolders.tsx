@@ -16,25 +16,37 @@ import type { Project } from "@/types/project";
 // colour, so small text gets more contrast without the folder losing its colour.
 const TONES = {
   accent: { surface: "bg-accent", rule: "border-on-sheet/30", muted: "text-on-sheet/90", chip: "bg-on-sheet text-accent", panel: "bg-sheet/[0.22] ring-on-sheet/10" },
-  stone: { surface: "bg-sheet-grey", rule: "border-on-sheet/25", muted: "text-on-sheet/75", chip: "bg-on-sheet text-sheet-grey", panel: "bg-sheet/55 ring-on-sheet/[0.07]" },
   sheet: { surface: "bg-sheet", rule: "border-on-sheet/25", muted: "text-on-sheet/70", chip: "bg-on-sheet text-sheet", panel: "bg-white/60 ring-on-sheet/[0.07]" },
   solar: { surface: "bg-solar", rule: "border-on-sheet/30", muted: "text-on-sheet/85", chip: "bg-on-sheet text-solar", panel: "bg-sheet/30 ring-on-sheet/10" },
 } as const;
 
 const PANEL = "rounded-2xl ring-1 backdrop-blur-[2px]";
 
+/** Each project's own colour, carried by a small mark on its tab — the folders share one surface. */
+const MARK = { parada: "bg-accent", tala: "bg-solar", macropad: "bg-ink" } as const;
+
 const pad = (n: number) => String(n).padStart(2, "0");
 const TAB_CLIP = { clipPath: "polygon(0 0, calc(100% - 28px) 0, 100% 100%, 0 100%)" };
 
-function Ticker({ items, rule }: { items: string[]; rule: string }) {
-  const line = items.join(" · ");
+/** The stack, still and whole: a line that wraps, never a marquee that cuts words off. */
+function Stack({ items, muted }: { items: string[]; muted: string }) {
+  const MAX = 8;
+  const shown = items.slice(0, MAX);
+  const rest = items.length - shown.length;
   return (
-    <div aria-hidden="true" className={cn("ticker t-label overflow-hidden whitespace-nowrap border-y border-dotted py-1.5", rule)}>
-      <div className="inline-flex animate-ticker">
-        <span className="pr-8">{line}</span>
-        <span className="ticker-dup pr-8">{line}</span>
-      </div>
-    </div>
+    <p className="t-label mt-3 leading-relaxed">
+      <span className={cn("mr-2", muted)}>Built with</span>
+      {/* each item keeps its separator, so a line never starts with a stray dot */}
+      {shown.map((t, i) => (
+        <Fragment key={t}>
+          <span className="whitespace-nowrap">
+            {t}
+            {(i < shown.length - 1 || rest > 0) && " ·"}
+          </span>{" "}
+        </Fragment>
+      ))}
+      {rest > 0 && <span className={muted}>+{rest}</span>}
+    </p>
   );
 }
 
@@ -68,8 +80,9 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
           className={cn("folder-tab t-label absolute bottom-0 left-0 flex h-10 w-[var(--tab-w)] items-center gap-3 px-5 md:left-[calc(var(--i)*var(--tab-step))]", tone.surface)}
           style={{ ...TAB_CLIP, "--i": index } as React.CSSProperties}
         >
+          {project.model && <span aria-hidden="true" className={cn("h-2 w-2 shrink-0 rounded-[2px]", MARK[project.model])} />}
           Project {pad(index + 1)}
-          <span className="hidden text-on-sheet/85 sm:inline">— {project.role?.split(" · ")[0]}</span>
+          <span className="hidden text-on-sheet/70 sm:inline">— {project.role?.split(" · ")[0]}</span>
         </span>
         {first && (
           <Link href="/projects" className="t-label absolute bottom-0 right-0 hidden h-10 w-[var(--tab-w)] items-center bg-paper-elevated px-5 text-ink transition-colors duration-fast hover:text-accent md:flex" style={TAB_CLIP}>
@@ -80,7 +93,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
 
       {/* On md+ each folder is at least one screen tall (minus nav and tab), with the model
           filling what's left — it grows rather than overflowing on short screens. */}
-      <div className={cn(tone.surface, "relative md:flex md:min-h-[calc(100svh-6rem)] md:flex-col")}>
+      <div className={cn(tone.surface, "relative md:flex md:min-h-[calc(100svh-6rem)] md:flex-col", !first && "md:shadow-[0_-18px_40px_-22px_rgb(0_0_0/0.55)]")}>
         {/* darkens as the next folder slides over this one (see WorkFolders) */}
         <div aria-hidden="true" className="folder-shade pointer-events-none absolute inset-0 z-[3]" />
         <div className="mx-auto grid w-full max-w-[1600px] flex-1 grid-cols-1 gap-6 px-5 pb-8 pt-6 md:grid-cols-12 md:gap-8 md:px-8 lg:px-12">
@@ -106,11 +119,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
                   </div>
                 ))}
               </dl>
-              {project.technologies.length > 0 && (
-                <div className="mt-3 [@media(max-height:760px)]:hidden">
-                  <Ticker items={project.technologies} rule={tone.rule} />
-                </div>
-              )}
+              {project.technologies.length > 0 && <Stack items={project.technologies} muted={tone.muted} />}
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
@@ -168,7 +177,6 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
                 sizes="(min-width: 768px) 60vw, 100vw"
                 draggable
                 night={night}
-                cursor={isTala ? "Drag · click for night" : "Drag · hover to play"}
                 onClick={isTala ? () => setNight((v) => !v) : undefined}
                 className="aspect-[4/3] w-full md:aspect-auto md:min-h-[22rem] md:flex-1"
               />

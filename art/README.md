@@ -36,8 +36,12 @@ REMOTION_BROWSER_EXECUTABLE=/path/to/headless_shell REMOTION_GL=swangle npm run 
 
 ## Notes
 
-- **Films** are composed at 1280×720 and rendered at 1.5× (1920×1080) from near-lossless
-  frames: H.264 + AAC (CRF 19), then a VP9 + Opus WebM transcoded from that master.
+- **Films** are composed at 1280×720 and rendered at 1.5× (1920×1080) into a
+  near-lossless master (`out/<name>.master.mp4`, CRF 12). `encode.mjs` then writes the
+  served files: H.264 High + AAC and VP9 + Opus, both converted to standard limited-range
+  BT.709. Remotion's JPEG frames give full-range BT.601, which some desktop hardware
+  decoders reject. To re-encode without re-rendering, run
+  `node encode.mjs out/parada.master.mp4 parada`.
 - **Soundtracks** come from `audio/compose.py`: a small numpy synthesiser (keys, pads,
   bass, drums, whooshes, beeps, a servo, an engine, pencil grain, bells) with every effect
   placed on the films' own timeline. Deterministic — same seed, same audio.

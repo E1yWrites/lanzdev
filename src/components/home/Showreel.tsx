@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
-import { useFilmLoading, type FilmState } from "@/components/motion/FilmPlayer";
+import { useFilmLoading, useFilmSource, type FilmState } from "@/components/motion/FilmPlayer";
 import { KineticText } from "@/components/motion/KineticText";
 import { Loader } from "@/components/motion/Loader";
 import { useReducedMotion } from "@/hooks/useMedia";
@@ -18,8 +18,9 @@ export interface ReelItem {
 }
 
 /**
- * One film in the stack. Every film buffers as the player nears the screen, so
- * switching is instant; the active one reports when it can play straight through.
+ * One film in the stack. The current film buffers as the player nears the screen and
+ * the next one while it plays, so the hand-over is instant without downloading films
+ * nobody reaches; the active one reports when it can play straight through.
  */
 function ReelVideo({
   item,
@@ -40,6 +41,7 @@ function ReelVideo({
 }) {
   const ref = useRef<HTMLVideoElement | null>(null);
   const state = useFilmLoading(ref, load);
+  const src = useFilmSource(ref, item.film);
   useEffect(() => {
     if (active) onState(state);
   }, [active, state, onState]);
@@ -51,6 +53,7 @@ function ReelVideo({
         videoRef(el);
       }}
       className={cn("absolute inset-0 h-full w-full cursor-pointer transition-opacity duration-500", active ? "opacity-100" : "pointer-events-none opacity-0")}
+      src={src}
       poster={item.film.poster}
       muted
       playsInline
@@ -59,10 +62,7 @@ function ReelVideo({
       onEnded={onEnded}
       aria-hidden={!active}
       aria-label={`${item.name} — ${item.caption}`}
-    >
-      <source src={item.film.webm} type="video/webm" />
-      <source src={item.film.mp4} type="video/mp4" />
-    </video>
+    />
   );
 }
 
@@ -187,13 +187,14 @@ export function Showreel({ items }: { items: ReelItem[] }) {
           ))}
         </div>
 
-        <div ref={frame} className="relative mt-5 aspect-video overflow-hidden rounded-xl border border-ink/10 bg-black" data-cursor={playing ? "Pause" : "Play"}>
+        <div ref={frame} className="relative mt-5 aspect-video overflow-hidden rounded-xl border border-ink/10 bg-black">
           {items.map((it, i) => (
             <ReelVideo
               key={it.slug}
               item={it}
               active={i === current}
-              load={near}
+              // only the current film buffers ahead; the next joins once this one is playing
+              load={near && (i === current || (playing && i === (current + 1) % items.length))}
               videoRef={(el) => {
                 videos.current[i] = el;
               }}

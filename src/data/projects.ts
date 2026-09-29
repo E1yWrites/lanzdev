@@ -37,7 +37,6 @@ export const projects: Project[] = [
     license: "",
     cover: asset("/art/parada.webp"),
     model: "parada",
-    tone: "stone",
     film: {
       webm: asset("/art/films/parada.webm"),
       mp4: asset("/art/films/parada.mp4"),

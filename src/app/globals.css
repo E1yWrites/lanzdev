@@ -500,6 +500,21 @@
     }
   }
 
+  /* 3D stages fade out over their last few pixels on every side, so a model that
+     reaches the edge (PARADA's road, the arriving car, the macropad's cable) dissolves
+     instead of being cut off by the canvas. */
+  .stage-feather {
+    --feather: 44px;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+      linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+      linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+    mask-composite: intersect;
+  }
+
   .folder-shade {
     background: rgb(0 0 0);
     opacity: calc(var(--cover) * 0.5);
@@ -812,17 +827,7 @@
     transition: none;
   }
 
-  /* A still ticker wraps instead of clipping mid-word. */
-  .ticker {
-    white-space: normal;
-  }
-
-  .ticker-dup {
-    display: none;
-  }
-
   .skeleton,
-  .animate-ticker,
   .animate-pulse,
   .doc-copy-pop {
     animation: none;
