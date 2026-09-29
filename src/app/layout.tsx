@@ -15,11 +15,16 @@ const sans = Instrument_Sans({
 });
 
 // Variable with the optical-size axis: light and delicate at display sizes.
+// Next 14's metrics table has no entry for Newsreader, so it can't build the
+// size-matched fallback itself (it logs "Failed to find font override values").
+// The fallback is declared by hand in globals.css ("Newsreader Fallback").
 const display = Newsreader({
   subsets: ["latin"],
   axes: ["opsz"],
   variable: "--font-display",
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Newsreader Fallback", "Georgia", "serif"],
 });
 
 const mono = JetBrains_Mono({

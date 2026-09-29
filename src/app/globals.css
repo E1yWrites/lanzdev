@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Times New Roman, resized to Newsreader's proportions, so the headline doesn't jump
+   when the web font swaps in. Measured from Newsreader's latin file: average glyph
+   width 0.4018em against 0.4062em for Times, ascent 1470 and descent 530 on 2000 upm. */
+@font-face {
+  font-family: "Newsreader Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT");
+  size-adjust: 98.91%;
+  ascent-override: 74.31%;
+  descent-override: 26.79%;
+  line-gap-override: 0%;
+}
+
 @property --fill {
   syntax: "<color>";
   inherits: true;
