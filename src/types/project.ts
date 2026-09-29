@@ -83,7 +83,7 @@ export interface Project {
   /** 15-second showcase film rendered in art/. */
   film?: ProjectFilm;
   /** Folder colour on the home page. */
-  tone?: "accent" | "solar" | "sheet";
+  tone?: "accent" | "solar" | "sheet" | "stone";
   /** Where it runs when it isn't a desktop download, e.g. "Mobile · Web". */
   surfaces?: string;
   /** Short line under the name on the home page. */

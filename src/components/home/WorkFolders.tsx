@@ -16,6 +16,7 @@ import type { Project } from "@/types/project";
 // colour, so small text gets more contrast without the folder losing its colour.
 const TONES = {
   accent: { surface: "bg-accent", rule: "border-on-sheet/30", muted: "text-on-sheet/90", chip: "bg-on-sheet text-accent", panel: "bg-sheet/[0.22] ring-on-sheet/10" },
+  stone: { surface: "bg-sheet-grey", rule: "border-on-sheet/25", muted: "text-on-sheet/75", chip: "bg-on-sheet text-sheet-grey", panel: "bg-sheet/55 ring-on-sheet/[0.07]" },
   sheet: { surface: "bg-sheet", rule: "border-on-sheet/25", muted: "text-on-sheet/70", chip: "bg-on-sheet text-sheet", panel: "bg-white/60 ring-on-sheet/[0.07]" },
   solar: { surface: "bg-solar", rule: "border-on-sheet/30", muted: "text-on-sheet/85", chip: "bg-on-sheet text-solar", panel: "bg-sheet/30 ring-on-sheet/10" },
 } as const;

@@ -34,7 +34,7 @@ function LeadProject({ project, index }: { project: Project; index: number }) {
           className={cn(
             "relative order-1 aspect-[4/3] overflow-hidden border-b border-ink/10 lg:col-span-7 lg:border-b-0",
             index % 2 ? "lg:order-1 lg:border-r" : "lg:order-2 lg:border-l",
-            project.cover ? (project.tone === "accent" ? "bg-accent" : "bg-sheet") : "bg-ink/[0.02]"
+            project.cover ? { accent: "bg-accent", solar: "bg-solar", stone: "bg-sheet-grey", sheet: "bg-sheet" }[project.tone ?? "sheet"] : "bg-ink/[0.02]"
           )}
         >
           {project.cover ? (

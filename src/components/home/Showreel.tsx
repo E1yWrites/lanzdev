@@ -91,7 +91,10 @@ export function Showreel({ items }: { items: ReelItem[] }) {
   }, [sound, current]);
   const [status, setStatus] = useState<FilmState>({ ready: false, buffering: false, progress: 0 });
 
-  // Play the current film while on screen — once it's ready — and keep the others still.
+  // Auto-play the current film while on screen, once it's ready, and keep the others
+  // still. This only ever *starts* a film on its own; it pauses only when you do or when
+  // the reel leaves the screen, so pressing Play is never undone (under reduced motion
+  // nothing starts by itself, but Play still plays).
   useEffect(() => {
     videos.current.forEach((v, i) => {
       if (!v) return;
@@ -100,8 +103,8 @@ export function Showreel({ items }: { items: ReelItem[] }) {
         if (v.currentTime) v.currentTime = 0;
         return;
       }
-      if (inView && !userPaused && !reduced && status.ready) v.play().catch(() => undefined);
-      else v.pause();
+      if (!inView || userPaused) v.pause();
+      else if (!reduced && status.ready) v.play().catch(() => undefined);
     });
   }, [current, inView, userPaused, reduced, status.ready]);
 

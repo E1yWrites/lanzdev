@@ -26,7 +26,9 @@ export function useFilmLoading(video: React.RefObject<HTMLVideoElement>, load: b
     if (!v || !load) return;
     if (v.preload !== "auto") {
       v.preload = "auto";
-      if (v.readyState === 0) v.load();
+      // Kick off the download, but never while a play is pending: load() would abort it
+      // and the film would snap back to paused.
+      if (v.readyState === 0 && v.paused) v.load();
     }
     const progress = () => {
       if (!v.duration || !v.buffered.length) return;

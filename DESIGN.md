@@ -16,10 +16,10 @@ palette, type, motion and content are Lorenz.dev's own.
 | `paper`           | `#0C0C0C` | Page                                           |
 | `paper-elevated`  | `#161616` | Menus, palette, raised panels                  |
 | `ink`             | `#EDEDEA` | Text on dark                                   |
-| `accent`          | `#FF4C29` | The accent: eyebrows, markers, PARADA's folder |
+| `accent`          | `#FF4C29` | The accent: eyebrows, markers, links in hover |
 | `solar`           | `#E8B84A` | Tala's gold (keycap, pencil, notebook)         |
 | `sheet`           | `#EFEEE9` | Light surfaces (Tala's folder, spec card)      |
-| `sheet-grey`      | `#D3D2CC` | Second light surface                           |
+| `sheet-grey`      | `#D3D2CC` | Stone: PARADA's folder and cover               |
 | `on-sheet`        | `#111111` | Text on sheets and on accent                   |
 
 Text opacity floors (WCAG AA, 4.5:1): `ink/60` on dark (6.4:1), `on-sheet/65` on
@@ -43,7 +43,7 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
 | **Macropad** (live 3D) | Home hero | The site index as an object: four keys → PARADA, Tala, About, Say hi. Hover a key and it dips and glows and the OLED reads out where it goes; click to open. The pad leans toward the pointer, and the knob turns with the scroll. The list of links beside it is the same index — hovering either lights the other. |
 | **PARADA lot** (live 3D) | PARADA folder + page | Hover and the story plays: the waiting car's plate is read, the barrier lifts, it parks, **Zone A drops from 12 to 11 free**, a new car arrives. Drag to turn. |
 | **Tala desk** (live 3D) | Tala folder + page | Hover and the pencil writes *tala* in cursive; click (or the Day/Night chip) to flip the sun to the moon. Drag to turn. |
-| **Films** (Remotion, 15 s each, 1080p, with sound) | Showreel, film dialog, project pages | Rendered from the same models: PARADA's gate-to-zone pipeline and Tala's writing / day-to-night / v1.1.0 features. They buffer before they're on screen and start once they can play through. A browser that won't pre-buffer (data saver, iOS, a slow link) gets them after 2.5 s anyway, with the loader covering any stall. the showreel plays muted (browser policy) with a **Sound on** toggle, the dialog and project pages play with sound. |
+| **Films** (Remotion, 15 s each, 1080p, with sound) | Showreel, film dialog, project pages | Rendered from the same models: PARADA's gate-to-zone pipeline and Tala's writing / day-to-night / v1.1.0 features. They buffer before they're on screen and start once they can play through. Auto-play only ever starts a film; only you (or scrolling away) pause it, so Play always sticks, including with reduced motion, where nothing starts on its own. A browser that won't pre-buffer (data saver, iOS, a slow link) gets them after 2.5 s anyway, with the loader covering any stall. the showreel plays muted (browser policy) with a **Sound on** toggle, the dialog and project pages play with sound. |
 | **Soundtracks** | In the films | Synthesised from scratch (`art/audio/compose.py`, no samples or licences): a music bed per project plus effects cued to the frame — engine, plate-read blips and chime, barrier servo, the counter's ding; pencil strokes, a dusk sparkle, a pop per feature chip. |
 | **Folder stack** | Home | Each project folder pins under the nav, **holds** for a beat, then the next slides over it while the covered one dims and eases back. Stop scrolling just short of a folder on the way down and it glides the last few pixels into line. It never pulls backwards, so wheels and trackpads scroll freely; CSS scroll-snap was dropped because each wheel notch landed inside its range and snapped back. A folder taller than the screen pins by its bottom edge, so nothing is hidden. The reading text sits on a soft panel, a lighter wash of the folder's colour, for contrast. |
 | **Kinetic type** | Hero and every page title | Letters rise into place when on screen. Once settled, the heading becomes a lens: letters near the pointer grow (up to 1.2×) and spread apart. It's transform-only, with no weight change, so nothing reflows or re-wraps. The line masks come off after the entrance, so an enlarged letter is never clipped. Mouse only. |
