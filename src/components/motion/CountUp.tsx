@@ -33,7 +33,9 @@ export function CountUp({ value, duration = 1400 }: { value: string; duration?: 
         io.disconnect();
         const start = performance.now();
         const step = (now: number) => {
-          const t = Math.min(1, (now - start) / duration);
+          // rAF can hand back a timestamp from just before `start`; a negative t would
+          // round to -0 and show as "-0".
+          const t = Math.min(1, Math.max(0, (now - start) / duration));
           setShown(render(1 - Math.pow(1 - t, 4)));
           if (t < 1) raf = requestAnimationFrame(step);
         };
