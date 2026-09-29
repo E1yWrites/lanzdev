@@ -64,7 +64,6 @@ const config: Config = {
         "route-progress": "routeProgress 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-out": "fadeOut 200ms ease-out forwards",
         shimmer: "shimmer 2s ease-in-out infinite",
-        ticker: "ticker 28s linear infinite",
       },
       keyframes: {
         slideUp: {
@@ -88,10 +87,6 @@ const config: Config = {
         fadeOut: {
           from: { opacity: "1" },
           to: { opacity: "0" },
-        },
-        ticker: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
         },
       },
     },

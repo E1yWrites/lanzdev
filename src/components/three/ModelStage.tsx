@@ -189,11 +189,11 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
         fill
         sizes={sizes}
         priority={priority}
-        className={cn("pointer-events-none object-contain transition-opacity duration-700", live && "opacity-0")}
+        className={cn("stage-feather pointer-events-none object-contain transition-opacity duration-700", live && "opacity-0")}
         draggable={false}
       />
       {mounted && (
-        <div aria-hidden="true" className={cn("absolute inset-0 transition-opacity duration-700", live ? "opacity-100" : "opacity-0")}>
+        <div aria-hidden="true" className={cn("stage-feather absolute inset-0 transition-opacity duration-700", live ? "opacity-100" : "opacity-0")}>
           <Scene
             active={visible}
             font={font}

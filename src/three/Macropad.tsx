@@ -256,16 +256,20 @@ function Cable() {
       );
     }
     const end = pts[pts.length - 1];
-    // then a lazy S-curve away behind the pad
+    // then a lazy S-curve away behind the pad, running on well out of frame so it
+    // leaves through the stage's feathered edge instead of ending in mid-air
     pts.push(
       end.clone().add(new THREE.Vector3(-0.25, -0.1, -0.45)),
       end.clone().add(new THREE.Vector3(-0.9, -0.22, -0.8)),
       end.clone().add(new THREE.Vector3(-1.9, -0.3, -0.75)),
       end.clone().add(new THREE.Vector3(-3.1, -0.36, -1.2)),
-      end.clone().add(new THREE.Vector3(-4.2, -0.4, -2.2))
+      end.clone().add(new THREE.Vector3(-4.2, -0.4, -2.2)),
+      end.clone().add(new THREE.Vector3(-5.1, -0.44, -3.8)),
+      end.clone().add(new THREE.Vector3(-5.9, -0.46, -6.2)),
+      end.clone().add(new THREE.Vector3(-6.6, -0.48, -9.5))
     );
     const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
-    return new THREE.TubeGeometry(curve, 900, 0.034, 10, false);
+    return new THREE.TubeGeometry(curve, 1200, 0.034, 10, false);
   }, []);
   return (
     <group>
@@ -346,7 +350,8 @@ export function Macropad({ font, ready, press = [], glow = [], knob = 0, screen,
 
   return (
     <group>
-      <SoftShadow width={CASE.w * 1.9} depth={CASE.d * 2.1} y={-CASE.h / 2 - 0.02} opacity={0.9} />
+      {/* sized to stay inside the frame, so its falloff is never cut off */}
+      <SoftShadow width={CASE.w * 1.55} depth={CASE.d * 1.75} y={-CASE.h / 2 - 0.02} opacity={0.9} />
       <mesh geometry={body}>
         <meshPhysicalMaterial color="#d3d2cf" metalness={0.6} roughness={0.3} clearcoat={0.35} clearcoatRoughness={0.25} />
       </mesh>

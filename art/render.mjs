@@ -2,10 +2,10 @@
 // Optional env: REMOTION_BROWSER_EXECUTABLE (path to a Chrome headless shell),
 // REMOTION_GL (e.g. "swangle" on machines without a GPU), ONLY (comma-separated ids).
 import { renderMedia, renderStill, selectComposition } from "@remotion/renderer";
-import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { bundleProject, here } from "./bundle.mjs";
+import { encodeFilm } from "./encode.mjs";
 
 const out = path.join(here, "..", "public", "art");
 mkdirSync(path.join(out, "films"), { recursive: true });
@@ -25,37 +25,30 @@ const still = async (id, file, opts = {}) => {
 };
 
 // Films: composed at 1280×720 and rendered at 1.5× (1920×1080) so type and edges stay
-// crisp, from near-lossless frames. H.264 + AAC first; the WebM (VP9 + Opus) is
-// transcoded from that master rather than rendered twice.
+// crisp. Remotion renders a near-lossless master into out/; encode.mjs turns it into the
+// served H.264 + AAC and VP9 + Opus files, in standard limited-range BT.709.
 const FILM_SCALE = 1.5;
-const ffmpegDir = path.join(here, "node_modules", "@remotion", "compositor-linux-x64-gnu");
-const ffmpeg = (args) =>
-  execFileSync(existsSync(path.join(ffmpegDir, "ffmpeg")) ? path.join(ffmpegDir, "ffmpeg") : "ffmpeg", ["-y", "-loglevel", "error", ...args], {
-    env: { ...process.env, LD_LIBRARY_PATH: ffmpegDir },
-    stdio: "inherit",
-  });
+mkdirSync(path.join(here, "out"), { recursive: true });
 
 const film = async (id, name, posterFrame) => {
   const composition = await comp(id);
   await still(id, `films/${name}.jpg`, { imageFormat: "jpeg", jpegQuality: 88, frame: posterFrame, scale: FILM_SCALE });
-  const mp4 = path.join(out, "films", `${name}.mp4`);
+  const master = path.join(here, "out", `${name}.master.mp4`);
   await renderMedia({
     serveUrl,
     composition,
     codec: "h264",
-    crf: 19,
+    crf: 12,
     x264Preset: "slow",
     scale: FILM_SCALE,
     imageFormat: "jpeg",
     jpegQuality: 96,
     audioCodec: "aac",
     audioBitrate: "192k",
-    outputLocation: mp4,
+    outputLocation: master,
     ...common,
   });
-  console.log("✓", `films/${name}.mp4`);
-  ffmpeg(["-i", mp4, "-c:v", "libvpx-vp9", "-crf", "31", "-b:v", "0", "-row-mt", "1", "-c:a", "libopus", "-b:a", "128k", path.join(out, "films", `${name}.webm`)]);
-  console.log("✓", `films/${name}.webm`);
+  encodeFilm(master, name);
 };
 
 // Transparent model renders: covers, and the first paint before WebGL.

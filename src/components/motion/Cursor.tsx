@@ -6,8 +6,9 @@ import { useFinePointer, useReducedMotion } from "@/hooks/useMedia";
 
 /**
  * A small ring that trails the pointer (the system cursor stays). Over links and buttons
- * it turns accent. Labels are only for media with no text of their own — 3D stages,
- * films, a 3D key (`data-cursor="Label"`) — and sit in a tag beside the pointer.
+ * it turns accent. Labels are only for things nothing else on screen explains — a 3D
+ * key, the colour lens (`data-cursor="Label"`) — and sit in a tag beside the pointer.
+ * Where a visible hint or button already says it, the ring stays quiet.
  * Mouse/trackpad only, and off under reduced motion.
  */
 export function Cursor() {

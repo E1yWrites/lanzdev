@@ -11,7 +11,8 @@ export interface View {
 
 export const VIEWS: Record<"macropad" | "parada" | "tala", View> = {
   macropad: { position: [0.4, 7.4, 7.6], target: [0.1, -0.15, 0], fov: 30 },
-  parada: { position: [3.6, 5.6, 7.4], target: [0.55, 0.1, 0], fov: 34 },
+  // a little wider than the others: the lot is broad, and it wants the same margin Tala has
+  parada: { position: [3.35, 5.6, 7.4], target: [0.3, 0.05, 0], fov: 39 },
   tala: { position: [0.6, 5.4, 5.8], target: [0.1, 0.35, 0], fov: 34 },
 };
 

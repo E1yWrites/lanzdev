@@ -55,6 +55,47 @@ export function useFilmLoading(video: React.RefObject<HTMLVideoElement>, load: b
   return state;
 }
 
+const H264 = 'video/mp4; codecs="avc1.640029, mp4a.40.2"';
+
+/**
+ * Which file a film plays from. H.264 first — it has hardware decoding on practically
+ * every desktop and phone — and VP9 WebM where H.264 isn't available. If the chosen file
+ * fails to decode (browsers never move on to the next <source> after a decode error),
+ * it switches to the other one and carries on playing.
+ */
+export function useFilmSource(video: React.RefObject<HTMLVideoElement>, film: ProjectFilm) {
+  const [src, setSrc] = useState<string>();
+  const tried = useRef(new Set<string>());
+  const resume = useRef(false);
+
+  useEffect(() => {
+    tried.current = new Set();
+    const first = document.createElement("video").canPlayType(H264) ? film.mp4 : film.webm;
+    tried.current.add(first);
+    setSrc(first);
+  }, [film.mp4, film.webm]);
+
+  useEffect(() => {
+    const v = video.current;
+    if (!v || !src) return;
+    if (resume.current) {
+      resume.current = false;
+      v.play().catch(() => undefined);
+    }
+    const onError = () => {
+      const other = src === film.mp4 ? film.webm : film.mp4;
+      if (tried.current.has(other)) return;
+      tried.current.add(other);
+      resume.current = true;
+      setSrc(other);
+    };
+    v.addEventListener("error", onError);
+    return () => v.removeEventListener("error", onError);
+  }, [video, src, film.mp4, film.webm]);
+
+  return src;
+}
+
 interface FilmPlayerProps {
   film: ProjectFilm;
   title: string;
@@ -73,6 +114,7 @@ export function FilmPlayer({ film, title, autoPlay = false, className }: FilmPla
   const video = useRef<HTMLVideoElement>(null);
   const near = useInView(wrap, "600px 0px");
   const { ready, buffering, progress } = useFilmLoading(video, near || autoPlay);
+  const src = useFilmSource(video, film);
   const started = useRef(false);
 
   useEffect(() => {
@@ -88,10 +130,16 @@ export function FilmPlayer({ film, title, autoPlay = false, className }: FilmPla
 
   return (
     <div ref={wrap} className={cn("relative overflow-hidden bg-black", className)}>
-      <video ref={video} className="aspect-video w-full" poster={film.poster} controls playsInline preload="none" aria-label={`${title} — ${film.duration}-second film, with sound`}>
-        <source src={film.webm} type="video/webm" />
-        <source src={film.mp4} type="video/mp4" />
-      </video>
+      <video
+        ref={video}
+        src={src}
+        className="aspect-video w-full"
+        poster={film.poster}
+        controls
+        playsInline
+        preload="none"
+        aria-label={`${title} — ${film.duration}-second film, with sound`}
+      />
       {((autoPlay && !ready) || buffering) && (
         <Loader label="Loading film" progress={progress} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
       )}
