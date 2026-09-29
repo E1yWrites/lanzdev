@@ -11,9 +11,18 @@ build time (it's excluded from the root `tsconfig.json`).
 | `Macropad`   | `macropad.webp` (transparent, 1600×1200)      | Home hero poster, before the live model loads            |
 | `Parada`     | `parada.webp` (transparent)                   | PARADA `cover` — poster for the live lot                 |
 | `Tala`       | `tala.webp` (transparent)                     | Tala `cover` — poster for the live desk                  |
-| `ParadaFilm` | `films/parada.{webm,mp4,jpg}` — 15 s, 1080p, sound | Showreel, film dialog, PARADA project page          |
+| `ParadaFilm` | `films/parada-3d.{webm,mp4,jpg}`, only with `ONLY=ParadaFilm` | Not on the site: PARADA's film is its motion reel (below) |
 | `TalaFilm`   | `films/tala.{webm,mp4,jpg}` — 15 s, 1080p, sound   | Showreel, film dialog, Tala project page            |
 | `ShareImage` | `og.jpg` (1200×630)                           | Open Graph / Twitter image (`src/app/layout.tsx`)        |
+
+**PARADA's film** (`films/parada.{mp4,webm,jpg}`) is PARADA's own motion reel, supplied
+as footage rather than rendered here. It's 15 s, 1080p, with sound. To replace it:
+
+```bash
+node encode.mjs path/to/ParadaShowreel.mp4 parada   # → films/parada.{mp4,webm}
+# poster: the closing lockup, taken from the encoded file
+ffmpeg -ss 14.5 -i ../public/art/films/parada.mp4 -frames:v 1 -q:v 3 ../public/art/films/parada.jpg
+```
 
 ## Working on it
 

@@ -150,7 +150,7 @@ export function Showreel({ items }: { items: ReelItem[] }) {
           <KineticText as="h2" id="reel-title" lines={["Fifteen seconds", "each"]} accent="." className="mt-6 font-display text-[clamp(2.8rem,6vw,6rem)] font-light leading-[0.95] tracking-[-0.035em] text-ink" />
         </div>
         <p className="max-w-md font-swiss text-base leading-relaxed text-ink/70 md:col-span-5">
-          Two short films, rendered frame by frame from the same 3D models on this page — written in React with Remotion and three.js.
+          Two short films: PARADA’s motion reel, and Tala rendered frame by frame from the 3D model on this page — written in React with Remotion and three.js.
         </p>
       </div>
 

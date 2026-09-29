@@ -7,7 +7,7 @@ import { VelocityMarquee } from "@/components/motion/VelocityMarquee";
 import { getAllProjects } from "@/lib/githubProjects";
 
 const CAPTIONS: Record<string, string> = {
-  parada: "A car arrives, the gate camera reads its plate, and Zone A counts one fewer space.",
+  parada: "Still circling? See which zone has room, meet Lottie, and watch one gate event reach both screens.",
   tala: "A pencil writes “tala”, the day turns to night, and v1.1.0’s features arrive.",
 };
 

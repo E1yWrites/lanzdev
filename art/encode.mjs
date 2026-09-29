@@ -3,7 +3,8 @@
 //
 // Remotion renders from JPEG frames, which gives full-range BT.601 video ("yuvj420p").
 // Phones play that happily, but some desktop hardware decoders (Windows especially)
-// refuse or mis-handle it, so every film goes through this step.
+// refuse or mis-handle it, so every film goes through this step — rendered ones and
+// supplied footage alike (PARADA's motion reel is `node encode.mjs <reel.mp4> parada`).
 //
 //   node encode.mjs <master.mp4> <name>   →  ../public/art/films/<name>.{mp4,webm}
 import { execFileSync } from "node:child_process";
@@ -22,8 +23,11 @@ const ffmpeg = (args) =>
     stdio: "inherit",
   });
 
-// full-range BT.601 in → limited-range BT.709 out
-const VIDEO_FILTER = "scale=in_range=full:out_range=tv:in_color_matrix=bt601:out_color_matrix=bt709,format=yuv420p";
+// whatever comes in (the input's own range and matrix are read from its tags) →
+// limited-range BT.709 out
+const VIDEO_FILTER = "scale=out_range=tv:out_color_matrix=bt709,format=yuv420p";
+// a steady 30 fps, even from a screen or app recording that drifts (e.g. 30.07)
+const RATE = ["-r", "30"];
 const COLOUR_TAGS = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"];
 
 export function encodeFilm(master, name) {
@@ -35,6 +39,7 @@ export function encodeFilm(master, name) {
     ffmpeg([
       "-i", src,
       "-vf", VIDEO_FILTER,
+      ...RATE,
       "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-profile:v", "high", "-level:v", "4.1",
       ...COLOUR_TAGS,
       "-c:a", "aac", "-b:a", "192k",
@@ -45,6 +50,7 @@ export function encodeFilm(master, name) {
     ffmpeg([
       "-i", src,
       "-vf", VIDEO_FILTER,
+      ...RATE,
       "-c:v", "libvpx-vp9", "-profile:v", "0", "-crf", "31", "-b:v", "0", "-row-mt", "1",
       ...COLOUR_TAGS,
       "-c:a", "libopus", "-b:a", "128k",

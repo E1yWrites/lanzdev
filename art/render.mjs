@@ -56,5 +56,8 @@ if (want("Macropad")) await still("Macropad", "macropad.webp", { imageFormat: "w
 if (want("Parada")) await still("Parada", "parada.webp", { imageFormat: "webp" });
 if (want("Tala")) await still("Tala", "tala.webp", { imageFormat: "webp" });
 if (want("ShareImage")) await still("ShareImage", "og.jpg", { imageFormat: "jpeg", jpegQuality: 88 });
-if (want("ParadaFilm")) await film("ParadaFilm", "parada", 40);
+// PARADA's film on the site is its own motion reel (supplied footage, encoded with
+// `node encode.mjs <reel.mp4> parada`), so the 3D film renders only on request, and
+// under its own name, so a full render never overwrites the reel.
+if (only?.has("ParadaFilm")) await film("ParadaFilm", "parada-3d", 40);
 if (want("TalaFilm")) await film("TalaFilm", "tala", 45);

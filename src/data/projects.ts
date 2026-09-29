@@ -42,6 +42,7 @@ export const projects: Project[] = [
       mp4: asset("/art/films/parada.mp4"),
       poster: asset("/art/films/parada.jpg"),
       duration: 15,
+      credit: "PARADA’s motion reel: the problem, the zones, Lottie the attendant, the gate camera, and one gate event on both screens. Sound on.",
     },
     screenshots: [],
     stats: [
@@ -118,6 +119,7 @@ export const projects: Project[] = [
       mp4: asset("/art/films/tala.mp4"),
       poster: asset("/art/films/tala.jpg"),
       duration: 15,
+      credit: "Rendered with Remotion from the same 3D model as above. Sound on — the soundtrack is synthesised, not sampled.",
     },
     screenshots: [],
     stats: [

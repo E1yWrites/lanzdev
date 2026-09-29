@@ -236,7 +236,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
       {project.film && (
         <Section id="film" index={num()} title={`${project.film.duration} seconds of ${project.name}`}>
           <FilmPlayer film={project.film} title={project.name} className="rounded-xl border border-ink/10" />
-          <p className="t-label mt-3 text-ink/60">Rendered with Remotion from the same 3D model as above. Sound on — the soundtrack is synthesised, not sampled.</p>
+          {project.film.credit && <p className="t-label mt-3 text-ink/60">{project.film.credit}</p>}
         </Section>
       )}
 

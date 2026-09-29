@@ -44,6 +44,8 @@ export interface ProjectFilm {
   poster: string;
   /** Seconds. */
   duration: number;
+  /** One line under the film on the project page: how it was made. */
+  credit?: string;
 }
 
 export interface ProjectMilestone {
