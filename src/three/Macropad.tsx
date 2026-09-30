@@ -256,17 +256,20 @@ function Cable() {
       );
     }
     const end = pts[pts.length - 1];
-    // then a lazy S-curve away behind the pad, running on well out of frame so it
-    // leaves through the stage's feathered edge instead of ending in mid-air
+    // then a lazy S-curve behind the pad, and on sideways out of frame, so it leaves
+    // through the stage's feathered edge instead of ending in mid-air. The tail runs
+    // level across the screen: the pad rests turned by MACROPAD_YAW, so "left along
+    // its back" would climb the screen (and into the headline above the pad) unless it
+    // bends back toward the camera by the same amount.
     pts.push(
       end.clone().add(new THREE.Vector3(-0.25, -0.1, -0.45)),
       end.clone().add(new THREE.Vector3(-0.9, -0.22, -0.8)),
       end.clone().add(new THREE.Vector3(-1.9, -0.3, -0.75)),
-      end.clone().add(new THREE.Vector3(-3.1, -0.36, -1.2)),
-      end.clone().add(new THREE.Vector3(-4.2, -0.4, -2.2)),
-      end.clone().add(new THREE.Vector3(-5.1, -0.44, -3.8)),
-      end.clone().add(new THREE.Vector3(-5.9, -0.46, -6.2)),
-      end.clone().add(new THREE.Vector3(-6.6, -0.48, -9.5))
+      end.clone().add(new THREE.Vector3(-3.1, -0.36, -0.9)),
+      end.clone().add(new THREE.Vector3(-4.6, -0.42, -0.8)),
+      end.clone().add(new THREE.Vector3(-6.4, -0.45, -0.4)),
+      end.clone().add(new THREE.Vector3(-9, -0.48, 0.6)),
+      end.clone().add(new THREE.Vector3(-14, -0.5, 2.3))
     );
     const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
     return new THREE.TubeGeometry(curve, 1200, 0.034, 10, false);
