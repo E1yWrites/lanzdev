@@ -565,7 +565,8 @@
 
   .folder-tab {
     --r: 14px;
-    --tab-fill: color-mix(in srgb, var(--fill) calc(100% - var(--cover) * 50%), rgb(var(--paper)));
+    /* A covered tab dims, but only so far: its label must stay readable (≥4.5:1). */
+    --tab-fill: color-mix(in srgb, var(--fill) calc(100% - var(--cover) * 30%), rgb(var(--paper)));
     background-color: var(--tab-fill);
     border-radius: var(--r) var(--r) 0 0;
   }

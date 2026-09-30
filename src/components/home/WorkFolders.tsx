@@ -128,7 +128,7 @@ function Folder({ project, index, first, innerRef }: { project: Project; index: 
             {project.model && <span aria-hidden="true" className={cn("h-2 w-2 shrink-0 rounded-[2px]", MARK[project.model])} />}
             <span className="t-label">{pad(index + 1)}</span>
             <span className="truncate font-display text-lg font-light leading-none">{project.name}</span>
-            <span className={cn("t-label ml-auto hidden truncate lg:inline", tone.muted)}>{project.role?.split(" · ")[0]}</span>
+            <span className="t-label ml-auto hidden truncate lg:inline">{project.role?.split(" · ")[0]}</span>
           </span>
         </div>
       </div>
