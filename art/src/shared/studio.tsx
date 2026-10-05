@@ -55,16 +55,18 @@ interface StudioProps {
   /** null renders with a transparent background (stills with alpha). */
   background: string | null;
   camera: { position: Vec3; target?: Vec3; fov: number };
+  /** false when the model brings its own lighting (the hero room). */
+  lights?: boolean;
   children: React.ReactNode;
 }
 
 /** The same lighting the site uses (src/three/Studio.tsx), inside a Remotion canvas. */
-export function Studio({ width, height, background, camera, children }: StudioProps) {
+export function Studio({ width, height, background, camera, lights = true, children }: StudioProps) {
   return (
     <ThreeCanvas width={width} height={height} gl={{ alpha: background === null, antialias: true }} camera={{ position: camera.position, fov: camera.fov }}>
       {background && <color attach="background" args={[background]} />}
       <Aim position={camera.position} target={camera.target ?? [0, 0, 0]} fov={camera.fov} />
-      <StudioLights />
+      {lights && <StudioLights />}
       {children}
     </ThreeCanvas>
   );

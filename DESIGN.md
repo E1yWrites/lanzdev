@@ -27,7 +27,7 @@ gold and night sky. One accent, cool neutrals throughout (no warm/cool mixing).
 | `on-sheet`        | `#0D1016` | Text on sheets and on accent                   |
 
 The 3D models read the same values from `src/three/palette.ts`; after changing a
-token, re-render the posters (`art/`, `ONLY=Macropad,Parada,Tala,ShareImage`).
+token, re-render the posters (`art/`, `ONLY=Room,Parada,Tala,ShareImage`).
 
 Text opacity floors (WCAG AA, 4.5:1): `ink/60` on dark (6.4:1), `on-sheet/65` on
 sheet (5.6:1), `on-sheet/85` on accent (4.8:1).
@@ -47,7 +47,7 @@ Every moving thing has one job, and all of it stops under `prefers-reduced-motio
 
 | Piece | Where | What it does |
 | --- | --- | --- |
-| **Macropad** (live 3D) | Home hero | The site index as an object, centred under a one-line headline: four keys → PARADA, Tala, About, Say hi. Hover a key and it dips and glows, the OLED reads out where it goes, and the readout under the pad introduces it (with no key under the pointer it introduces Lanz); click to open. A row of four keycap buttons is the same index for touch and keyboard, and hovering either lights the other. The pad leans toward the pointer, and the knob turns with the scroll. |
+| **The room** (live 3D) | Home hero | Lanz's room at night, floating on the page; the site's index. "Software for curious people." is painted on the left wall over the desk (on phones it's set as type above the room, since paint that small can't be read). Five objects are the index, each with a numbered pin: the monitor (01 PARADA, showing Zone A's count), the notebook with *tala* written in it (02 Tala), the portrait (03 About), the door left ajar (04 Say hi) and the VHS deck with two tapes (05 the films). Hover or focus outlines an object and opens its pin; pick one and the camera moves to it (600 ms), the rest of the room dims behind an iris, and its card opens beside it with `?focus=<id>` in the URL — Back, Esc, a click outside or scrolling on closes it. The card's button pushes the camera in, then opens the page. A tape slides into the deck and the film plays in a CRT overlay (scanlines, a moment of tracking wobble, a ▶ PLAY readout), muted with Sound on. The old macropad sits on the desk and still works: its keys pick the same objects. Drag turns the room up to ±15° and it springs back; the room leans a little toward the pointer. Decor (shelves, plants, window onto Taal, server rack with link lights, lanyards on the door, the barako mug) isn't clickable. Phones get the still with numbered markers and an index of five buttons under it; cards become bottom sheets. |
 | **PARADA lot** (live 3D) | PARADA folder + page | Hover and the story plays: the waiting car's plate is read, the barrier lifts, it parks, **Zone A drops from 12 to 11 free**, a new car arrives. Drag to turn. |
 | **Tala desk** (live 3D) | Tala folder + page | Hover and the pencil writes *tala* in cursive; click (or the Day/Night chip) to flip the sun to the moon, and the whole folder (sheet, tab, text, buttons) eases to `night` with it. Drag to turn. |
 | **Films** (15 s each, 1080p, with sound) | Showreel, film dialog, project pages | PARADA's is its own motion reel: the problem ("Still circling."), the zone picker, Lottie the attendant, the gate camera reading a plate, and one gate event on the driver app and the admin console. Tala's is rendered with Remotion from its 3D model: writing, day to night, and the v1.1.0 features. They buffer before they're on screen and start once they can play through. Auto-play only ever starts a film; only you (or scrolling away) pause it, so Play always sticks, including with reduced motion, where nothing starts on its own. A browser that won't pre-buffer (data saver, iOS, a slow link) gets them after 2.5 s anyway, with the loader covering any stall. H.264 is served first (the most dependable hardware decoding on PCs), VP9 WebM second, and if a file fails to decode the player switches to the other one and keeps going (`useFilmSource`). The showreel buffers only the current film, and the next while it plays. It plays muted (browser policy) with a **Sound on** toggle; the dialog and project pages play with sound. |
@@ -119,10 +119,9 @@ production build at 1440 px and 390 px (touch), about 1,100 checks, all passing:
   keep one weight under the pointer.
 - **Folders:** each folder snaps flush under the nav, holds, and dims as the next one
   covers it. Its call to action stays visible while pinned (1440×900 and 1366×768).
-- **Macropad:** hovering a key never flickers (0 hover flips while the pointer is still),
-  and a click navigates.
+- **Room:** pins 01–05 sit on their objects over the poster and the live scene, each opens its card and moves the camera; Esc and Back close it and return focus to the pin.
 - **Films:** the showreel autoplays muted once it can play through, Sound on unmutes
   it, the tabs keep sound on, and Pause works. The dialog and project films are
   buffered by the time they are on screen.
 - **Phone:** there's no cursor ring. The menu opens, navigates and closes, and the hero
-  hint reads "Tap a key".
+  hint reads "Tap a number".

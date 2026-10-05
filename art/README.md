@@ -8,7 +8,7 @@ build time (it's excluded from the root `tsconfig.json`).
 
 | Composition  | Output                                        | Used by                                                  |
 | ------------ | --------------------------------------------- | -------------------------------------------------------- |
-| `Macropad`   | `macropad.webp` (transparent, 1600×1200)      | Home hero poster, before the live model loads            |
+| `Room`       | `room.webp` (transparent, 1600×1200)          | Home hero poster: the room, before the live scene loads  |
 | `Parada`     | `parada.webp` (transparent)                   | PARADA `cover` — poster for the live lot                 |
 | `Tala`       | `tala.webp` (transparent)                     | Tala `cover` — poster for the live desk                  |
 | `ParadaFilm` | `films/parada-3d.{webm,mp4,jpg}`, only with `ONLY=ParadaFilm` | Not on the site: PARADA's film is its motion reel (below) |
@@ -70,3 +70,6 @@ REMOTION_BROWSER_EXECUTABLE=/path/to/headless_shell REMOTION_GL=swangle npm run 
   inside the canvas don't trigger a redraw in Remotion's frame loop.
 - Fonts in `public/fonts` are OFL-licensed (JetBrains Mono, Newsreader); licence
   texts sit beside them.
+- `public/portrait.webp` is a copy of the site's `public/images/portrait.webp`, for the
+  frame in the room (Remotion only serves this folder). Replace both together.
+- The room brings its own lights, so its still renders with `<Studio lights={false}>`.

@@ -17,7 +17,7 @@ import { useCanvasFont } from "./useCanvasFont";
 // no WebGL: the poster stays.
 
 const scenes = {
-  macropad: dynamic(() => import("./scenes").then((m) => m.MacropadScene), { ssr: false }),
+  room: dynamic(() => import("./RoomScene").then((m) => m.RoomScene), { ssr: false }),
   parada: dynamic(() => import("./scenes").then((m) => m.ParadaScene), { ssr: false }),
   tala: dynamic(() => import("./scenes").then((m) => m.TalaScene), { ssr: false }),
 } satisfies Record<string, React.ComponentType<SceneProps>>;
@@ -88,17 +88,19 @@ interface ModelStageProps {
   night?: boolean;
   /** Label for the cursor ring while over the stage. */
   cursor?: string;
+  /** false keeps the poster and never loads WebGL (the hero room on phones). */
+  live?: boolean;
   onClick?: () => void;
 }
 
-export function ModelStage({ model, poster, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, onClick }: ModelStageProps) {
+export function ModelStage({ model, poster, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, onClick }: ModelStageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const reduced = useReducedMotion();
   const fine = useFinePointer();
   const near = useInView(ref, "700px 0px");
   const visible = useInView(ref, "0px", 0.05);
-  const { font, ready: fontReady } = useCanvasFont();
+  const { font, display, ready: fontReady } = useCanvasFont();
   const [canRender, setCanRender] = useState(false);
   const [live, setLive] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -114,7 +116,7 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
     if (canRender && !reduced) prefetchScenes();
   }, [canRender, reduced]);
 
-  const wanted = canRender && !reduced && near;
+  const wanted = allowLive && canRender && !reduced && near;
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     if (!wanted) {
@@ -189,6 +191,8 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
         fill
         sizes={sizes}
         priority={priority}
+        // the hero's poster is the page's largest paint: decode it into the first frame
+        decoding={priority ? "sync" : "async"}
         className={cn("stage-feather pointer-events-none object-contain transition-opacity duration-700", live && "opacity-0")}
         draggable={false}
       />
@@ -197,6 +201,7 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
           <Scene
             active={visible}
             font={font}
+            display={display}
             fontReady={fontReady}
             onReady={() => setLive(true)}
             hovered={hovered}

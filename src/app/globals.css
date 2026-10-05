@@ -483,67 +483,359 @@
       width 420ms var(--ease-out);
   }
 
-  /* Hero (components/home/Hero.tsx). A low ember-and-midnight glow under the pad. */
+  /* Hero (components/home/Hero.tsx): the room floats on a low glow, so it sits on something. */
   .hero-glow {
     background:
-      radial-gradient(46% 38% at 50% 58%, rgb(var(--accent) / 0.1), transparent 70%),
-      radial-gradient(70% 55% at 50% 62%, rgb(64 86 140 / 0.16), transparent 75%);
+      radial-gradient(40% 30% at 50% 70%, rgb(var(--accent) / 0.08), transparent 70%),
+      radial-gradient(60% 50% at 50% 62%, rgb(64 86 140 / 0.18), transparent 75%);
   }
 
-  /* The hero's keycap buttons: the same four keys as the pad, lit together. */
-  .keycap {
+  /* The room's stage keeps the poster's 4:3, as large as the screen allows under the nav
+     and above the bottom row, so pins placed in percent land on the same spot. */
+  .room-stage {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Phones: the render has margin round the room, so draw it wider than the screen
+     (the section clips) and the room itself fills the width. */
+  @media (max-width: 767px) {
+    .room-stage {
+      width: 125%;
+      margin-left: -12.5%;
+    }
+  }
+
+  .room-index {
     background: linear-gradient(to bottom, rgb(var(--ink) / 0.06), rgb(var(--ink) / 0.025));
-    box-shadow:
-      inset 0 1px 0 rgb(var(--ink) / 0.08),
-      inset 0 0 0 1px rgb(var(--ink) / 0.08),
-      0 2px 0 rgb(0 0 0 / 0.35);
-    transition:
-      transform 240ms var(--ease-out),
-      box-shadow 240ms var(--ease-out),
-      background-color 240ms var(--ease-out);
+    box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.1);
   }
 
-  .keycap:hover,
-  .keycap:focus-visible,
-  .keycap[data-on] {
-    transform: translateY(2px);
-    background-color: rgb(var(--accent) / 0.08);
-    box-shadow:
-      inset 0 1px 0 rgb(var(--ink) / 0.06),
-      inset 0 0 0 1px rgb(var(--accent) / 0.45),
-      0 0 0 rgb(0 0 0 / 0.35);
+  .room-index:active {
+    background: rgb(var(--accent) / 0.1);
   }
 
-  .keycap:active {
-    transform: translateY(3px) scale(0.98);
+  @media (min-width: 768px) {
+    .room-stage {
+      width: min(100%, calc((100svh - 56px - 7.75rem) * 4 / 3));
+    }
   }
 
-  .keycap-arrow {
+  /* Pins: a number on each object, the name sliding out on hover or focus. The button is
+     a 44px target; the chip inside is what you see. */
+  .room-pins {
+    pointer-events: none;
+    transition: opacity 240ms var(--ease-out);
+  }
+
+  /* Picked: the stage's edges fade into the page, like an iris, so a close-up never
+     reads as a box. The object sits a third of the way in from its side. */
+  .room-vignette {
+    --at: 32%;
+    background: radial-gradient(ellipse 36% 54% at var(--at) 50%, transparent 52%, rgb(var(--paper)) 100%);
     opacity: 0;
-    transform: translateX(-6px);
-    transition:
-      opacity 200ms linear,
-      transform 400ms var(--ease-out);
+    transition: opacity 600ms var(--ease-out);
   }
 
-  .keycap:hover .keycap-arrow,
-  .keycap:focus-visible .keycap-arrow,
-  .keycap[data-on] .keycap-arrow {
+  .room-vignette[data-side="left"] {
+    --at: 68%;
+  }
+
+  .room-vignette[data-side] {
     opacity: 1;
-    transform: none;
   }
 
-  /* Each readout line re-enters when the key under the pointer changes. */
-  .readout-line {
-    animation: fadeRise 420ms var(--ease-out) backwards;
+  /* back in once the camera has come home, not while it's still travelling */
+  .room-pins:not([data-hidden]) {
+    transition-delay: 450ms;
   }
 
-  .readout-line + .readout-line {
-    animation-delay: 50ms;
+  .room-pins[data-hidden] {
+    opacity: 0;
   }
 
-  .readout-line + .readout-line + .readout-line {
-    animation-delay: 100ms;
+  .room-pins[data-hidden] .room-pin {
+    pointer-events: none;
+  }
+
+  .room-pin {
+    pointer-events: auto;
+    position: absolute;
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    transform: translate(-50%, -50%);
+    animation: pinRise 520ms var(--ease-out) backwards;
+  }
+
+  .room-pin-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 9px;
+    border-radius: 999px;
+    background: rgb(var(--paper-elevated) / 0.92);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--ink) / 0.28),
+      0 4px 14px rgb(0 0 0 / 0.35);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: rgb(var(--ink));
+    transition:
+      background-color 200ms var(--ease-out),
+      box-shadow 200ms var(--ease-out);
+  }
+
+  .room-pin-name {
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      max-width 320ms var(--ease-out),
+      opacity 200ms linear,
+      margin 320ms var(--ease-out);
+  }
+
+  .room-pin:hover .room-pin-chip,
+  .room-pin:focus-visible .room-pin-chip,
+  .room-pin[data-on] .room-pin-chip {
+    background: rgb(var(--accent));
+    box-shadow: 0 6px 18px rgb(var(--accent) / 0.35);
+    color: rgb(var(--on-sheet));
+  }
+
+  .room-pin:hover .room-pin-name,
+  .room-pin:focus-visible .room-pin-name,
+  .room-pin[data-on] .room-pin-name {
+    max-width: 10rem;
+    margin-left: 0.5em;
+    opacity: 1;
+  }
+
+  @keyframes pinRise {
+    from {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 10px));
+    }
+  }
+
+  /* The object's card: beside the object on wide screens, a bottom sheet on phones. */
+  .room-card {
+    position: fixed;
+    inset: 50% auto auto auto;
+    margin: 0;
+    width: min(24rem, calc(100vw - 2rem));
+    max-height: calc(100svh - 7rem);
+    padding: 0;
+    overflow: auto;
+    border-radius: 18px;
+    background: rgb(var(--paper-elevated) / 0.96);
+    color: rgb(var(--ink));
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--ink) / 0.12),
+      0 24px 60px rgb(0 0 0 / 0.5);
+    transform: translateY(-50%);
+    animation: cardIn 320ms var(--ease-out);
+  }
+
+  .room-card[data-side="right"] {
+    right: max(1.25rem, calc((100vw - 1600px) / 2 + 3rem));
+    --from: 24px;
+  }
+
+  .room-card[data-side="left"] {
+    left: max(1.25rem, calc((100vw - 1600px) / 2 + 3rem));
+    --from: -24px;
+  }
+
+  .room-card::backdrop {
+    background: transparent;
+  }
+
+  .room-card-body {
+    padding: 1.5rem 1.5rem 1.6rem;
+  }
+
+  @keyframes cardIn {
+    from {
+      opacity: 0;
+      translate: var(--from, 0) 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .room-card,
+    .room-card[data-side] {
+      inset: auto 0 0 0;
+      width: 100%;
+      max-width: none;
+      max-height: 78svh;
+      border-radius: 18px 18px 0 0;
+      transform: none;
+      --from: 0;
+      animation-name: sheetIn;
+    }
+
+    .room-card::backdrop {
+      background: rgb(var(--paper) / 0.55);
+    }
+  }
+
+  @keyframes sheetIn {
+    from {
+      translate: 0 40px;
+      opacity: 0;
+    }
+  }
+
+  .room-cta {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.6em;
+    border-radius: 999px;
+    background: rgb(var(--accent));
+    padding: 0 1.25rem;
+    color: rgb(var(--on-sheet));
+    transition: transform 240ms var(--ease-out);
+  }
+
+  .room-cta:hover {
+    transform: translateY(-1px);
+  }
+
+  .room-tape {
+    display: block;
+    width: 100%;
+    border-radius: 12px;
+    padding: 0.8rem 0.9rem;
+    box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.14);
+    border-left: 6px solid var(--tape);
+    transition: background-color 200ms var(--ease-out);
+  }
+
+  .room-tape[data-tape="parada"],
+  .vhs-button[data-tape="parada"] {
+    --tape: rgb(var(--accent));
+  }
+
+  .room-tape[data-tape="tala"],
+  .vhs-button[data-tape="tala"] {
+    --tape: rgb(var(--solar));
+  }
+
+  .room-tape:hover,
+  .room-tape[aria-pressed="true"] {
+    background: rgb(var(--ink) / 0.06);
+  }
+
+  /* The films off a tape: a CRT with scanlines, a tracking band and an on-screen readout. */
+  .vhs {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(64rem, calc(100vw - 2rem));
+    max-height: calc(100svh - 2rem);
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    color: rgb(var(--ink));
+  }
+
+  .vhs::backdrop {
+    background: rgb(var(--paper) / 0.92);
+    backdrop-filter: blur(4px);
+  }
+
+  .vhs-body {
+    border-radius: 22px;
+    padding: 14px;
+    background: linear-gradient(to bottom, #20242d, #15181e);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--ink) / 0.1),
+      0 30px 80px rgb(0 0 0 / 0.6);
+  }
+
+  .vhs-screen {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 16px / 22px;
+    background: #000;
+    box-shadow: inset 0 0 60px rgb(0 0 0 / 0.8);
+  }
+
+  .vhs-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(to bottom, rgb(0 0 0 / 0) 0 2px, rgb(0 0 0 / 0.22) 2px 3px),
+      radial-gradient(120% 100% at 50% 50%, transparent 60%, rgb(0 0 0 / 0.55));
+  }
+
+  .vhs-band {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 18%;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(to bottom, transparent, rgb(255 255 255 / 0.14) 40%, rgb(255 255 255 / 0.05) 60%, transparent);
+    mix-blend-mode: screen;
+  }
+
+  .vhs-osd {
+    position: absolute;
+    top: 6%;
+    left: 5%;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: clamp(14px, 2.2vw, 24px);
+    letter-spacing: 0.08em;
+    color: #e9fff8;
+    text-shadow:
+      0 0 8px rgb(127 233 216 / 0.8),
+      2px 0 0 rgb(233 103 63 / 0.6);
+    pointer-events: none;
+  }
+
+  .vhs-osd-right {
+    left: auto;
+    right: 5%;
+  }
+
+  .vhs-button {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    gap: 0.5em;
+    border-radius: 10px;
+    padding: 0 0.9rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(var(--ink));
+    box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.22);
+    transition:
+      background-color 200ms var(--ease-out),
+      box-shadow 200ms var(--ease-out);
+  }
+
+  .vhs-button[data-tape]::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--tape);
+  }
+
+  .vhs-button:hover,
+  .vhs-button[aria-pressed="true"] {
+    background: rgb(var(--ink) / 0.08);
+    box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.45);
   }
 
   /* Folder stack (components/home/WorkFolders.tsx). --cover (0–1) is how far the next
@@ -734,9 +1026,11 @@
   }
 }
 
+/* Starts part-visible rather than at 0: content hidden at opacity 0 isn't painted, so
+   the page's largest image or heading would wait on hydration before it counted as shown. */
 @keyframes pageEnter {
   from {
-    opacity: 0;
+    opacity: 0.6;
     transform: translateY(14px);
   }
 }
@@ -868,7 +1162,8 @@
   .page-enter,
   .kinetic-letter,
   .hero-fade,
-  .readout-line,
+  .room-pin,
+  .room-card,
   .logo-intro .logo-l,
   .logo-intro .logo-star,
   .live-dot::after,
@@ -887,7 +1182,10 @@
   .logo-l,
   .magnetic,
   .folder,
-  .keycap,
+  .room-pin-chip,
+  .room-pin-name,
+  .room-pins,
+  .room-cta,
   .nav-pill-move,
   .cap-row::before,
   .tilt-card {
