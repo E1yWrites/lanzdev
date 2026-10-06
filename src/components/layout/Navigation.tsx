@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { cn } from "@/lib/utils";
 import { LogoMark } from "@/components/brand/Logo";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
-import { COMMAND_PALETTE_EVENT } from "@/hooks/useCommandPalette";
+import { COMMAND_PALETTE_EVENT, useShortcutLabel } from "@/hooks/useCommandPalette";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { MobileMenu } from "./MobileMenu";
 import { isActivePath, mainNav } from "@/data/navigation";
@@ -23,6 +23,7 @@ interface NavigationProps {
  */
 export function Navigation({ projects }: NavigationProps) {
   const pathname = usePathname();
+  const shortcut = useShortcutLabel();
   const { isOpen, close, toggle } = useMobileMenu();
   const [scrolled, setScrolled] = useState(false);
   const links = mainNav.filter((item) => item.href !== "/contact");
@@ -111,10 +112,10 @@ export function Navigation({ projects }: NavigationProps) {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(COMMAND_PALETTE_EVENT))}
-              aria-label="Search, or press ⌘K"
+              aria-label={`Search, or press ${shortcut}`}
               className="t-label hidden h-8 items-center gap-2 rounded-full px-3 text-ink/70 ring-1 ring-ink/10 transition-colors duration-fast hover:text-ink hover:ring-ink/30 md:inline-flex"
             >
-              Search <kbd className="rounded-[4px] bg-ink/10 px-1.5 py-px font-mono text-[10px] text-ink/80">⌘K</kbd>
+              Search <kbd className="rounded-[4px] bg-ink/10 px-1.5 py-px font-mono text-[10px] text-ink/80">{shortcut}</kbd>
             </button>
             {contact && (
               <Link

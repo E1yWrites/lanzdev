@@ -7,6 +7,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useLayoutEffect, useRef, useState, type MutableRefObject } from "react";
 import * as THREE from "three";
+import { useFurniture } from "@/three/furniture";
 import { HouseModel } from "@/three/HouseModel";
 import { HOUSE_VIEW, INDEX_ROOMS } from "@/three/housePlan";
 import { ParadaLot } from "@/three/ParadaLot";
@@ -14,7 +15,7 @@ import { TalaDesk } from "@/three/TalaDesk";
 import { StudioLights } from "@/three/Studio";
 import { clamp01, easeInOut, range } from "@/three/lib";
 import { VIEWS, type View } from "@/three/views";
-import { houseHover, useStore } from "./store";
+import { houseHover, renderScale, useStore } from "./store";
 import { asset } from "@/lib/constants";
 import { projects } from "@/data/projects";
 
@@ -92,11 +93,12 @@ function Shell({
   shadows?: boolean;
   children: React.ReactNode;
 }) {
+  const scale = useStore(renderScale);
   return (
     <Canvas
       shadows={shadows}
       frameloop={active ? "always" : "never"}
-      dpr={[1, 1.75]}
+      dpr={[1, Math.max(1, scale)]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: view.position, fov: view.fov, near: 0.1, far: 100 }}
       style={{ touchAction: "pan-y" }}
@@ -311,7 +313,8 @@ function HouseRig({ font, fontReady, active }: { font: string; fontReady: boolea
     return () => t.dispose();
   }, []);
   const film = useReel(active);
-  return <HouseModel font={font} ready={fontReady} portrait={portrait} time={time} film={film} lit={Object.fromEntries(INDEX_ROOMS.map((r, i) => [r.room, lit[i]]))} />;
+  const furniture = useFurniture();
+  return <HouseModel font={font} ready={fontReady} portrait={portrait} time={time} film={film} furniture={furniture} lit={Object.fromEntries(INDEX_ROOMS.map((r, i) => [r.room, lit[i]]))} />;
 }
 
 export function HouseScene({ active, font, fontReady, onReady }: SceneProps) {

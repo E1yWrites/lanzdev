@@ -9,6 +9,7 @@ import { useInView } from "@/hooks/useInView";
 import { cn } from "@/lib/utils";
 import type { DragState, SceneProps } from "./scenes";
 import { Loader } from "@/components/motion/Loader";
+import { renderScale, useStore } from "./store";
 import { useCanvasFont } from "./useCanvasFont";
 
 // Every model starts as its rendered poster (art/, same camera), so first paint is an
@@ -74,6 +75,51 @@ function supportsWebGL() {
   return webgl;
 }
 
+/** Data-saver or a 2 GB-or-less device: the posters are the same pictures, so skip WebGL. */
+function lowEnd() {
+  const n = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+  return Boolean(n.connection?.saveData) || (n.deviceMemory !== undefined && n.deviceMemory <= 2);
+}
+
+/** Watches real frame times while a scene draws. Under ~25 fps over 60 frames (or 3 s): render fewer
+ *  pixels; still slow: give up and leave the poster (the shared renderScale carries it to every stage). */
+function useFrameWatchdog(running: boolean) {
+  useEffect(() => {
+    if (!running) return;
+    let raf = 0;
+    let last = 0;
+    let skip = 30; // shader compile and the poster fade hitch; not the steady state
+    const dts: number[] = [];
+    const tick = (t: number) => {
+      raf = requestAnimationFrame(tick);
+      const dt = t - last;
+      last = t;
+      if (document.hidden || dt <= 0) return;
+      if (skip-- > 0) return;
+      dts.push(dt);
+      const total = dts.reduce((a, b) => a + b);
+      if (dts.length < 60 && total < 3000) return;
+      const avg = total / dts.length;
+      dts.length = 0;
+      if (avg > 40) {
+        renderScale.set(renderScale.get() > 1 ? 1 : 0);
+        skip = 30;
+      }
+    };
+    // A tab coming back from the background resumes with one huge gap; that isn't slowness.
+    const reset = () => {
+      skip = 1;
+      dts.length = 0;
+    };
+    document.addEventListener("visibilitychange", reset);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("visibilitychange", reset);
+    };
+  }, [running]);
+}
+
 interface ModelStageProps {
   model: ModelName;
   poster: string;
@@ -114,14 +160,18 @@ export function ModelStage({ model, poster, posterNarrow, alt = "", className, s
   /** Distance of the current/last drag, so the click that ends a drag can be ignored. */
   const moved = useRef(0);
 
-  useEffect(() => setCanRender(supportsWebGL()), []);
+  const scale = useStore(renderScale);
+  useEffect(() => {
+    if (lowEnd()) renderScale.set(0);
+    setCanRender(supportsWebGL());
+  }, []);
   // Fetch the 3D code in the background right after load, so it's usually ready
   // before any stage scrolls near.
   useEffect(() => {
-    if (canRender && !reduced) prefetchScenes();
-  }, [canRender, reduced]);
+    if (allowLive && canRender && scale > 0 && !reduced) prefetchScenes();
+  }, [allowLive, canRender, scale, reduced]);
 
-  const wanted = allowLive && canRender && !reduced && near;
+  const wanted = allowLive && canRender && scale > 0 && !reduced && near;
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     if (!wanted) {
@@ -142,6 +192,8 @@ export function ModelStage({ model, poster, posterNarrow, alt = "", className, s
     return () => window.clearTimeout(t);
   }, [wanted, live]);
   const loading = wanted && !live && !gaveUp;
+
+  useFrameWatchdog(live && visible);
 
   const Scene = scenes[model];
 

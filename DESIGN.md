@@ -298,11 +298,9 @@ a paper note.
 ## Layout
 
 - **Scenes.** From md (768px) up, the home page is a stack of `[data-scene]` sections,
-  each `100svh`. `SceneScroll` turns one wheel gesture, swipe, Page or arrow key into one
-  scene, with a 650ms easeOutQuart glide and a 30px threshold before a gesture counts as a
-  step. Trackpad momentum is swallowed until a fresh gesture starts. Past the last scene
-  the page scrolls freely. Touch, reduced motion, open dialogs, form fields and
-  `[data-scroll-own]` are left alone.
+  each `100svh`, scrolled natively (no snapping: it felt laggy). When a room object is
+  open, the room's stage fades its edges into the page (`.room-stage[data-open]`), so
+  the zoomed view floats instead of ending in a hard rectangle.
 - **The room.** The stage keeps the poster's 4:3 so percentage-placed pins land on the
   render. From md it's `min(100%, 67.45vw, (100svh − 3.5rem − 8.5rem) × 4/3)`, tucked
   under the transparent nav. Under it is a three-column rule (`1fr auto 1fr`, top hairline

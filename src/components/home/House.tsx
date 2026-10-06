@@ -111,7 +111,7 @@ export function House({ notes, tape }: { notes: HouseNotes; tape?: TapeId }) {
         <ModelStage
           model="house"
           poster={asset("/art/house.webp")}
-          alt="The house from above with its roof off, at night: PARADA’s garage with two cars under a sodium lamp, Tala’s study with the notebook and a brass lamp, a screening room lit by its television, the about room with the portrait, and the front entrance with its door open."
+          alt="The house from above with its roof off, at night: PARADA’s garage with a car under a sodium lamp, a workbench and shelving, Tala’s study with the notebook and a brass lamp, a screening room lit by its television with a sofa and coffee table, the about room with the portrait and a dining table, Lanz’s bedroom, and the front entrance with its door open."
           sizes="(min-width: 768px) 100vw, 160vw"
           live={wide}
           feather={false}

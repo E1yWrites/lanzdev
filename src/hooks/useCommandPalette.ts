@@ -6,6 +6,16 @@ import type { LucideIcon } from "lucide-react";
 
 export const COMMAND_PALETTE_EVENT = "command-palette:open";
 
+/** The palette shortcut as it's printed on this keyboard: "⌘K" on Apple devices, "Ctrl K" elsewhere. */
+export function useShortcutLabel() {
+  const [label, setLabel] = useState("Ctrl K");
+  useEffect(() => {
+    const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
+    if (/mac|iphone|ipad/i.test(nav.userAgentData?.platform ?? navigator.platform)) setLabel("⌘K");
+  }, []);
+  return label;
+}
+
 interface Command {
   label: string;
   action: () => void;

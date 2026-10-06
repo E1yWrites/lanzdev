@@ -2,7 +2,6 @@ import { Hero } from "@/components/home/Hero";
 import type { RoomFacts } from "@/components/home/RoomCard";
 import { House, type HouseNotes } from "@/components/home/House";
 import type { ReelItem } from "@/components/home/VhsOverlay";
-import { SceneScroll } from "@/components/motion/SceneScroll";
 import { siteConfig } from "@/data/config";
 import { getAllProjects } from "@/lib/githubProjects";
 import { platformSummary, projectStatus } from "@/lib/projectDisplay";
@@ -58,7 +57,6 @@ export default async function Home() {
     <>
       <Hero facts={facts} reel={reel} />
       <House notes={notes} tape={reel[0]?.slug as TapeId | undefined} />
-      <SceneScroll />
     </>
   );
 }
