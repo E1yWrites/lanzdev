@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import type { HouseRoom } from "@/data/house";
 import { roomObject, type RoomId, type TapeId } from "@/three/roomObjects";
 
 // Tiny external stores shared between the DOM and the WebGL scenes. R3F renders in its
@@ -72,6 +73,11 @@ export function closeRoom() {
 export function syncRoomFromUrl() {
   roomFocus.set(roomObject(new URLSearchParams(location.search).get("focus"))?.id ?? null);
 }
+
+// ─── The house ────────────────────────────────────────────────────────────────
+
+/** The room under the pointer or keyboard focus in the house below the hero: its lamp turns up. */
+export const houseHover = createStore<HouseRoom | null>(null);
 
 /** A label for the cursor ring, set by things the DOM can't see (3D keys). */
 export const cursorLabel = createStore<string | null>(null);

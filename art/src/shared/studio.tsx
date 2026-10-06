@@ -57,13 +57,15 @@ interface StudioProps {
   camera: { position: Vec3; target?: Vec3; fov: number };
   /** false when the model brings its own lighting (the hero room). */
   lights?: boolean;
+  /** Shadow maps, for models that light themselves with shadows (the house). */
+  shadows?: boolean;
   children: React.ReactNode;
 }
 
 /** The same lighting the site uses (src/three/Studio.tsx), inside a Remotion canvas. */
-export function Studio({ width, height, background, camera, lights = true, children }: StudioProps) {
+export function Studio({ width, height, background, camera, lights = true, shadows, children }: StudioProps) {
   return (
-    <ThreeCanvas width={width} height={height} gl={{ alpha: background === null, antialias: true }} camera={{ position: camera.position, fov: camera.fov }}>
+    <ThreeCanvas width={width} height={height} shadows={shadows} gl={{ alpha: background === null, antialias: true }} camera={{ position: camera.position, fov: camera.fov }}>
       {background && <color attach="background" args={[background]} />}
       <Aim position={camera.position} target={camera.target ?? [0, 0, 0]} fov={camera.fov} />
       {lights && <StudioLights />}

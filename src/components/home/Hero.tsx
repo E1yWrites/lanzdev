@@ -4,10 +4,11 @@ import { useEffect, useRef } from "react";
 import { ModelStage } from "@/components/three/ModelStage";
 import { heroPointer, openRoom, roomFocus, roomHover, roomLive, roomPins, roomTape, syncRoomFromUrl, useStore } from "@/components/three/store";
 import { ROOM_OBJECTS, ROOM_VIEW, projectToStage, roomObject } from "@/three/roomObjects";
+import { FloorPlan } from "@/components/layout/FloorPlan";
 import { siteConfig } from "@/data/config";
 import { asset } from "@/lib/constants";
 import { useFinePointer, useMedia } from "@/hooks/useMedia";
-import type { ReelItem } from "./Showreel";
+import type { ReelItem } from "./VhsOverlay";
 import { RoomCard, type RoomFacts } from "./RoomCard";
 import { VhsOverlay } from "./VhsOverlay";
 
@@ -134,7 +135,6 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
   const section = useRef<HTMLElement>(null);
   const wide = useMedia("(min-width: 768px)");
   const fine = useFinePointer();
-  const live = useStore(roomLive);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -160,30 +160,34 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
     };
   }, []);
 
-  const hint = !fine ? "Tap a number" : live ? "Drag to turn · pick a number" : "Pick a number";
+  // with a mouse, hovering a pin says what it is; touch needs telling
+  const hint = fine ? null : "Tap a number";
 
   return (
-    <section ref={section} aria-labelledby="hero-title" className="hero relative overflow-hidden">
+    <section ref={section} data-scene aria-labelledby="hero-title" className="hero scene relative -mt-14 overflow-hidden pt-14">
       <div aria-hidden="true" className="hero-glow pointer-events-none absolute inset-0" />
 
-      <div className="relative mx-auto flex max-w-[1600px] flex-col px-5 md:min-h-[calc(100svh-56px)] md:px-8 lg:px-12">
+      <div className="relative mx-auto flex max-w-[1600px] flex-col px-5 md:h-full md:px-8 lg:px-12">
+        <FloorPlan current="room" className="hero-floor-plan absolute hidden md:block" />
+
         {/* On the wall from md up; set as type on phones. Always the page's one h1. */}
         <div className="pt-8 md:sr-only">
-          <p className="t-label text-ink/70">Hi, I’m {siteConfig.alias} · Batangas, PH</p>
-          <h1 id="hero-title" className="mt-3 font-display text-[clamp(2.6rem,11vw,4rem)] font-light leading-[0.95] tracking-[-0.035em] text-ink">
+          <h1 id="hero-title" className="font-display text-[clamp(2.6rem,11vw,4rem)] font-light leading-[0.95] tracking-[-0.035em] text-ink">
             Software for curious people<span className="text-accent">.</span>
           </h1>
         </div>
 
-        <div className="room-stage relative mt-2 md:mx-auto md:mt-0">
+        <div className="room-stage relative md:mx-auto">
           <ModelStage
             model="room"
             poster={asset("/art/room.webp")}
+            posterNarrow={asset("/art/room-phone.webp")}
             alt="Lanz’s room at night: a desk with a monitor showing PARADA’s parking count, an open notebook with “tala” written in it, a framed portrait, a door left ajar with warm light behind it, and a VHS deck on a cabinet under the words “Software for curious people.” painted on the wall."
             priority
             sizes="(min-width: 768px) 80vw, 100vw"
             live={wide}
             draggable={wide}
+            feather={false}
             className="absolute inset-0"
           />
           <Vignette />
@@ -191,11 +195,13 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
         </div>
         <PhoneIndex />
 
-        <div className="hero-fade relative z-[2] mt-6 grid gap-4 border-t border-ink/10 pb-8 pt-5 md:mt-auto md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8" style={{ animationDelay: "700ms" }}>
-          <p className="max-w-sm text-[15px] leading-relaxed text-ink/70">A 3rd-year IT student building web, mobile and desktop apps.</p>
+        <div className="hero-rule hero-fade relative z-[2] grid gap-4 border-t border-ink/10 md:mt-auto md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8" style={{ animationDelay: "700ms" }}>
+          <p className="hero-rule-line text-ink/70">
+            Hi, I’m {siteConfig.alias}, a 3rd-year IT student in Batangas building web, mobile and desktop apps.
+          </p>
           <p className="t-label flex flex-wrap items-center gap-x-5 gap-y-2 text-ink/60 md:justify-center">
-            <span>{hint}</span>
-            <a href="#work" className="text-ink underline-offset-4 transition-colors hover:text-accent hover:underline">
+            {hint && <span>{hint}</span>}
+            <a href="#house" className="text-ink underline-offset-4 transition-colors hover:text-accent hover:underline">
               Skip the room ↓
             </a>
           </p>

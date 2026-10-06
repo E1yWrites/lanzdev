@@ -39,7 +39,7 @@ const rad = (deg: number) => (deg * Math.PI) / 180;
  * `pitch` degrees up. `shift` slides the view sideways (in screen halves) so the object sits
  * off-centre: positive puts it left of centre, leaving the right side to the card.
  */
-function orbit(center: Vec3, yaw: number, pitch: number, dist: number, fov: number, shift = 0): Pose {
+export function orbit(center: Vec3, yaw: number, pitch: number, dist: number, fov: number, shift = 0): Pose {
   const y = rad(yaw);
   const p = rad(pitch);
   const half = dist * Math.tan(rad(fov) / 2) * ASPECT;
@@ -163,8 +163,8 @@ export const ROOM_OBJECTS: RoomObject[] = [
 
 export const roomObject = (id: string | null) => ROOM_OBJECTS.find((o) => o.id === id) ?? null;
 
-/** Where a room point lands on a 4:3 stage seen from `view`, as fractions (0–1) of its width and height. */
-export function projectToStage(view: Pose, point: Vec3): [number, number] {
+/** Where a point lands on a stage of `aspect` (width / height) seen from `view`, as fractions (0–1) of its width and height. */
+export function projectToStage(view: Pose, point: Vec3, aspect = ASPECT): [number, number] {
   const [px, py, pz] = view.position;
   let fx = view.target[0] - px;
   let fy = view.target[1] - py;
@@ -187,7 +187,7 @@ export function projectToStage(view: Pose, point: Vec3): [number, number] {
   const dz = point[2] - pz;
   const depth = dx * fx + dy * fy + dz * fz;
   const t = Math.tan(rad(view.fov) / 2);
-  const ndcX = (dx * rx + dz * rz) / (depth * t * ASPECT);
+  const ndcX = (dx * rx + dz * rz) / (depth * t * aspect);
   const ndcY = (dx * ux + dy * uy + dz * uz) / (depth * t);
   return [(ndcX + 1) / 2, (1 - ndcY) / 2];
 }

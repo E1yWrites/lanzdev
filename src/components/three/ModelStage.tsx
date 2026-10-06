@@ -20,6 +20,7 @@ const scenes = {
   room: dynamic(() => import("./RoomScene").then((m) => m.RoomScene), { ssr: false }),
   parada: dynamic(() => import("./scenes").then((m) => m.ParadaScene), { ssr: false }),
   tala: dynamic(() => import("./scenes").then((m) => m.TalaScene), { ssr: false }),
+  house: dynamic(() => import("./scenes").then((m) => m.HouseScene), { ssr: false }),
 } satisfies Record<string, React.ComponentType<SceneProps>>;
 
 export type ModelName = keyof typeof scenes;
@@ -79,6 +80,8 @@ interface ModelStageProps {
   /** Poster alt text; the live canvas is decorative and hidden from assistive tech. */
   alt?: string;
   className?: string;
+  /** The poster on phones (< 768 px), when it differs. */
+  posterNarrow?: string;
   /** Poster <Image> sizes. */
   sizes?: string;
   priority?: boolean;
@@ -90,10 +93,12 @@ interface ModelStageProps {
   cursor?: string;
   /** false keeps the poster and never loads WebGL (the hero room on phones). */
   live?: boolean;
+  /** Fade the stage's edges into the page (models that run off the frame); false keeps a crisp frame. */
+  feather?: boolean;
   onClick?: () => void;
 }
 
-export function ModelStage({ model, poster, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, onClick }: ModelStageProps) {
+export function ModelStage({ model, poster, posterNarrow, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, feather = true, onClick }: ModelStageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const reduced = useReducedMotion();
@@ -185,6 +190,8 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
       }}
       {...dragHandlers}
     >
+      <picture>
+        {posterNarrow && <source media="(max-width: 767px)" srcSet={posterNarrow} />}
       <Image
         src={poster}
         alt={alt}
@@ -193,11 +200,12 @@ export function ModelStage({ model, poster, alt = "", className, sizes = "100vw"
         priority={priority}
         // the hero's poster is the page's largest paint: decode it into the first frame
         decoding={priority ? "sync" : "async"}
-        className={cn("stage-feather pointer-events-none object-contain transition-opacity duration-700", live && "opacity-0")}
+        className={cn(feather && "stage-feather", "pointer-events-none object-contain transition-opacity duration-700", live && "opacity-0")}
         draggable={false}
       />
+      </picture>
       {mounted && (
-        <div aria-hidden="true" className={cn("stage-feather absolute inset-0 transition-opacity duration-700", live ? "opacity-100" : "opacity-0")}>
+        <div aria-hidden="true" className={cn(feather && "stage-feather", "absolute inset-0 transition-opacity duration-700", live ? "opacity-100" : "opacity-0")}>
           <Scene
             active={visible}
             font={font}

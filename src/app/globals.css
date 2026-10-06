@@ -494,6 +494,7 @@
      and above the bottom row, so pins placed in percent land on the same spot. */
   .room-stage {
     aspect-ratio: 4 / 3;
+    margin-top: 0.5rem;
   }
 
   /* Phones: the render has margin round the room, so draw it wider than the screen
@@ -514,10 +515,249 @@
     background: rgb(var(--accent) / 0.1);
   }
 
+  .hero-rule {
+    padding-block: 1.25rem 2rem;
+  }
+
+  /* From md up the room keeps the approved comp's proportions to the page width (two
+     thirds of it, its top tucked under the transparent nav), and never grows past what
+     leaves the line under it in the first screen. */
   @media (min-width: 768px) {
     .room-stage {
-      width: min(100%, calc((100svh - 56px - 7.75rem) * 4 / 3));
+      width: min(100%, 67.45vw, calc((100svh - 3.5rem - 8.5rem) * 4 / 3));
+      margin-top: calc(4.36vw - 3.5rem);
     }
+
+    .hero-rule {
+      margin-top: 1.3vw;
+      padding-block: 13px 18px;
+    }
+  }
+
+  .hero-rule-line {
+    max-width: 24rem;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 1200px) {
+    .hero-rule-line {
+      font-size: 15px;
+    }
+  }
+
+  /* The floor plan (layout/FloorPlan.tsx): under the logo, the room you're in lit. */
+  .hero-floor-plan {
+    top: calc(5.66vw - 3.5rem);
+    left: 2rem;
+    width: clamp(72px, 9.9vw, 120px);
+  }
+
+  @media (min-width: 1024px) {
+    .hero-floor-plan {
+      left: 3rem;
+    }
+  }
+
+  .floor-plan rect,
+  .floor-plan path {
+    fill: none;
+    stroke: rgb(var(--ink) / 0.28);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .floor-plan .floor-plan-thing {
+    stroke: rgb(var(--ink) / 0.16);
+  }
+
+  .floor-plan .floor-plan-here {
+    fill: url(#floor-plan-glow);
+    stroke: var(--here);
+  }
+
+  .floor-plan .floor-plan-outline {
+    stroke: rgb(var(--ink) / 0.45);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .floor-plan .floor-plan-door {
+    stroke: rgb(var(--paper));
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* The home page is one scene to a screen from md up (motion/SceneScroll.tsx). */
+  @media (min-width: 768px) {
+    .scene {
+      height: 100svh;
+    }
+  }
+
+  /* The house (home/House.tsx): the 16:9 stage fits the screen from md up, so plates
+     and hit areas keep their places on the picture; the invitation sits at lower left,
+     beside the open front door. Sizes come from the stage's own width. On phones the
+     picture is wider than the screen, centred on the house. */
+  .house-scene {
+    background: radial-gradient(50% 60% at 62% 52%, rgb(127 176 255 / 0.05), transparent 70%), rgb(var(--paper));
+  }
+
+  .house-stage {
+    position: relative;
+    container-type: inline-size;
+    width: 156%;
+    margin-left: -53%;
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .house-stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(100%, 100svh * 16 / 9);
+      margin: 0;
+      translate: -50% -50%;
+    }
+
+    .house-invite {
+      position: absolute;
+      left: clamp(1.25rem, 4vw, 4rem);
+      bottom: clamp(2.5rem, 8svh, 6rem);
+      width: min(30rem, 34vw);
+    }
+  }
+
+  /* each room's link covers the stage but only its floor, plate and note take the pointer */
+  .house-room {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .house-hit,
+  .house-plate {
+    pointer-events: auto;
+  }
+
+  .house-room:focus-visible {
+    outline: none;
+  }
+
+  /* a room's floor: the target, lit faintly in its own light when you're at it */
+  .house-hit,
+  .house-plate,
+  .house-note {
+    position: absolute;
+  }
+
+  .house-hit {
+    inset: 0;
+    cursor: pointer;
+    background: color-mix(in srgb, var(--light) 12%, transparent);
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  .house-room[data-on] .house-hit {
+    opacity: 1;
+  }
+
+  /* A plate over each room: the number in the room's light, the name, its status. */
+  .house-plate {
+    translate: -50% -100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.5em 0.9em;
+    border-radius: 3px;
+    background: #0b1120;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: clamp(10px, 0.82cqw, 14px);
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgb(var(--ink));
+    cursor: pointer;
+    transition:
+      background-color 320ms var(--ease-out),
+      box-shadow 320ms var(--ease-out);
+  }
+
+  .house-plate-index {
+    color: var(--light);
+  }
+
+  .house-plate-status {
+    color: rgb(var(--ink) / 0.6);
+  }
+
+  .house-plate-status::before {
+    content: "·";
+    margin-right: 0.7em;
+  }
+
+  .house-room[data-on] .house-plate {
+    background: #121a30;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--light) 55%, transparent);
+  }
+
+  .house-room:focus-visible .house-plate {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+  }
+
+  /* The note: a slip of paper pinned under the plate, there only while you're at the room. */
+  .house-note {
+    z-index: 1;
+    translate: -50% 0.6em;
+    min-width: 13em;
+    padding: 0.8em 1em 0.9em;
+    border-radius: 2px;
+    background: rgb(var(--sheet));
+    box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.7);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: clamp(10px, 0.78cqw, 13px);
+    line-height: 1.55;
+    letter-spacing: 0.04em;
+    color: rgb(var(--on-sheet) / 0.75);
+    pointer-events: none;
+    opacity: 0;
+    rotate: -1.5deg;
+    transition:
+      opacity 220ms var(--ease-out),
+      translate 320ms var(--ease-out);
+  }
+
+  .house-room[data-on] .house-note {
+    opacity: 1;
+    translate: -50% 1em;
+  }
+
+  .house-note-cta {
+    display: block;
+    margin-top: 0.5em;
+    color: rgb(var(--on-sheet));
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .house-note,
+    .house-hit {
+      transition: none;
+    }
+  }
+
+  /* Walking through a door (motion/DoorTransition.tsx): the next room's light fills the screen. */
+  .door-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    pointer-events: none;
   }
 
   /* Pins: a number on each object, the name sliding out on hover or focus. The button is
@@ -527,11 +767,11 @@
     transition: opacity 240ms var(--ease-out);
   }
 
-  /* Picked: the stage's edges fade into the page, like an iris, so a close-up never
-     reads as a box. The object sits a third of the way in from its side. */
+  /* Picked: the room darkens round the object inside the stage's crisp frame, like an
+     iris. The object sits a third of the way in from its side. */
   .room-vignette {
     --at: 32%;
-    background: radial-gradient(ellipse 36% 54% at var(--at) 50%, transparent 52%, rgb(var(--paper)) 100%);
+    background: radial-gradient(ellipse 40% 60% at var(--at) 50%, transparent 55%, rgb(0 0 0 / 0.55) 100%);
     opacity: 0;
     transition: opacity 600ms var(--ease-out);
   }
@@ -838,89 +1078,6 @@
     box-shadow: inset 0 0 0 1px rgb(var(--ink) / 0.45);
   }
 
-  /* Folder stack (components/home/WorkFolders.tsx). --cover (0–1) is how far the next
-     folder has slid over this one. */
-  .folder {
-    --cover: 0;
-    --fill: rgb(var(--sheet));
-    /* --fill is a registered colour (below), so day to night eases instead of snapping,
-       while --cover still tracks the scroll exactly. */
-    transition: --fill 700ms var(--ease-out);
-  }
-
-  /* The folder's sheet and its tab share one colour. As the next folder covers this
-     one, both dim toward the page by the same amount (the sheet through .folder-shade,
-     the tab by mixing), so the tab row never reads as a separate strip. */
-  .folder-sheet {
-    background-color: var(--fill);
-  }
-
-  .folder-tab {
-    --r: 14px;
-    --tab-fill: color-mix(in srgb, var(--fill) calc(100% - var(--cover) * 50%), rgb(var(--paper)));
-    background-color: var(--tab-fill);
-    border-radius: var(--r) var(--r) 0 0;
-  }
-
-  /* Curved shoulders: the tab flows into the sheet instead of standing on it. Adjacent
-     tabs share a shoulder, so there's no gap or wedge between them. */
-  /* A soft shadow on the arriving folder's top edge. The tab row sits above the sheet,
-     so the sheet's shadow never falls on its own tab. */
-  @media (min-width: 768px) {
-    .folder-arrive .folder-sheet,
-    .folder-arrive .folder-tab {
-      box-shadow: 0 -16px 36px -24px rgb(0 0 0 / 0.6);
-    }
-  }
-
-  .folder-tab::before,
-  .folder-tab::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: var(--r);
-    height: var(--r);
-    pointer-events: none;
-  }
-
-  .folder-tab::before {
-    right: 100%;
-    background: radial-gradient(circle at 0 0, transparent calc(var(--r) - 0.5px), var(--tab-fill) var(--r));
-  }
-
-  .folder-tab::after {
-    left: 100%;
-    background: radial-gradient(circle at 100% 0, transparent calc(var(--r) - 0.5px), var(--tab-fill) var(--r));
-  }
-
-  /* 3D stages fade out over their last few pixels on every side, so a model that
-     reaches the edge (PARADA's road, the arriving car, the macropad's cable) dissolves
-     instead of being cut off by the canvas. */
-  .stage-feather {
-    --feather: 44px;
-    -webkit-mask-image:
-      linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
-      linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
-    -webkit-mask-composite: source-in;
-    mask-image:
-      linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
-      linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
-    mask-composite: intersect;
-  }
-
-  .folder-shade {
-    background: rgb(var(--paper));
-    opacity: calc(var(--cover) * 0.5);
-  }
-
-  .folder-snap {
-    height: 0;
-  }
-
-  .folder-hold {
-    height: 42svh;
-  }
-
   .link-underline {
     display: inline-block;
     padding: 6px 0 5px; /* a 24px+ tap target around 11px type */
@@ -949,42 +1106,6 @@
     height: 10px;
     border-left: 3px solid currentColor;
     border-right: 3px solid currentColor;
-  }
-
-  /* Capability rows fill with the accent from the left. */
-  .cap-row::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgb(var(--accent));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 520ms var(--ease-out);
-  }
-
-  .cap-row:hover::before {
-    transform: scaleX(1);
-  }
-
-  /* About card: tilts toward the pointer, with a soft light where it points. */
-  .tilt-card {
-    position: relative;
-    transition: transform 500ms var(--ease-out);
-    transform-style: preserve-3d;
-  }
-
-  .tilt-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(600px circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.22), transparent 45%);
-    opacity: 0;
-    transition: opacity 300ms linear;
-  }
-
-  .tilt-card:hover::after {
-    opacity: 1;
   }
 
   .film-dialog {
@@ -1181,14 +1302,11 @@
   .logo-star,
   .logo-l,
   .magnetic,
-  .folder,
   .room-pin-chip,
   .room-pin-name,
   .room-pins,
   .room-cta,
-  .nav-pill-move,
-  .cap-row::before,
-  .tilt-card {
+  .nav-pill-move {
     transition: none;
   }
 

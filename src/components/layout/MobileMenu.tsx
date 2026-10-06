@@ -30,7 +30,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   if (!isOpen) return null;
 
   return (
-    <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-14 z-30 overflow-y-auto bg-paper lg:hidden">
+    <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-14 z-30 overflow-y-auto bg-paper md:hidden">
       <nav aria-label="Mobile" className="px-5 pt-6">
         <ol>
           {mainNav.map((item, i) => {

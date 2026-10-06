@@ -7,11 +7,16 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useLayoutEffect, useRef, useState, type MutableRefObject } from "react";
 import * as THREE from "three";
+import { HouseModel } from "@/three/HouseModel";
+import { HOUSE_VIEW, INDEX_ROOMS } from "@/three/housePlan";
 import { ParadaLot } from "@/three/ParadaLot";
 import { TalaDesk } from "@/three/TalaDesk";
 import { StudioLights } from "@/three/Studio";
 import { clamp01, easeInOut, range } from "@/three/lib";
 import { VIEWS, type View } from "@/three/views";
+import { houseHover, useStore } from "./store";
+import { asset } from "@/lib/constants";
+import { projects } from "@/data/projects";
 
 /** Drag state written by the DOM wrapper, read every frame by the rig (no re-renders). */
 export interface DragState {
@@ -71,9 +76,25 @@ function FirstFrame({ onReady }: { onReady?: () => void }) {
   return null;
 }
 
-function Shell({ view, active, onReady, children }: { view: View; active: boolean; onReady?: () => void; children: React.ReactNode }) {
+function Shell({
+  view,
+  active,
+  onReady,
+  lights = true,
+  shadows,
+  children,
+}: {
+  view: View;
+  active: boolean;
+  onReady?: () => void;
+  /** false when the model lights itself (the house). */
+  lights?: boolean;
+  shadows?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <Canvas
+      shadows={shadows}
       frameloop={active ? "always" : "never"}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
@@ -81,7 +102,7 @@ function Shell({ view, active, onReady, children }: { view: View; active: boolea
       style={{ touchAction: "pan-y" }}
     >
       <Aim view={view} />
-      <StudioLights />
+      {lights && <StudioLights />}
       {children}
       <FirstFrame onReady={onReady} />
     </Canvas>
@@ -226,6 +247,77 @@ export function TalaScene({ active, font, fontReady, onReady, hovered, autoplay,
   return (
     <Shell view={VIEWS.tala} active={active} onReady={onReady}>
       <TalaRig font={font} fontReady={fontReady} playing={Boolean(hovered || (autoplay && active))} night={night} drag={drag} />
+    </Shell>
+  );
+}
+
+// ─── The house ────────────────────────────────────────────────────────────────
+
+/**
+ * PARADA's reel on the screening room's set, muted and looping: a frame of it until the
+ * film is playing, and it plays only while the house is on screen.
+ */
+function useReel(active: boolean) {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const video = useRef<HTMLVideoElement | null>(null);
+  useLayoutEffect(() => {
+    const film = projects.find((p) => p.slug === "parada")?.film;
+    if (!film) return;
+    const frame = new THREE.TextureLoader().load(film.poster, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      setTexture((now) => now ?? t);
+    });
+    const v = Object.assign(document.createElement("video"), { muted: true, loop: true, playsInline: true, preload: "auto" });
+    for (const [src, type] of [
+      [film.mp4, "video/mp4"],
+      [film.webm, "video/webm"],
+    ])
+      v.append(Object.assign(document.createElement("source"), { src, type }));
+    const live = new THREE.VideoTexture(v);
+    live.colorSpace = THREE.SRGBColorSpace;
+    v.addEventListener("playing", () => setTexture(live), { once: true });
+    video.current = v;
+    return () => {
+      v.pause();
+      v.replaceChildren();
+      v.load();
+      frame.dispose();
+      live.dispose();
+    };
+  }, []);
+  useLayoutEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    if (active) v.play().catch(() => {});
+    else v.pause();
+  }, [active]);
+  return texture;
+}
+
+/** The room you're at turns its lamp up; the others ease back down. */
+function HouseRig({ font, fontReady, active }: { font: string; fontReady: boolean; active: boolean }) {
+  const at = useStore(houseHover);
+  const lit = useDamped(
+    INDEX_ROOMS.map((r) => (r.room === at ? 1 : 0)),
+    6
+  );
+  const time = useClock();
+  const [portrait, setPortrait] = useState<THREE.Texture | null>(null);
+  useLayoutEffect(() => {
+    const t = new THREE.TextureLoader().load(asset("/images/portrait.webp"), (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      setPortrait(tex);
+    });
+    return () => t.dispose();
+  }, []);
+  const film = useReel(active);
+  return <HouseModel font={font} ready={fontReady} portrait={portrait} time={time} film={film} lit={Object.fromEntries(INDEX_ROOMS.map((r, i) => [r.room, lit[i]]))} />;
+}
+
+export function HouseScene({ active, font, fontReady, onReady }: SceneProps) {
+  return (
+    <Shell view={HOUSE_VIEW} active={active} onReady={onReady} lights={false} shadows>
+      <HouseRig font={font} fontReady={fontReady} active={active} />
     </Shell>
   );
 }

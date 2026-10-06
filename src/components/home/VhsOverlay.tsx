@@ -3,10 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useFilmLoading, useFilmSource } from "@/components/motion/FilmPlayer";
 import { Loader } from "@/components/motion/Loader";
-import { roomLive, roomTape, useStore } from "@/components/three/store";
+import { heroPointer, roomLive, roomTape, useStore } from "@/components/three/store";
 import { useReducedMotion } from "@/hooks/useMedia";
 import { TAPE_INSERT_MS, type TapeId } from "@/three/roomObjects";
-import type { ReelItem } from "./Showreel";
+import type { ProjectFilm } from "@/types/project";
+
+export interface ReelItem {
+  slug: string;
+  name: string;
+  caption: string;
+  film: ProjectFilm;
+}
 
 /**
  * The films, played off a tape: a CRT-style player with scanlines, a moment of tracking
@@ -22,6 +29,7 @@ export function VhsOverlay({ reel }: { reel: ReelItem[] }) {
   const video = useRef<HTMLVideoElement>(null);
   const [open, setOpen] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [paused, setPaused] = useState(false);
   const screen = useRef<HTMLDivElement>(null);
   const band = useRef<HTMLDivElement>(null);
   const [osd, setOsd] = useState(false);
@@ -35,7 +43,8 @@ export function VhsOverlay({ reel }: { reel: ReelItem[] }) {
   useEffect(() => {
     if (!tape) return setOpen(false);
     if (open) return;
-    const t = window.setTimeout(() => setOpen(true), live && !reduced ? TAPE_INSERT_MS : 0);
+    // wait for the tape to slide into the deck, when the room is there to show it
+    const t = window.setTimeout(() => setOpen(true), live && !reduced && heroPointer.scroll < 0.5 ? TAPE_INSERT_MS : 0);
     return () => window.clearTimeout(t);
   }, [tape, open, live, reduced]);
 
@@ -99,7 +108,7 @@ export function VhsOverlay({ reel }: { reel: ReelItem[] }) {
     >
       <div className="vhs-body">
         <div ref={screen} className="vhs-screen">
-          <video ref={video} src={src} poster={film.poster} muted playsInline loop preload="none" className="h-full w-full object-cover" aria-label={`${name} — ${(item ?? shown.current)?.caption ?? ""}`} />
+          <video ref={video} onPlay={() => setPaused(false)} onPause={() => setPaused(true)} src={src} poster={film.poster} muted playsInline loop preload="none" className="h-full w-full object-cover" aria-label={`${name} — ${(item ?? shown.current)?.caption ?? ""}`} />
           <div aria-hidden="true" className="vhs-lines" />
           <div ref={band} aria-hidden="true" className="vhs-band" />
           {osd && (
@@ -124,6 +133,9 @@ export function VhsOverlay({ reel }: { reel: ReelItem[] }) {
             ))}
           </div>
           <div className="flex gap-2">
+            <button type="button" onClick={() => (paused ? video.current?.play().catch(() => undefined) : video.current?.pause())} className="vhs-button">
+              {paused ? "Play" : "Pause"}
+            </button>
             <button type="button" aria-pressed={!muted} onClick={() => setMuted((m) => !m)} className="vhs-button">
               {muted ? "Sound on" : "Sound off"}
             </button>

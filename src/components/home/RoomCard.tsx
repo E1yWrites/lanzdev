@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { closeRoom, roomEnter, roomFocus, roomLive, roomTape, useStore } from "@/components/three/store";
 import { roomObject, type RoomId, type TapeId } from "@/three/roomObjects";
-import type { ReelItem } from "./Showreel";
+import type { ReelItem } from "./VhsOverlay";
 
 /** Label/value rows under each card's line, from the projects' data and the résumé. */
 export type RoomFacts = Partial<Record<RoomId, [string, string][]>>;

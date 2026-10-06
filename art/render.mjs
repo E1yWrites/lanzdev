@@ -53,6 +53,8 @@ const film = async (id, name, posterFrame) => {
 
 // Transparent model renders: covers, and the first paint before WebGL.
 if (want("Room")) await still("Room", "room.webp", { imageFormat: "webp" });
+if (want("RoomPhone")) await still("RoomPhone", "room-phone.webp", { imageFormat: "webp" });
+if (want("House")) await still("House", "house.webp", { imageFormat: "webp" });
 if (want("Parada")) await still("Parada", "parada.webp", { imageFormat: "webp" });
 if (want("Tala")) await still("Tala", "tala.webp", { imageFormat: "webp" });
 if (want("ShareImage")) await still("ShareImage", "og.jpg", { imageFormat: "jpeg", jpegQuality: 88 });
