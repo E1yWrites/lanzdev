@@ -1,6 +1,6 @@
 "use client";
 
-import { useCommandPalette } from "@/hooks/useCommandPalette";
+import { useCommandPalette, useShortcutLabel } from "@/hooks/useCommandPalette";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -38,6 +38,7 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
     selectedIndex,
     handleKeyDown,
   } = useCommandPalette(commands);
+  const shortcut = useShortcutLabel();
 
   useEffect(() => {
     if (isOpen) {
@@ -62,7 +63,7 @@ export function CommandPalette({ projects, className }: CommandPaletteProps) {
       >
         <div className="flex h-14 items-center gap-3 border-b border-dotted border-ink/25 px-4">
           <span aria-hidden="true" className="t-label text-accent">
-            ⌘K
+            {shortcut}
           </span>
           <input
             id="command-input"

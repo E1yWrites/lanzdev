@@ -32,6 +32,10 @@ export function useStore<T>(store: Store<T>) {
   return useSyncExternalStore(store.subscribe, store.get, store.get);
 }
 
+/** Canvas pixel-ratio ceiling for every live scene. ModelStage steps it down on a slow
+ *  device: 1.75 → 1 (same scene, fewer pixels) → 0 (posters only). */
+export const renderScale = createStore(1.75);
+
 /** Pointer over the hero, normalised to -1…1, and how far the hero has scrolled away (0…1). */
 export const heroPointer = { x: 0, y: 0, scroll: 0 };
 

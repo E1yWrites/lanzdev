@@ -492,9 +492,27 @@
 
   /* The room's stage keeps the poster's 4:3, as large as the screen allows under the nav
      and above the bottom row, so pins placed in percent land on the same spot. */
+  /* Zoomed into an object, the stage melts into the page instead of ending in a hard
+     rectangle: --fade grows from 0 (crisp, as on the home view) to a soft 9% edge. */
+  @property --fade {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 0%;
+  }
+
   .room-stage {
     aspect-ratio: 4 / 3;
     margin-top: 0.5rem;
+    --fade: 0%;
+    transition: --fade 600ms var(--ease-out);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent), linear-gradient(to bottom, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent), linear-gradient(to bottom, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+    mask-composite: intersect;
+  }
+
+  .room-stage[data-open] {
+    --fade: 9%;
   }
 
   /* Phones: the render has margin round the room, so draw it wider than the screen
@@ -588,7 +606,7 @@
     vector-effect: non-scaling-stroke;
   }
 
-  /* The home page is one scene to a screen from md up (motion/SceneScroll.tsx). */
+  /* The home page is one scene to a screen from md up; scrolling is native. */
   @media (min-width: 768px) {
     .scene {
       height: 100svh;

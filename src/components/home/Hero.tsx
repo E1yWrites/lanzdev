@@ -135,6 +135,10 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
   const section = useRef<HTMLElement>(null);
   const wide = useMedia("(min-width: 768px)");
   const fine = useFinePointer();
+  // zoomed into an object: the stage loses its hard frame (see .room-stage[data-open])
+  const focus = useStore(roomFocus);
+  const live = useStore(roomLive);
+  const zoomed = live && Boolean(roomObject(focus)?.side);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -177,7 +181,7 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
           </h1>
         </div>
 
-        <div className="room-stage relative md:mx-auto">
+        <div className="room-stage relative md:mx-auto" data-open={zoomed || undefined}>
           <ModelStage
             model="room"
             poster={asset("/art/room.webp")}

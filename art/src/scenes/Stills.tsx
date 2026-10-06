@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { continueRender, delayRender, staticFile, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { ParadaLot } from "../../../src/three/ParadaLot";
+import { loadFurniture, type Furniture } from "../../../src/three/furniture";
 import { HouseModel } from "../../../src/three/HouseModel";
 import { HOUSE_VIEW } from "../../../src/three/housePlan";
 import { Room } from "../../../src/three/Room";
@@ -28,6 +29,19 @@ function usePicture(file: string) {
   return texture;
 }
 
+/** The furniture kit from art/public/furniture, held until every piece has loaded. */
+function useFurnitureSet() {
+  const [set, setSet] = useState<Furniture | null>(null);
+  useEffect(() => {
+    const handle = delayRender("furniture");
+    loadFurniture((n) => staticFile(`furniture/${n}.glb`)).then((s) => {
+      setSet(s);
+      continueRender(handle);
+    });
+  }, []);
+  return set;
+}
+
 /** The portrait in the room's frame. */
 const usePortrait = () => usePicture("portrait.webp");
 
@@ -49,9 +63,10 @@ export function HouseStill() {
   const ready = useFontsReady();
   const portrait = usePortrait();
   const film = usePicture("parada-film.jpg");
+  const furniture = useFurnitureSet();
   return (
     <Studio width={width} height={height} background={null} camera={HOUSE_VIEW} lights={false} shadows>
-      <HouseModel font={MONO} ready={ready} portrait={portrait} film={film} />
+      <HouseModel font={MONO} ready={ready} portrait={portrait} film={film} furniture={furniture} />
     </Studio>
   );
 }

@@ -6,6 +6,7 @@ import { CornerDownLeft, Search } from "lucide-react";
 import { allDocSections } from "@/data/docs";
 import { docMeta, projectLabel, projectMeta } from "@/data/docMeta";
 import { cn } from "@/lib/utils";
+import { useShortcutLabel } from "@/hooks/useCommandPalette";
 
 const PROJECTS = [{ key: "all", label: "All" }, ...Object.keys(projectMeta).map((key) => ({ key, label: projectLabel(key) }))];
 
@@ -49,11 +50,12 @@ const isTyping = (el: EventTarget | null) =>
   el instanceof HTMLElement && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
 
 /**
- * Docs search. Shortcut is `/` (GitHub/MDN convention) — ⌘K already belongs to the
+ * Docs search. Shortcut is `/` (GitHub/MDN convention) — ⌘K/Ctrl K already belongs to the
  * site-wide CommandPalette. Mount at most one instance per page.
  */
 export function DocsSearch({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
+  const shortcut = useShortcutLabel();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [project, setProject] = useState("all");
@@ -246,7 +248,7 @@ export function DocsSearch({ compact = false }: { compact?: boolean }) {
             <div className="flex items-center gap-4 border-t border-ink/10 px-4 py-2.5 t-label text-ink/60">
               <span>↑↓ navigate</span>
               <span>↵ open</span>
-              <span className="ml-auto">/ search · ⌘K commands</span>
+              <span className="ml-auto">/ search · {shortcut} commands</span>
             </div>
           </div>
         </div>

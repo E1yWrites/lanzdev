@@ -3,6 +3,16 @@
 Written 2026-10-06. Branch `hero-room`, last commit `b88d3b5` (the hero room). **Nothing
 since is committed**: all work below is in the working tree.
 
+## Update 2026-10-06 (latest): perf, native scroll, soft edge, ⌘/Ctrl K, Kenney furniture; uncommitted
+
+- **Perf (ModelStage):** frame watchdog steps `renderScale` (store.ts) 1.75 → 1 → 0 (posters only) when live scenes average < 25 fps; `saveData` / ≤ 2 GB devices skip WebGL; phones no longer prefetch three.js.
+- **Scroll:** `SceneScroll` deleted; sections stay `100svh` but scroll natively.
+- **Soft edge:** `.room-stage[data-open]` fades its edges (`--fade` 0 → 9 %) while an object is open and the live camera is zoomed (`zoomed` in Hero).
+- **Search key:** `useShortcutLabel()` (useCommandPalette.ts) → ⌘K on Apple, Ctrl K elsewhere (Navigation, CommandPalette, DocsSearch).
+- **House furniture:** 25 Kenney Furniture Kit GLBs (CC0) in `public/models/furniture/` (symlinked at `art/public/furniture`), loaded by `useFurniture()` / `loadFurniture()` in `src/three/furniture.tsx`, placed with `<Piece>` (sized by `h`/`w` in metres, repainted by material name, rug colourways in `RUG`). Used in every room of `HouseModel.tsx`; hand-built signature pieces (Tala's desk and notebook, the TV and film screen, cars, portrait, door) stay. Poster re-rendered (`ONLY=House node render.mjs`). Also fixed the duplicate-key warning in `Wall`.
+- **Room layout (hardened):** every room's furniture is plain data in `src/three/houseLayout.ts` (HouseModel renders it via `<Furnish room>`); `npx tsx scripts/check-house.mts` measures each piece from its GLB and fails on clipping through walls, other furniture, or a doorway (run it after moving anything; currently clean, 61 bodies, 7 doorways). Layout follows the reference render: garage with one car, workbench and shelving; living-room set in the screening room; bedroom with the bed's head to the wall; dining table in About; coat rack and lamp in the entrance.
+- Checks: tsc, lint pass.
+
 ## Update 2026-10-06 (finish): review, documentation and provenance done; still uncommitted
 
 - **Finish review:**
@@ -73,7 +83,7 @@ since is committed**: all work below is in the working tree.
 ## Code map (working tree)
 
 Keep and reuse:
-- `src/components/motion/SceneScroll.tsx`: one scroll/key = one `[data-scene]` on desktop
+- ~~`src/components/motion/SceneScroll.tsx`~~ (removed): one scroll/key = one `[data-scene]` on desktop
   (650 ms ease-out, 30 px gesture threshold, swallows trackpad momentum, a swipe mid-glide
   goes one further, frees the footer). Tested by `.impeccable/tools/scroll.mjs` (all pass).
 - `src/components/motion/DoorTransition.tsx`: `enterDoor({href, rect, light})` grows a

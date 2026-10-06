@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { HOUSE, type HouseRoom } from "../data/house";
 import { Box, C, EnvLevel, Glow, Plant, Rod, floorTexture, spillTexture } from "./house";
 import { FRONT_DOOR_X, HOUSE_SIZE, WALL, WALLS, floorOf, px, pz, type WallRun } from "./housePlan";
+import { FurnitureContext, Piece, RUG, type Furniture } from "./furniture";
+import { CAR_AT, CAR_SCALE, DESK_AT, FURNISHING, STUDY_DESK_AT, TV_AT } from "./houseLayout";
 import { canvasFont, canvasTexture, useDisposable } from "./lib";
 import { PARADA } from "./palette";
 import { Car, useCarGeo } from "./ParadaLot";
@@ -102,7 +104,7 @@ function Wall({ run }: { run: WallRun }) {
         const mid = (a + b) / 2;
         const l = (b - a) * 0.15 + T;
         const size = (y: number): Vec3 => (run.axis === "x" ? [l, y, T] : [T, y, l]);
-        const cuts = [a, ...bounds.filter((v) => v > a && v < b).sort((m, n) => m - n), b];
+        const cuts = [a, ...bounds.filter((v) => v > a && v < b).sort((m, n) => m - n), b].filter((v, i, all) => v !== all[i - 1]);
         return (
           <group key={mid}>
             <Box size={size(h)} position={pos(mid, h / 2)} color={PAINT_OUT} r={0.01} roughness={0.92} />
@@ -187,6 +189,21 @@ const Floors = memo(function Floors() {
   );
 });
 
+/** Everything in houseLayout.ts for a room: the kit's pieces and the hand-built plants. */
+function Furnish({ room }: { room: HouseRoom }) {
+  const { items, plants } = FURNISHING[room];
+  return (
+    <>
+      {items.map((it, i) => (
+        <Piece key={i} name={it.name} at={it.at} y={it.y} ry={it.ry} h={it.h} w={it.w} paint={it.rug && RUG[it.rug]} />
+      ))}
+      {plants.map((p, i) => (
+        <Plant key={i} position={[p.at[0], p.y ?? 0, p.at[1]]} size={p.size} seed={p.seed} leaves={p.leaves} trailing={p.trailing} />
+      ))}
+    </>
+  );
+}
+
 // ─── 01 The garage ────────────────────────────────────────────────────────────
 
 function zoneTexture(font: string, ready: boolean, free: number) {
@@ -230,61 +247,39 @@ const Garage = memo(function Garage({ font, ready, free }: { font: string; ready
         <planeGeometry args={[1.1, 0.7]} />
         <meshBasicMaterial map={zone} toneMapped={false} />
       </mesh>
-      {[
-        { x: f.x0 + f.w * 0.27, color: "#8f5442", plate: "LNZ 2026" },
-        { x: f.x0 + f.w * 0.73, color: "#c9ced6", plate: "PRD 0014" },
-      ].map((c) => (
-        <group key={c.plate} position={[c.x, 0.004, f.cz - 0.1]} rotation={[0, Math.PI / 2, 0]} scale={3.3}>
-          <Car geo={car.geo} color={c.color} plate={c.plate} font={font} ready={ready} />
-        </group>
-      ))}
+      <group position={[CAR_AT[0], 0.004, CAR_AT[1]]} rotation={[0, Math.PI / 2, 0]} scale={CAR_SCALE}>
+        <Car geo={car.geo} color="#c9ced6" plate="PRD 0014" font={font} ready={ready} />
+      </group>
+      <Furnish room="garage" />
     </group>
   );
 });
 
 // ─── 02 The study ─────────────────────────────────────────────────────────────
 
-const BOOKS = ["#c9ced6", "#3d4a6b", "#e9673f", "#6b5a4a", "#e6b450", "#2c3346", "#8a93a6"];
-
 const Study = memo(function Study({ font, ready }: { font: string; ready: boolean }) {
-  const f = floorOf("study");
-  const z = f.z0 + 0.5;
+  const [dx, z] = STUDY_DESK_AT;
   const top = 0.76;
   return (
     <group>
-      <mesh position={[f.cx, 0.007, f.cz + 0.2]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[2.2, 1.6]} />
-        <meshStandardMaterial color="#3a3350" roughness={1} />
-      </mesh>
       {/* the desk, the notebook with "tala" in it, the brass lamp */}
-      <Box size={[1.8, 0.05, 0.72]} position={[f.cx, top, z]} color={C.deskTop} r={0.015} roughness={0.5} />
-      {[-0.85, 0.85].map((dx) => (
-        <Box key={dx} size={[0.05, top - 0.03, 0.66]} position={[f.cx + dx, (top - 0.03) / 2, z]} color={C.dark} r={0.01} />
+      <Box size={[1.8, 0.05, 0.72]} position={[dx, top, z]} color={C.deskTop} r={0.015} roughness={0.5} />
+      {[-0.85, 0.85].map((o) => (
+        <Box key={o} size={[0.05, top - 0.03, 0.66]} position={[dx + o, (top - 0.03) / 2, z]} color={C.dark} r={0.01} />
       ))}
-      <group position={[f.cx - 0.15, top + 0.026, z + 0.02]} rotation={[0, 0.08, 0]} scale={0.15}>
+      <group position={[dx - 0.15, top + 0.026, z + 0.02]} rotation={[0, 0.08, 0]} scale={0.15}>
         <TalaNotebook font={font} ready={ready} write={0.995} />
       </group>
-      <mesh position={[f.cx + 0.62, top + 0.035, z - 0.12]}>
+      <mesh position={[dx + 0.62, top + 0.035, z - 0.12]}>
         <cylinderGeometry args={[0.08, 0.09, 0.03, 24]} />
         <meshStandardMaterial color="#c99a45" metalness={0.8} roughness={0.35} />
       </mesh>
-      <Rod a={[f.cx + 0.62, top + 0.05, z - 0.12]} b={[f.cx + 0.5, top + 0.5, z - 0.02]} r={0.012} color="#c99a45" metalness={0.8} roughness={0.35} />
-      <mesh position={[f.cx + 0.44, top + 0.46, z + 0.04]} rotation={[0.5, 0, 0.3]}>
+      <Rod a={[dx + 0.62, top + 0.05, z - 0.12]} b={[dx + 0.5, top + 0.5, z - 0.02]} r={0.012} color="#c99a45" metalness={0.8} roughness={0.35} />
+      <mesh position={[dx + 0.44, top + 0.46, z + 0.04]} rotation={[0.5, 0, 0.3]}>
         <coneGeometry args={[0.1, 0.14, 24, 1, true]} />
         <meshStandardMaterial color="#c99a45" metalness={0.8} roughness={0.35} side={THREE.DoubleSide} />
       </mesh>
-      {/* the chair, pulled out */}
-      <Box size={[0.48, 0.07, 0.48]} position={[f.cx - 0.1, 0.46, z + 0.75]} color={C.fabric} r={0.03} />
-      <Box size={[0.48, 0.5, 0.06]} position={[f.cx - 0.1, 0.74, z + 0.98]} color={C.fabric} r={0.03} />
-      <Rod a={[f.cx - 0.1, 0.05, z + 0.75]} b={[f.cx - 0.1, 0.43, z + 0.75]} r={0.025} color={C.metal} />
-      {/* the bookcase */}
-      <Box size={[0.9, 1.9, 0.34]} position={[f.x0 + 0.6, 0.95, f.z0 + 0.25]} color={C.cabinet} r={0.02} />
-      {[0.5, 1.05, 1.6].map((y, row) =>
-        BOOKS.slice(row, row + 5).map((color, i) => (
-          <Box key={`${row}${i}`} size={[0.1, 0.3 + ((i * 7) % 3) * 0.03, 0.24]} position={[f.x0 + 0.3 + i * 0.13, y + 0.16, f.z0 + 0.3]} color={color} r={0.01} />
-        ))
-      )}
-      <Plant position={[f.x1 - 0.35, 0, f.z0 + 0.4]} size={1.3} seed={4} leaves={16} />
+      <Furnish room="study" />
     </group>
   );
 });
@@ -304,32 +299,18 @@ function blankScreen() {
 }
 
 const Screening = memo(function Screening({ film }: { film: THREE.Texture | null }) {
-  const f = floorOf("screening");
   const blank = useDisposable(blankScreen, []);
   const screen = film ?? blank;
-  const z = f.z0 + 0.36;
+  const [x, z] = TV_AT;
   return (
     <group>
-      <Box size={[2.3, 0.56, 0.5]} position={[f.cx, 0.28, z]} color={C.cabinet} r={0.02} />
-      <Box size={[2.34, 0.04, 0.52]} position={[f.cx, 0.57, z]} color={C.cabinetDoor} r={0.01} />
-      {/* the television and the deck */}
-      <Box size={[0.9, 0.7, 0.62]} position={[f.cx + 0.2, 0.94, z + 0.02]} color="#16171c" r={0.06} roughness={0.5} />
-      <mesh position={[f.cx + 0.2, 0.96, z + 0.335]}>
+      {/* the television on its cabinet */}
+      <Box size={[0.9, 0.7, 0.62]} position={[x, 0.94, z]} color="#16171c" r={0.06} roughness={0.5} />
+      <mesh position={[x, 0.96, z + 0.315]}>
         <planeGeometry args={[0.7, 0.52]} />
         <meshBasicMaterial key={screen.uuid} map={screen} toneMapped={false} />
       </mesh>
-      <Box size={[0.6, 0.1, 0.36]} position={[f.cx - 0.7, 0.64, z]} color="#14161c" r={0.015} />
-      <mesh position={[f.cx - 0.55, 0.64, z + 0.181]}>
-        <planeGeometry args={[0.12, 0.03]} />
-        <meshBasicMaterial color={PARADA.mint} toneMapped={false} />
-      </mesh>
-      {/* the sofa, facing the set */}
-      <Box size={[2.1, 0.42, 0.9]} position={[f.cx, 0.21, f.z1 - 0.8]} color="#2e3550" r={0.08} />
-      <Box size={[2.1, 0.5, 0.22]} position={[f.cx, 0.62, f.z1 - 0.42]} color="#2e3550" r={0.08} />
-      {[-1, 1].map((s) => (
-        <Box key={s} size={[0.22, 0.6, 0.9]} position={[f.cx + s * 1.0, 0.3, f.z1 - 0.8]} color="#2a3049" r={0.08} />
-      ))}
-      <Plant position={[f.x1 - 0.4, 0, f.z0 + 0.4]} size={1.4} seed={9} leaves={18} />
+      <Furnish room="screening" />
     </group>
   );
 });
@@ -360,25 +341,7 @@ const About = memo(function About({ portrait }: { portrait: THREE.Texture | null
       {[0.5, 0.95].map((dz) => (
         <Box key={dz} size={[0.03, 0.3, 0.38]} position={[wall + 0.02, 2.05, f.cz + dz + 0.2]} color="#e8eaee" r={0.006} />
       ))}
-      {/* the table and two chairs */}
-      <Box size={[1.3, 0.05, 0.85]} position={[f.cx + 0.3, 0.74, f.cz]} color={C.wood} r={0.015} roughness={0.6} />
-      {[
-        [-0.58, -0.36],
-        [0.58, -0.36],
-        [-0.58, 0.36],
-        [0.58, 0.36],
-      ].map(([dx, dz]) => (
-        <Rod key={`${dx}${dz}`} a={[f.cx + 0.3 + dx, 0, f.cz + dz]} b={[f.cx + 0.3 + dx, 0.72, f.cz + dz]} r={0.025} color={C.wood} />
-      ))}
-      {[-1, 1].map((s) => (
-        <group key={s}>
-          <Box size={[0.44, 0.06, 0.44]} position={[f.cx + 0.3 + s * 0.95, 0.45, f.cz]} color={C.fabric} r={0.03} />
-          <Box size={[0.06, 0.48, 0.44]} position={[f.cx + 0.3 + s * 1.17, 0.72, f.cz]} color={C.fabric} r={0.03} />
-        </group>
-      ))}
-      <Box size={[2.2, 0.8, 0.36]} position={[f.cx, 0.4, f.z1 - 0.3]} color={C.cabinet} r={0.02} />
-      <Plant position={[f.x1 - 0.45, 0, f.z0 + 0.5]} size={1.5} seed={3} leaves={20} />
-      <Plant position={[f.cx - 0.6, 0.8, f.z1 - 0.3]} size={0.6} seed={5} trailing />
+      <Furnish room="about" />
     </group>
   );
 });
@@ -402,7 +365,6 @@ function Leaf({ w, h }: { w: number; h: number }) {
 }
 
 const Front = memo(function Front() {
-  const f = floorOf("front");
   const [x0, x1] = FRONT_DOOR_X;
   const dw = x1 - x0;
   const DH = 2.1;
@@ -422,16 +384,7 @@ const Front = memo(function Front() {
       <Glow map={spill} size={[dw + 0.5, 0.6]} position={[(x0 + x1) / 2, -0.055, D + 0.38]} rotation={[-Math.PI / 2, 0, 0]} color={HOUSE.front.light} opacity={1} />
       <Glow map={spill} size={[dw + 0.9, 1.4]} position={[(x0 + x1) / 2, 0.011, D - 0.7]} rotation={[-Math.PI / 2, 0, Math.PI]} color={HOUSE.front.light} opacity={0.85} />
       <pointLight position={[(x0 + x1) / 2, 1.2, D - 0.2]} color={HOUSE.front.light} intensity={5} distance={3} decay={1.4} />
-      <mesh position={[(x0 + x1) / 2, 0.008, D - 0.4]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.9, 0.55]} />
-        <meshStandardMaterial color="#6b4a32" roughness={1} />
-      </mesh>
-      {/* the coat stand and a bench */}
-      <Rod a={[f.x0 + 0.45, 0, f.z1 - 0.5]} b={[f.x0 + 0.45, 1.75, f.z1 - 0.5]} r={0.025} color={C.wood} />
-      <Box size={[0.3, 0.55, 0.2]} position={[f.x0 + 0.5, 1.35, f.z1 - 0.42]} color="#7a5a3a" r={0.06} />
-      <Box size={[0.36, 0.04, 0.36]} position={[f.x0 + 0.45, 0.02, f.z1 - 0.5]} color={C.metal} r={0.02} />
-      <Box size={[1.2, 0.42, 0.4]} position={[f.x0 + 0.45, 0.21, f.cz - 0.4]} color={C.wood} r={0.02} />
-      <Plant position={[f.x1 - 0.4, 0, f.z1 - 0.45]} size={1.3} seed={8} leaves={14} />
+      <Furnish room="front" />
     </group>
   );
 });
@@ -439,30 +392,24 @@ const Front = memo(function Front() {
 // ─── Lanz's room (where you came from) and the hall ───────────────────────────
 
 const LanzRoom = memo(function LanzRoom() {
-  const f = floorOf("room");
+  const [dx, dz] = DESK_AT;
   return (
     <group>
-      <Box size={[0.7, 0.05, 1.6]} position={[f.x1 - 0.45, 0.76, f.cz - 0.6]} color={C.deskTop} r={0.015} />
-      <Box size={[0.6, 0.73, 0.4]} position={[f.x1 - 0.45, 0.365, f.cz - 1.1]} color={C.dark} r={0.01} />
-      <Box size={[0.04, 0.32, 0.56]} position={[f.x1 - 0.65, 1.0, f.cz - 0.5]} color={C.metal} r={0.01} />
-      <mesh position={[f.x1 - 0.675, 1.0, f.cz - 0.5]} rotation={[0, -Math.PI / 2, 0]}>
+      {/* the monitor on the desk, left on */}
+      <Box size={[0.04, 0.32, 0.56]} position={[dx - 0.15, 1.0, dz + 0.1]} color={C.metal} r={0.01} />
+      <mesh position={[dx - 0.175, 1.0, dz + 0.1]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[0.52, 0.28]} />
         <meshBasicMaterial color="#5f7fd8" toneMapped={false} />
       </mesh>
-      <Box size={[1.5, 0.42, 2.1]} position={[f.x0 + 1.0, 0.21, f.z1 - 1.15]} color={C.fabric} r={0.06} />
-      <Box size={[1.5, 0.08, 1.3]} position={[f.x0 + 1.0, 0.45, f.z1 - 0.8]} color="#3d4a6b" r={0.04} />
-      <Box size={[0.9, 0.12, 0.35]} position={[f.x0 + 1.0, 0.48, f.z1 - 1.95]} color={C.trim} r={0.05} />
-      <Plant position={[f.x1 - 0.4, 0, f.z1 - 0.4]} size={1.5} seed={6} leaves={18} />
+      <Furnish room="room" />
     </group>
   );
 });
 
 const Hall = memo(function Hall() {
-  const f = floorOf("hall");
   return (
     <group>
-      <Box size={[0.4, 0.8, 1.1]} position={[f.x0 + 0.35, 0.4, f.cz]} color={C.cabinet} r={0.02} />
-      <Plant position={[f.x0 + 0.35, 0.8, f.cz]} size={0.7} seed={12} />
+      <Furnish room="hall" />
     </group>
   );
 });
@@ -480,7 +427,6 @@ const LAMPS: { room: HouseRoom; at: (f: ReturnType<typeof floorOf>) => Vec3; bas
 
 function Lights({ lit, flicker }: { lit: Partial<Record<HouseRoom, number>>; flicker: number }) {
   const round = useDisposable(roundTexture, []);
-  const room = floorOf("room");
   return (
     <>
       <StudioLights intensity={0} />
@@ -501,7 +447,7 @@ function Lights({ lit, flicker }: { lit: Partial<Record<HouseRoom, number>>; fli
         );
       })}
       {/* Lanz's room: the desk lamp and the monitor, left on */}
-      <pointLight position={[room.x1 - 0.7, 1.2, room.cz - 0.5]} color="#ffbe86" intensity={1.4} distance={3.2} decay={1.6} />
+      <pointLight position={[DESK_AT[0] - 0.2, 1.2, DESK_AT[1] + 0.1]} color="#ffbe86" intensity={1.4} distance={3.2} decay={1.6} />
       <pointLight position={[0, 1.4, floorOf("hall").cz]} color="#c9ced6" intensity={0.7} distance={5} decay={1.6} />
     </>
   );
@@ -522,12 +468,14 @@ export interface HouseModelProps {
   free?: number;
   /** What the screening room's set is showing: a film playing, or a frame of one. */
   film?: THREE.Texture | null;
+  /** The loaded furniture kit; the rooms are bare until it arrives. */
+  furniture?: Furniture | null;
 }
 
-export function HouseModel({ font, ready, portrait = null, lit = {}, time = 0, free = 12, film = null }: HouseModelProps) {
+export function HouseModel({ font, ready, portrait = null, lit = {}, time = 0, free = 12, film = null, furniture = null }: HouseModelProps) {
   const flicker = 0.9 + 0.1 * Math.sin(time * 11) * Math.sin(time * 3.7);
   return (
-    <group>
+    <FurnitureContext.Provider value={furniture}>
       <Lights lit={lit} flicker={flicker} />
       <Shadowed>
         <Floors />
@@ -542,6 +490,6 @@ export function HouseModel({ font, ready, portrait = null, lit = {}, time = 0, f
         <LanzRoom />
         <Hall />
       </Shadowed>
-    </group>
+    </FurnitureContext.Provider>
   );
 }
