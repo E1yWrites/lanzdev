@@ -232,7 +232,7 @@ function Pencil({ tip, lift, roll }: { tip: THREE.Vector3; lift: number; roll: n
 // ─── Sun, moon and stars ──────────────────────────────────────────────────────
 
 /** Crescent = a disc minus an offset disc, traced as one outline (outer arc, then inner arc back). */
-function crescentGeometry() {
+export function crescentGeometry() {
   const R = 0.34;
   const c = new THREE.Vector2(0.15, 0.1);
   const r = 0.29;
@@ -328,24 +328,17 @@ const STARS: { p: [number, number, number]; r: number; color: string; phase: num
   { p: [-0.6, 1.95, 0.35], r: 0.08, color: TALA.gold, phase: 4.4 },
 ];
 
-// ─── The desk ─────────────────────────────────────────────────────────────────
-
-export interface TalaDeskProps {
+export interface TalaNotebookProps {
   font: string;
   ready: boolean;
   /** 0–1: how much of "tala" the pencil has written. */
   write?: number;
-  /** 0–1: sun (day) to moon (night). */
-  night?: number;
-  /** Seconds, for the floating stars. */
-  time?: number;
 }
 
-export function TalaDesk({ font, ready, write = 1, night = 0, time = 0 }: TalaDeskProps) {
+/** The open notebook, the pencil and the word it writes — the desk below, and 02 in the hero room. */
+export function TalaNotebook({ font, ready, write = 1 }: TalaNotebookProps) {
   const edge = useDisposable(edgeTexture, []);
   const cover = useDisposable(() => new RoundedBoxGeometry(PAGE.w + 0.1, 0.05, PAGE.d + 0.1, 3, 0.02), []);
-  const star = useDisposable(() => sparkleGeometry(1, 0.2), []);
-  const moon = useDisposable(crescentGeometry, []);
 
   const curves = useMemo(() => {
     const doodle = { x: -PAGE.w / 2 - SPINE_GAP / 2 + 0.05, z: 0.3, scale: 1 };
@@ -390,13 +383,10 @@ export function TalaDesk({ font, ready, write = 1, night = 0, time = 0 }: TalaDe
         ? writingPoint([curves.cross], [lengths[1]], crossP)
         : curves.swash.getPointAt(swashP);
   const lift = w <= 0.001 || w >= 0.999 ? 0.28 : 0.02 + Math.abs(Math.sin(w * 60)) * 0.006;
-
-  const n = easeInOut(clamp01(night));
   const inkColor = TALA.ink;
 
   return (
     <group>
-      <SoftShadow width={5.2} depth={3.6} y={-0.001} opacity={0.8} />
       {/* covers */}
       {[1, -1].map((side) => (
         <mesh key={side} geometry={cover} position={[side * (PAGE.w / 2 + SPINE_GAP / 2), 0.025, 0]}>
@@ -419,6 +409,28 @@ export function TalaDesk({ font, ready, write = 1, night = 0, time = 0 }: TalaDe
       <Pencil tip={tip} lift={lift} roll={w * 4} />
 
       <StickyNote font={font} ready={ready} />
+    </group>
+  );
+}
+
+// ─── The desk ─────────────────────────────────────────────────────────────────
+
+export interface TalaDeskProps extends TalaNotebookProps {
+  /** 0–1: sun (day) to moon (night). */
+  night?: number;
+  /** Seconds, for the floating stars. */
+  time?: number;
+}
+
+export function TalaDesk({ font, ready, write = 1, night = 0, time = 0 }: TalaDeskProps) {
+  const star = useDisposable(() => sparkleGeometry(1, 0.2), []);
+  const moon = useDisposable(crescentGeometry, []);
+  const n = easeInOut(clamp01(night));
+
+  return (
+    <group>
+      <SoftShadow width={5.2} depth={3.6} y={-0.001} opacity={0.8} />
+      <TalaNotebook font={font} ready={ready} write={write} />
 
       {/* sun ↔ moon, turning over like a coin */}
       <group position={[0.95, 1.35, -0.7]} rotation={[0, n * Math.PI, 0]} scale={0.78}>

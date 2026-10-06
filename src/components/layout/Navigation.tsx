@@ -62,7 +62,7 @@ export function Navigation({ projects }: NavigationProps) {
           scrolled || isOpen ? "border-ink/10 bg-paper/85 backdrop-blur-md" : "border-transparent"
         )}
       >
-        <nav aria-label="Main" className="t-label mx-auto flex h-full max-w-[1600px] items-center gap-6 px-5 md:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-12">
+        <nav aria-label="Main" className="t-label mx-auto flex h-full max-w-[1600px] items-center gap-6 px-5 md:grid md:grid-cols-[1fr_auto_1fr] md:px-8 lg:px-12">
           <Link href="/" aria-current={pathname === "/" ? "page" : undefined} aria-label="Lorenz.dev, home" className="group -my-1 inline-flex items-center gap-2.5 justify-self-start py-2 text-ink">
             <LogoMark size={22} intro />
             <span className="roll" aria-hidden="true">
@@ -78,7 +78,7 @@ export function Navigation({ projects }: NavigationProps) {
           <div
             ref={group}
             onPointerLeave={() => setHover(null)}
-            className="relative hidden items-center rounded-full p-1 ring-1 ring-ink/10 lg:flex"
+            className="relative hidden items-center rounded-full p-1 ring-1 ring-ink/10 md:flex"
           >
             {pill && (
               <span
@@ -98,7 +98,7 @@ export function Navigation({ projects }: NavigationProps) {
                   onPointerEnter={() => setHover(i)}
                   onFocus={() => setHover(i)}
                   onBlur={() => setHover(null)}
-                  className={cn("relative inline-flex h-8 items-center gap-2 rounded-full px-4 transition-colors duration-fast", active ? "text-ink" : "text-ink/70 hover:text-ink")}
+                  className={cn("relative inline-flex h-8 items-center gap-2 rounded-full px-3 transition-colors duration-fast lg:px-4", active ? "text-ink" : "text-ink/70 hover:text-ink")}
                 >
                   {active && <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent" />}
                   {item.label}
@@ -107,12 +107,12 @@ export function Navigation({ projects }: NavigationProps) {
             })}
           </div>
 
-          <div className="ml-auto flex items-center gap-2 lg:ml-0 lg:justify-self-end">
+          <div className="ml-auto flex items-center gap-2 md:ml-0 md:justify-self-end">
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(COMMAND_PALETTE_EVENT))}
               aria-label="Search, or press ⌘K"
-              className="t-label hidden h-8 items-center gap-2 rounded-full px-3 text-ink/70 ring-1 ring-ink/10 transition-colors duration-fast hover:text-ink hover:ring-ink/30 lg:inline-flex"
+              className="t-label hidden h-8 items-center gap-2 rounded-full px-3 text-ink/70 ring-1 ring-ink/10 transition-colors duration-fast hover:text-ink hover:ring-ink/30 md:inline-flex"
             >
               Search <kbd className="rounded-[4px] bg-ink/10 px-1.5 py-px font-mono text-[10px] text-ink/80">⌘K</kbd>
             </button>
@@ -120,7 +120,7 @@ export function Navigation({ projects }: NavigationProps) {
               <Link
                 href={contact.href}
                 aria-current={contactActive ? "page" : undefined}
-                className="hidden h-8 items-center gap-2 rounded-full bg-ink px-4 text-paper transition-colors duration-normal hover:bg-accent hover:text-on-sheet lg:inline-flex"
+                className="hidden h-8 items-center gap-2 rounded-full bg-ink px-4 text-paper transition-colors duration-normal hover:bg-accent hover:text-on-sheet md:inline-flex"
               >
                 {contact.label} <span aria-hidden="true">→</span>
               </Link>
@@ -130,7 +130,7 @@ export function Navigation({ projects }: NavigationProps) {
               onClick={toggle}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
-              className="t-label -mr-2 h-11 px-2 text-ink transition-colors duration-fast hover:text-accent lg:hidden"
+              className="t-label -mr-2 h-11 px-2 text-ink transition-colors duration-fast hover:text-accent md:hidden"
             >
               {isOpen ? "Close" : "Menu"}
             </button>

@@ -4,16 +4,19 @@
 // so nothing here reaches the first paint. Models are pure functions of their props
 // (src/three) — the rigs below turn pointer, hover and time into those props.
 
-import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import { useEffect, useLayoutEffect, useRef, useState, type MutableRefObject } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useLayoutEffect, useRef, useState, type MutableRefObject } from "react";
 import * as THREE from "three";
-import { Macropad, PAD_KEYS } from "@/three/Macropad";
+import { HouseModel } from "@/three/HouseModel";
+import { HOUSE_VIEW, INDEX_ROOMS } from "@/three/housePlan";
 import { ParadaLot } from "@/three/ParadaLot";
 import { TalaDesk } from "@/three/TalaDesk";
 import { StudioLights } from "@/three/Studio";
 import { clamp01, easeInOut, range } from "@/three/lib";
-import { MACROPAD_YAW, VIEWS, type View } from "@/three/views";
-import { cursorLabel, heroKey, heroPointer, useStore } from "./store";
+import { VIEWS, type View } from "@/three/views";
+import { houseHover, useStore } from "./store";
+import { asset } from "@/lib/constants";
+import { projects } from "@/data/projects";
 
 /** Drag state written by the DOM wrapper, read every frame by the rig (no re-renders). */
 export interface DragState {
@@ -26,6 +29,8 @@ export interface SceneProps {
   /** Render frames only while on screen. */
   active: boolean;
   font: string;
+  /** Display face, for painted text (the hero room's wall). */
+  display?: string;
   fontReady: boolean;
   onReady?: () => void;
   /** Touch devices: play the story when on screen instead of on hover. */
@@ -71,9 +76,25 @@ function FirstFrame({ onReady }: { onReady?: () => void }) {
   return null;
 }
 
-function Shell({ view, active, onReady, children }: { view: View; active: boolean; onReady?: () => void; children: React.ReactNode }) {
+function Shell({
+  view,
+  active,
+  onReady,
+  lights = true,
+  shadows,
+  children,
+}: {
+  view: View;
+  active: boolean;
+  onReady?: () => void;
+  /** false when the model lights itself (the house). */
+  lights?: boolean;
+  shadows?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <Canvas
+      shadows={shadows}
       frameloop={active ? "always" : "never"}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
@@ -81,7 +102,7 @@ function Shell({ view, active, onReady, children }: { view: View; active: boolea
       style={{ touchAction: "pan-y" }}
     >
       <Aim view={view} />
-      <StudioLights />
+      {lights && <StudioLights />}
       {children}
       <FirstFrame onReady={onReady} />
     </Canvas>
@@ -134,103 +155,6 @@ function useTurntable(group: MutableRefObject<THREE.Group | null>, drag: Mutable
     const sway = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
     g.rotation.y = baseYaw + (d?.yaw ?? 0) + sway;
   });
-}
-
-// ─── Hero: the macropad ───────────────────────────────────────────────────────
-
-const IDLE_SCREENS: [string, string][] = [
-  ["LORENZ.DEV", "HOVER A KEY · CLICK TO OPEN"],
-  ["PARADA · TALA", "TWO PROJECTS · FOUR KEYS"],
-  ["BATANGAS, PH", "13.7565° N · 121.0583° E"],
-  ["STATUS", "OPEN TO AN INTERNSHIP"],
-];
-
-function MacropadRig({ font, fontReady, onNavigate }: Pick<SceneProps, "font" | "fontReady" | "onNavigate">) {
-  const group = useRef<THREE.Group>(null);
-  const hovered = useStore(heroKey);
-  const [pressed, setPressed] = useState(-1);
-  const [idle, setIdle] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setIdle((i) => (i + 1) % IDLE_SCREENS.length), 2600);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => () => cursorLabel.set(null), []);
-
-  const press = PAD_KEYS.map((_, i) => (pressed === i ? 1 : hovered === i ? 0.32 : 0));
-  const glow = PAD_KEYS.map((_, i) => (hovered === i || pressed === i ? 1 : 0));
-  const meter = hovered >= 0 ? (hovered + 1) / PAD_KEYS.length : 0.25;
-  const damped = useDamped([...press, ...glow, meter], 14);
-
-  // Pointer tilt, float and scroll — straight onto the group, no React work.
-  const knob = useRef(0);
-  const [knobAngle, setKnobAngle] = useState(0);
-  useFrame((state, delta) => {
-    const g = group.current;
-    if (!g) return;
-    const t = state.clock.elapsedTime;
-    const s = heroPointer.scroll;
-    g.rotation.y = THREE.MathUtils.damp(g.rotation.y, MACROPAD_YAW + heroPointer.x * 0.32 + Math.sin(t * 0.4) * 0.04, 4, delta);
-    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, heroPointer.y * 0.14 + s * 0.55, 4, delta);
-    g.position.y = Math.sin(t * 0.9) * 0.06 - s * 1.4;
-    // The knob follows the page: a quarter turn per screen of scrolling.
-    const want = (window.scrollY / window.innerHeight) * (Math.PI / 2) + 0.6;
-    knob.current = THREE.MathUtils.damp(knob.current, want, 8, delta);
-    if (Math.abs(knob.current - knobAngle) > 0.004) setKnobAngle(knob.current);
-  });
-
-  const onKey = (i: number, type: "over" | "out" | "click", e: ThreeEvent<PointerEvent | MouseEvent>) => {
-    const key = PAD_KEYS[i];
-    if (type === "over") {
-      heroKey.set(i);
-      cursorLabel.set(`Open ${key.label}`);
-      document.body.style.cursor = "pointer";
-    } else if (type === "out") {
-      if (heroKey.get() === i) heroKey.set(-1);
-      cursorLabel.set(null);
-      document.body.style.cursor = "";
-    } else {
-      e.stopPropagation();
-      setPressed(i);
-      document.body.style.cursor = "";
-      cursorLabel.set(null);
-      window.setTimeout(() => {
-        setPressed(-1);
-        onNavigate?.(key.href);
-      }, 170);
-    }
-  };
-
-  // Initial pose only — after that the frame loop owns the transform (a rotation prop
-  // would be re-applied on every re-render and fight the damping).
-  useLayoutEffect(() => {
-    group.current?.rotation.set(0, MACROPAD_YAW, 0);
-  }, []);
-
-  const screen = hovered >= 0 ? PAD_KEYS[hovered].screen : IDLE_SCREENS[idle];
-  const n = PAD_KEYS.length;
-  return (
-    <group ref={group}>
-      <Macropad
-        font={font}
-        ready={fontReady}
-        press={damped.slice(0, n)}
-        glow={damped.slice(n, n * 2)}
-        knob={knobAngle}
-        screen={{ title: screen[0], sub: screen[1], meter: damped[n * 2] }}
-        onKey={onKey}
-      />
-    </group>
-  );
-}
-
-export function MacropadScene({ active, font, fontReady, onReady, onNavigate }: SceneProps) {
-  return (
-    <Shell view={VIEWS.macropad} active={active} onReady={onReady}>
-      <MacropadRig font={font} fontReady={fontReady} onNavigate={onNavigate} />
-    </Shell>
-  );
 }
 
 // ─── PARADA: the lot ──────────────────────────────────────────────────────────
@@ -323,6 +247,77 @@ export function TalaScene({ active, font, fontReady, onReady, hovered, autoplay,
   return (
     <Shell view={VIEWS.tala} active={active} onReady={onReady}>
       <TalaRig font={font} fontReady={fontReady} playing={Boolean(hovered || (autoplay && active))} night={night} drag={drag} />
+    </Shell>
+  );
+}
+
+// ─── The house ────────────────────────────────────────────────────────────────
+
+/**
+ * PARADA's reel on the screening room's set, muted and looping: a frame of it until the
+ * film is playing, and it plays only while the house is on screen.
+ */
+function useReel(active: boolean) {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const video = useRef<HTMLVideoElement | null>(null);
+  useLayoutEffect(() => {
+    const film = projects.find((p) => p.slug === "parada")?.film;
+    if (!film) return;
+    const frame = new THREE.TextureLoader().load(film.poster, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      setTexture((now) => now ?? t);
+    });
+    const v = Object.assign(document.createElement("video"), { muted: true, loop: true, playsInline: true, preload: "auto" });
+    for (const [src, type] of [
+      [film.mp4, "video/mp4"],
+      [film.webm, "video/webm"],
+    ])
+      v.append(Object.assign(document.createElement("source"), { src, type }));
+    const live = new THREE.VideoTexture(v);
+    live.colorSpace = THREE.SRGBColorSpace;
+    v.addEventListener("playing", () => setTexture(live), { once: true });
+    video.current = v;
+    return () => {
+      v.pause();
+      v.replaceChildren();
+      v.load();
+      frame.dispose();
+      live.dispose();
+    };
+  }, []);
+  useLayoutEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    if (active) v.play().catch(() => {});
+    else v.pause();
+  }, [active]);
+  return texture;
+}
+
+/** The room you're at turns its lamp up; the others ease back down. */
+function HouseRig({ font, fontReady, active }: { font: string; fontReady: boolean; active: boolean }) {
+  const at = useStore(houseHover);
+  const lit = useDamped(
+    INDEX_ROOMS.map((r) => (r.room === at ? 1 : 0)),
+    6
+  );
+  const time = useClock();
+  const [portrait, setPortrait] = useState<THREE.Texture | null>(null);
+  useLayoutEffect(() => {
+    const t = new THREE.TextureLoader().load(asset("/images/portrait.webp"), (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      setPortrait(tex);
+    });
+    return () => t.dispose();
+  }, []);
+  const film = useReel(active);
+  return <HouseModel font={font} ready={fontReady} portrait={portrait} time={time} film={film} lit={Object.fromEntries(INDEX_ROOMS.map((r, i) => [r.room, lit[i]]))} />;
+}
+
+export function HouseScene({ active, font, fontReady, onReady }: SceneProps) {
+  return (
+    <Shell view={HOUSE_VIEW} active={active} onReady={onReady} lights={false} shadows>
+      <HouseRig font={font} fontReady={fontReady} active={active} />
     </Shell>
   );
 }

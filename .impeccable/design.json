@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-06T01:13:50+00:00",
+  "title": "Design System: Lorenz.dev",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Midnight Paint",
+        "tonalRamp": [
+          "#080B11",
+          "#22252C",
+          "#3E4249",
+          "#5D6169",
+          "#7E828B",
+          "#A1A5AE",
+          "#C5C9D2",
+          "#EAEFF8"
+        ],
+        "canonical": "oklch(17.3% 0.013 264)"
+      },
+      "paper-elevated": {
+        "role": "neutral",
+        "displayName": "Raised Midnight",
+        "tonalRamp": [
+          "#080B12",
+          "#21252D",
+          "#3D424B",
+          "#5C616B",
+          "#7D828D",
+          "#A0A5B0",
+          "#C4C9D5",
+          "#E9EFFA"
+        ],
+        "canonical": "oklch(21.7% 0.017 264)"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Cool Bone",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#A4A5A8",
+          "#C8C9CC",
+          "#EDEEF1"
+        ],
+        "canonical": "oklch(93.4% 0.004 271)"
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Ember",
+        "tonalRamp": [
+          "#200000",
+          "#4C0300",
+          "#7E0E00",
+          "#AC2D00",
+          "#CD5A36",
+          "#E28B71",
+          "#F3BAA9",
+          "#FFE8E1"
+        ],
+        "canonical": "oklch(66.8% 0.171 38)"
+      },
+      "solar": {
+        "role": "secondary",
+        "displayName": "Tala Gold",
+        "tonalRamp": [
+          "#180600",
+          "#3E1B00",
+          "#633700",
+          "#855700",
+          "#A87900",
+          "#C89E4A",
+          "#E0C595",
+          "#F8EDDA"
+        ],
+        "canonical": "oklch(79.7% 0.130 82)"
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Tala After Dark",
+        "tonalRamp": [
+          "#070A18",
+          "#1F2434",
+          "#3C4152",
+          "#5A6173",
+          "#7B8295",
+          "#9DA5B9",
+          "#C1C9DD",
+          "#E7EEFF"
+        ],
+        "canonical": "oklch(23.3% 0.030 270)"
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Note Paper",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242528",
+          "#404245",
+          "#5F6165",
+          "#808286",
+          "#A3A5A9",
+          "#C7C9CD",
+          "#ECEEF2"
+        ],
+        "canonical": "oklch(93.7% 0.006 265)"
+      },
+      "sheet-grey": {
+        "role": "neutral",
+        "displayName": "Grey Sheet",
+        "tonalRamp": [
+          "#080B10",
+          "#22252B",
+          "#3E4249",
+          "#5D6168",
+          "#7E838A",
+          "#A1A5AD",
+          "#C4C9D1",
+          "#EAEFF7"
+        ],
+        "canonical": "oklch(85.0% 0.012 260)"
+      },
+      "on-sheet": {
+        "role": "neutral",
+        "displayName": "Printed Ink",
+        "tonalRamp": [
+          "#080B11",
+          "#22252C",
+          "#3E4249",
+          "#5D6169",
+          "#7E828B",
+          "#A1A5AE",
+          "#C5C9D2",
+          "#EAEFF8"
+        ],
+        "canonical": "oklch(17.3% 0.013 264)"
+      },
+      "plate": {
+        "role": "neutral",
+        "displayName": "Enamel",
+        "tonalRamp": [
+          "#060A19",
+          "#1E2535",
+          "#3A4254",
+          "#596174",
+          "#798296",
+          "#9CA5BA",
+          "#BFC9DF",
+          "#E6EFFF"
+        ],
+        "canonical": "oklch(18.0% 0.032 267)"
+      },
+      "plate-lit": {
+        "role": "neutral",
+        "displayName": "Lit Enamel",
+        "tonalRamp": [
+          "#04091E",
+          "#1B243B",
+          "#37415A",
+          "#56617B",
+          "#76829E",
+          "#99A5C2",
+          "#BCC9E7",
+          "#E6EEFF"
+        ],
+        "canonical": "oklch(22.3% 0.045 268)"
+      },
+      "live": {
+        "role": "status",
+        "displayName": "Live Green",
+        "tonalRamp": [
+          "#001201",
+          "#003207",
+          "#005615",
+          "#007C2A",
+          "#009C55",
+          "#67BA84",
+          "#A6D7B4",
+          "#E1F5E6"
+        ],
+        "canonical": "oklch(79.3% 0.180 154)"
+      },
+      "light-garage": {
+        "role": "room-light",
+        "displayName": "Sodium Amber",
+        "tonalRamp": [
+          "#1C0300",
+          "#451400",
+          "#6F2B00",
+          "#934D00",
+          "#B86F00",
+          "#D49752",
+          "#E9C198",
+          "#FCEBDB"
+        ],
+        "canonical": "oklch(78.1% 0.139 68)"
+      },
+      "light-study": {
+        "role": "room-light",
+        "displayName": "Brass Gold",
+        "tonalRamp": [
+          "#180600",
+          "#3E1B00",
+          "#633700",
+          "#855700",
+          "#A87900",
+          "#C89E4A",
+          "#E0C595",
+          "#F8EDDA"
+        ],
+        "canonical": "oklch(79.7% 0.130 82)"
+      },
+      "light-screening": {
+        "role": "room-light",
+        "displayName": "TV Blue",
+        "tonalRamp": [
+          "#000826",
+          "#002058",
+          "#123E83",
+          "#335FA8",
+          "#5382CD",
+          "#7AA6EC",
+          "#AECBF8",
+          "#E3EFFF"
+        ],
+        "canonical": "oklch(75.5% 0.126 260)"
+      },
+      "light-about": {
+        "role": "room-light",
+        "displayName": "Soft White",
+        "tonalRamp": [
+          "#070B13",
+          "#20252F",
+          "#3D424D",
+          "#5B616D",
+          "#7C838E",
+          "#9FA5B2",
+          "#C3C9D6",
+          "#E8EFFC"
+        ],
+        "canonical": "oklch(91.4% 0.019 263)"
+      },
+      "light-front": {
+        "role": "room-light",
+        "displayName": "Front Door Orange",
+        "tonalRamp": [
+          "#1F0100",
+          "#4A0900",
+          "#7B1900",
+          "#A13E00",
+          "#C7621B",
+          "#DE8F63",
+          "#F0BCA1",
+          "#FFE9DE"
+        ],
+        "canonical": "oklch(76.8% 0.151 50)"
+      },
+      "light-room": {
+        "role": "room-light",
+        "displayName": "Ember (Lanz’s room)",
+        "tonalRamp": [
+          "#200000",
+          "#4C0300",
+          "#7E0E00",
+          "#AC2D00",
+          "#CD5A36",
+          "#E28B71",
+          "#F3BAA9",
+          "#FFE8E1"
+        ],
+        "canonical": "oklch(66.8% 0.171 38)"
+      },
+      "light-hall": {
+        "role": "room-light",
+        "displayName": "Hall Grey",
+        "tonalRamp": [
+          "#080B10",
+          "#22252B",
+          "#3E4249",
+          "#5D6168",
+          "#7E838A",
+          "#A1A5AD",
+          "#C4C9D1",
+          "#EAEFF7"
+        ],
+        "canonical": "oklch(85.0% 0.012 260)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Inner-page titles (text-display); the home h1 on phones at clamp(2.6rem, 11vw, 4rem). Painted on the room wall from md up."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "\"Have a project in mind?\" beside the front door; clamp(3rem, 7vw, 6.5rem) in the footer version."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Room card titles; 1.25rem for phone index labels and tape names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading text, max ~24rem in the invitation."
+      },
+      "body-small": {
+        "displayName": "Body small",
+        "purpose": "Card lines and footer links; 13→15px line under the room."
+      },
+      "label": {
+        "displayName": "Label (.t-label)",
+        "purpose": "Interface text: nav, buttons, fact keys, availability. Uppercase."
+      },
+      "plate": {
+        "displayName": "Plate",
+        "purpose": "Door plates over the house, sized from the stage width (cqw). Uppercase."
+      }
+    },
+    "shadows": [
+      {
+        "name": "pin-lift",
+        "value": "inset 0 0 0 1px rgb(232 233 236 / .28), 0 4px 14px rgb(0 0 0 / .35)",
+        "purpose": "A resting pin chip over the room."
+      },
+      {
+        "name": "pin-glow",
+        "value": "0 6px 18px rgb(233 103 63 / .35)",
+        "purpose": "A hovered, focused or picked pin."
+      },
+      {
+        "name": "card-float",
+        "value": "inset 0 0 0 1px rgb(232 233 236 / .12), 0 24px 60px rgb(0 0 0 / .5)",
+        "purpose": "The room card beside its object."
+      },
+      {
+        "name": "pinned-paper",
+        "value": "0 10px 24px -8px rgb(0 0 0 / .7)",
+        "purpose": "The paper note under a door plate."
+      },
+      {
+        "name": "set",
+        "value": "inset 0 0 0 1px rgb(232 233 236 / .1), 0 30px 80px rgb(0 0 0 / .6)",
+        "purpose": "The VHS set body."
+      },
+      {
+        "name": "enamel-edge",
+        "value": "inset 0 0 0 1px rgb(255 255 255 / .14)",
+        "purpose": "Door plate at rest; lit: inset 1px of the room light at 55%."
+      },
+      {
+        "name": "hairline",
+        "value": "inset 0 0 0 1px rgb(232 233 236 / .1)",
+        "purpose": "Flat surfaces and the phone index; separation by tone, not lift."
+      }
+    ],
+    "motion": [
+      {
+        "name": "duration-instant",
+        "value": "100ms",
+        "purpose": "Press feedback (.tactile scale .98)."
+      },
+      {
+        "name": "duration-fast",
+        "value": "160ms",
+        "purpose": "Link colour changes."
+      },
+      {
+        "name": "duration-normal",
+        "value": "240ms",
+        "purpose": "Button fills, the pin layer fading."
+      },
+      {
+        "name": "duration-slow",
+        "value": "600ms",
+        "purpose": "Reveals, the picked-object vignette, the room camera move (GSAP power2.inOut)."
+      },
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(.4, 0, .2, 1)",
+        "purpose": "State changes."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Everything that arrives: doors, cards, pins, kinetic letters, nav highlight."
+      },
+      {
+        "name": "logo-overshoot",
+        "value": "cubic-bezier(.34, 1.56, .64, 1)",
+        "purpose": "The logo star only (intro pop 1000ms, hover turn 800ms). The user kept the overshoot."
+      },
+      {
+        "name": "door-grow",
+        "value": "620ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "The doorway rectangle growing to fill the screen in the next room’s light; then 520ms ease-out fade after 80ms; 5s safety clear."
+      },
+      {
+        "name": "scene-glide",
+        "value": "650ms easeOutQuart (1-(1-t)^4)",
+        "purpose": "One gesture = one scene on desktop; 30px gesture threshold."
+      },
+      {
+        "name": "card-in",
+        "value": "320ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "Room card slides in 24px from its side; bottom sheet rises 40px on phones."
+      },
+      {
+        "name": "house-lamp",
+        "value": "damped, rate 6",
+        "purpose": "A room’s lamp turning up while you’re at it; floor wash and note 220–400ms ease-out."
+      },
+      {
+        "name": "tape-insert",
+        "value": "550ms",
+        "purpose": "A tape slides into the deck before the VHS player opens."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "hero-line",
+        "value": "1200px"
+      },
+      {
+        "name": "container",
+        "value": "1600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Pill",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The email in the invitation and Contact in the nav: bone fill that turns ember on hover.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">lanz@example.com <span aria-hidden=\"true\">→</span></a>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; gap:12px; height:48px; padding:0 24px; border-radius:999px; background:rgb(var(--ink, 232 233 236)); color:rgb(var(--paper, 13 16 22)); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; text-decoration:none; transition:background-color 240ms, color 240ms; } .ds-btn-primary:hover { background:rgb(var(--accent, 233 103 63)); color:rgb(var(--on-sheet, 13 16 22)); } .ds-btn-primary:focus-visible { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:2px; }"
+    },
+    {
+      "name": "Ghost Pill",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action beside a primary (Copy, Search): a hairline ring that strengthens on hover.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">Copy</button>",
+      "css": ".ds-btn-ghost { display:inline-flex; align-items:center; height:48px; padding:0 20px; border:0; border-radius:999px; background:transparent; color:rgb(var(--ink, 232 233 236)); box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.25); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; cursor:pointer; transition:box-shadow 240ms; } .ds-btn-ghost:hover { box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.6); } .ds-btn-ghost:focus-visible { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:2px; }"
+    },
+    {
+      "name": "Room CTA",
+      "kind": "button",
+      "refersTo": "room-cta",
+      "description": "The one way in on a room card: an ember pill that lifts a pixel.",
+      "html": "<a class=\"ds-room-cta\" href=\"#\">Open PARADA <span aria-hidden=\"true\">→</span></a>",
+      "css": ".ds-room-cta { display:inline-flex; align-items:center; gap:.6em; min-height:44px; padding:0 20px; border-radius:999px; background:rgb(var(--accent, 233 103 63)); color:rgb(var(--on-sheet, 13 16 22)); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; text-decoration:none; transition:transform 240ms cubic-bezier(.16,1,.3,1); } .ds-room-cta:hover { transform:translateY(-1px); } .ds-room-cta:focus-visible { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:2px; }"
+    },
+    {
+      "name": "Navigation Capsule",
+      "kind": "nav",
+      "refersTo": "nav-capsule",
+      "description": "The centred index: links in a hairline capsule, an ember dot on the current page, a soft highlight under the pointer.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main\"><a href=\"#\" aria-current=\"page\"><span class=\"ds-nav-dot\"></span>Projects</a><a href=\"#\">Downloads</a><a href=\"#\">Docs</a><a href=\"#\">About</a></nav>",
+      "css": ".ds-nav { display:inline-flex; align-items:center; padding:4px; border-radius:999px; box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.1); background:rgb(var(--paper, 13 16 22)); } .ds-nav a { display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 16px; border-radius:999px; color:rgb(var(--ink, 232 233 236) / 0.7); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; text-decoration:none; transition:color 160ms, background-color 420ms cubic-bezier(.16,1,.3,1); } .ds-nav a:hover, .ds-nav a[aria-current] { color:rgb(var(--ink, 232 233 236)); background:rgb(var(--ink, 232 233 236) / 0.08); } .ds-nav a:focus-visible { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:2px; } .ds-nav-dot { width:4px; height:4px; border-radius:999px; background:rgb(var(--accent, 233 103 63)); }"
+    },
+    {
+      "name": "Room Pin",
+      "kind": "custom",
+      "refersTo": "room-pin",
+      "description": "A numbered chip on an object in the room; hover or focus fills it ember and slides the name out.",
+      "html": "<button class=\"ds-pin\" type=\"button\"><span class=\"ds-pin-chip\">01<span class=\"ds-pin-name\">PARADA</span></span></button>",
+      "css": ".ds-pin { display:grid; place-items:center; min-width:44px; min-height:44px; border:0; background:none; cursor:pointer; padding:0; } .ds-pin-chip { display:inline-flex; align-items:center; height:28px; padding:0 9px; border-radius:999px; background:rgb(var(--paper-elevated, 22 26 34) / .92); box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.28), 0 4px 14px rgb(0 0 0 / .35); color:rgb(var(--ink, 232 233 236)); font-family:\"JetBrains Mono\", ui-monospace, monospace; font-size:12px; letter-spacing:.06em; transition:background-color 200ms cubic-bezier(.16,1,.3,1), box-shadow 200ms cubic-bezier(.16,1,.3,1); } .ds-pin-name { display:inline-block; max-width:0; overflow:hidden; white-space:nowrap; opacity:0; transition:max-width 320ms cubic-bezier(.16,1,.3,1), opacity 200ms linear, margin 320ms cubic-bezier(.16,1,.3,1); } .ds-pin:hover .ds-pin-chip, .ds-pin:focus-visible .ds-pin-chip { background:rgb(var(--accent, 233 103 63)); box-shadow:0 6px 18px rgb(var(--accent, 233 103 63) / .35); color:rgb(var(--on-sheet, 13 16 22)); } .ds-pin:hover .ds-pin-name, .ds-pin:focus-visible .ds-pin-name { max-width:10rem; margin-left:.5em; opacity:1; } .ds-pin:focus-visible { outline:none; }"
+    },
+    {
+      "name": "Room Card",
+      "kind": "card",
+      "refersTo": "room-card",
+      "description": "The picked object’s card: a title, one line, fact rows on dotted rules, one way in. Kicker omitted on purpose (not part of the system).",
+      "html": "<div class=\"ds-card\"><h2>PARADA</h2><p>Know which zone has space before you drive in.</p><dl><div><dt>Status</dt><dd>In progress</dd></div><div><dt>Runs on</dt><dd>Android · Web</dd></div></dl></div>",
+      "css": ".ds-card { width:min(24rem, 100%); padding:24px; border-radius:18px; background:rgb(var(--paper-elevated, 22 26 34) / 0.96); color:rgb(var(--ink, 232 233 236)); box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.12), 0 24px 60px rgb(0 0 0 / .5); } .ds-card h2 { margin:0; font-family: Newsreader, Georgia, serif; font-weight: 300; font-size:2.4rem; line-height:1; letter-spacing:-.02em; } .ds-card p { margin:16px 0 0; font-family:\"Instrument Sans\", Arial, sans-serif; font-size:15px; line-height:1.625; color:rgb(var(--ink, 232 233 236) / 0.75); } .ds-card dl { margin:20px 0 0; border-top:1px dotted rgb(var(--ink, 232 233 236) / 0.25); } .ds-card dl div { display:flex; gap:16px; padding:10px 0; border-bottom:1px dotted rgb(var(--ink, 232 233 236) / 0.25); } .ds-card dt { width:6rem; flex-shrink:0; font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; color:rgb(var(--ink, 232 233 236) / 0.6); } .ds-card dd { margin:0; font-family:\"Instrument Sans\", Arial, sans-serif; font-size:14px; }"
+    },
+    {
+      "name": "Film Tape",
+      "kind": "custom",
+      "refersTo": "room-tape",
+      "description": "A tape on the Showreel card: a 6px stripe in its film’s colour (kept by the user), name, length and caption.",
+      "html": "<button class=\"ds-tape\" type=\"button\" aria-pressed=\"false\"><span class=\"ds-tape-row\"><span class=\"ds-tape-name\">PARADA</span><span class=\"ds-tape-len\">15 s</span></span><span class=\"ds-tape-cap\">Still circling? See which zone has room.</span></button>",
+      "css": ".ds-tape { display:block; width:100%; text-align:left; padding:13px 14px; border:0; border-left:6px solid rgb(var(--accent, 233 103 63)); border-radius:12px; background:transparent; color:rgb(var(--ink, 232 233 236)); box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.14); cursor:pointer; transition:background-color 200ms cubic-bezier(.16,1,.3,1); } .ds-tape:hover, .ds-tape[aria-pressed=\"true\"] { background:rgb(var(--ink, 232 233 236) / 0.06); } .ds-tape:focus-visible { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:2px; } .ds-tape-row { display:flex; justify-content:space-between; align-items:baseline; gap:12px; } .ds-tape-name { font-family: Newsreader, Georgia, serif; font-weight: 300; font-size:1.25rem; } .ds-tape-len { font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; color:rgb(var(--ink, 232 233 236) / 0.6); } .ds-tape-cap { display:block; margin-top:4px; font-family:\"Instrument Sans\", Arial, sans-serif; font-size:14px; line-height:1.375; color:rgb(var(--ink, 232 233 236) / 0.7); }"
+    },
+    {
+      "name": "Door Plate + Paper Note",
+      "kind": "custom",
+      "refersTo": "door-plate",
+      "description": "An enamel plate over a room (number in the room’s light · name · status) and the paper note it drops while you’re at it.",
+      "html": "<a class=\"ds-room\" href=\"#\" style=\"--light:#F2A54A\"><span class=\"ds-plate\"><span class=\"ds-plate-index\">01</span>PARADA<span class=\"ds-plate-status\">In progress</span></span><span class=\"ds-note\">React Native · Next.js · FastAPI · OpenCV<b>Open PARADA →</b></span></a>",
+      "css": ".ds-room { display:inline-flex; flex-direction:column; align-items:center; text-decoration:none; } .ds-plate { display:inline-flex; align-items:center; gap:.7em; padding:.5em .9em; border-radius:3px; background:#0b1120; box-shadow:inset 0 0 0 1px rgb(255 255 255 / .14); color:rgb(var(--ink, 232 233 236)); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:12px; line-height:1.4; letter-spacing:.08em; white-space:nowrap; transition:background-color 320ms cubic-bezier(.16,1,.3,1), box-shadow 320ms cubic-bezier(.16,1,.3,1); } .ds-plate-index { color:var(--light); } .ds-plate-status { color:rgb(var(--ink, 232 233 236) / 0.6); } .ds-plate-status::before { content:\"·\"; margin-right:.7em; } .ds-note { margin-top:.6em; min-width:13em; padding:.8em 1em .9em; border-radius:2px; background:rgb(var(--sheet, 232 234 238)); color:rgb(var(--on-sheet, 13 16 22) / .75); box-shadow:0 10px 24px -8px rgb(0 0 0 / .7); font-family:\"JetBrains Mono\", ui-monospace, monospace; font-size:11px; line-height:1.55; letter-spacing:.04em; rotate:-1.5deg; opacity:0; transition:opacity 220ms cubic-bezier(.16,1,.3,1), translate 320ms cubic-bezier(.16,1,.3,1); } .ds-note b { display:block; margin-top:.5em; color:rgb(var(--on-sheet, 13 16 22)); font-weight:600; } .ds-room:hover .ds-plate, .ds-room:focus-visible .ds-plate { background:#121a30; box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--light) 55%, transparent); } .ds-room:hover .ds-note, .ds-room:focus-visible .ds-note { opacity:1; translate:0 .4em; } .ds-room:focus-visible { outline:none; } .ds-room:focus-visible .ds-plate { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:3px; }"
+    },
+    {
+      "name": "VHS Control",
+      "kind": "button",
+      "refersTo": "vhs-button",
+      "description": "The player’s mono controls; tape buttons carry their film’s colour swatch.",
+      "html": "<button class=\"ds-vhs\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-vhs-swatch\"></span>PARADA</button> <button class=\"ds-vhs\" type=\"button\">Sound on</button>",
+      "css": ".ds-vhs { display:inline-flex; align-items:center; gap:.5em; min-height:40px; padding:0 14px; border:0; border-radius:10px; background:transparent; color:rgb(var(--ink, 232 233 236)); box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.22); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:12px; letter-spacing:.06em; cursor:pointer; transition:background-color 200ms cubic-bezier(.16,1,.3,1), box-shadow 200ms cubic-bezier(.16,1,.3,1); } .ds-vhs:hover, .ds-vhs[aria-pressed=\"true\"] { background:rgb(var(--ink, 232 233 236) / 0.08); box-shadow:inset 0 0 0 1px rgb(var(--ink, 232 233 236) / 0.45); } .ds-vhs:focus-visible { outline:2px solid rgb(var(--accent, 233 103 63)); outline-offset:2px; } .ds-vhs-swatch { width:8px; height:8px; border-radius:2px; background:rgb(var(--accent, 233 103 63)); }"
+    },
+    {
+      "name": "Availability Line",
+      "kind": "chip",
+      "description": "\"Open to an internship\" with the pulsing live dot: the only use of status green.",
+      "html": "<p class=\"ds-avail\"><span class=\"ds-dot\"></span>Open to an internship</p>",
+      "css": ".ds-avail { display:inline-flex; align-items:center; gap:8px; margin:0; color:rgb(var(--ink, 232 233 236) / 0.7); font-family: \"JetBrains Mono\", ui-monospace, monospace; text-transform: uppercase; font-size:11px; letter-spacing:.06em; } .ds-dot { position:relative; width:7px; height:7px; border-radius:999px; background:#3ddc84; } .ds-dot::after { content:\"\"; position:absolute; inset:0; border-radius:inherit; background:inherit; animation:ds-ping 2s cubic-bezier(.16,1,.3,1) infinite; } @keyframes ds-ping { from { transform:scale(1); opacity:.6; } to { transform:scale(3); opacity:0; } } @media (prefers-reduced-motion: reduce) { .ds-dot::after { animation:none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The House After Dark",
+    "overview": "**Creative North Star: \"The House After Dark\"**\n\nThe site is Lanz's house at night, and every page is a room in it. The home page is two scenes. First, his room: a hand-built, rounded clay model seen through one long lens, with the headline painted on its left wall and five objects that act as the index. Second, the whole house from above with the roof off: five lit rooms off a short hall, each with an enamel plate over it. You learn the work by walking through it, and every path ends at the front door marked Say hi.\n\nThere is no light that doesn't come from something in the room. The page ground is midnight paint. Warmth comes from lamps, a monitor, a sodium lamp in the garage, Tala's brass lamp, the screening room's television and, warmest of all, the open front door. Interface type is mono, like a stamped plate. Titles are a light, optical-size serif, like hand lettering on a wall. Reading text, when it needs room to breathe, sits on paper: a slip pinned under a plate, a card beside an object.\n\nThe world was built to avoid one layout: a hero, then a grid of project cards, then a contact strip. Density is low and the 3D does the talking. Detail waits for hover, focus or a step through a door.",
+    "keyCharacteristics": [
+      "Two full-screen scenes on desktop, one scroll gesture apiece; the footer scrolls freely after them.",
+      "One accent (ember) for the interface. Each room has its own light colour, used only for that room.",
+      "Procedural 3D, poster first: a transparent render of the same camera paints before WebGL.",
+      "Mono plates and labels, a light Newsreader for titles, Instrument Sans for reading.",
+      "Every internal link is a door that opens in the next room's light.",
+      "Every motion stops under `prefers-reduced-motion`. Phones get stills with real buttons."
+    ],
+    "rules": [
+      {
+        "name": "The Light Source Rule",
+        "body": "A colour appears where something in the room gives it off: a lamp, a screen, a door. A room's light is used only for that room and its door. It never becomes a general UI colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Ember Rule",
+        "body": "Ember is the only interface accent. Status green is the one exception, and only on the availability dot.",
+        "section": "colors"
+      },
+      {
+        "name": "The Contrast Floor Rule",
+        "body": "Muted text stays at or above `ink/60` on `paper` (6.1:1) and on `paper-elevated` (5.9:1). `on-sheet/75` on `sheet` is 7.8:1, and `on-sheet` on ember is 5.9:1. Every room light on `plate` is above 8.5:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Painted Title Rule",
+        "body": "Titles are Newsreader 300, which the user confirmed. A title ends on its own punctuation in ember (\"people.\", \"mind?\"). Never set titles bold.",
+        "section": "typography"
+      },
+      {
+        "name": "The Stamped Interface Rule",
+        "body": "Interface text (labels, buttons, plates, keys) is mono, uppercase and tracked. Sentences people read are never mono, except the short facts on a paper note.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lamp, Not the Shadow Rule",
+        "body": "Emphasis on the scene is light, never lift. A room you're at turns its lamp up (damped) and washes its floor in its light at 12% (screen blend). A picked object gets an iris vignette. Neither one moves the object.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Crisp Frame Rule",
+        "body": "The room and house stages keep hard edges (`feather={false}`). Only project models that run off their frame fade over their last 44px (`.stage-feather`).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do take colour from a light source in the scene. A room's light belongs to that room, its door and its plate number.",
+      "Do keep ember as the only interface accent, and end titles on ember punctuation.",
+      "Do set plates and labels in uppercase, tracked JetBrains Mono, and titles in Newsreader 300.",
+      "Do paint the poster first, from the same camera as the live model, and place overlays (pins, plates, hit areas) with the render's own projection so they land before WebGL.",
+      "Do give every 3D affordance a real button or link, 44px targets on phones, and a 2px ember focus ring.",
+      "Do make every internal link a door in the next room's light, and end every path one step from Say hi.",
+      "Do stop all motion under `prefers-reduced-motion`. Posters stay, scenes scroll natively, and doors become plain navigation.",
+      "Do quote PARADA's figures as published (Phase 14, synthetic dataset), never rounded up or presented as field accuracy. Publish email and city only."
+    ],
+    "donts": [
+      "Don't fall back to a hero, then a grid of project cards, then a contact strip.",
+      "Don't light the scene from nowhere: no gradient washes or glows without a lamp, screen or door behind them.",
+      "Don't use pure black for the page, or hard offset shadows anywhere.",
+      "Don't feather the room or house stages; keep their frames crisp.",
+      "Don't run a film's sound without a visible control, or autoplay anything under reduced motion.",
+      "Don't invent proof: no testimonials, clients or endorsements."
+    ]
+  }
+}

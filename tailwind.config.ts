@@ -37,7 +37,6 @@ const config: Config = {
         swiss: ["var(--font-sans)", "Helvetica Neue", "Arial", "sans-serif"],
         display: ["var(--font-display)", "Georgia", "serif"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
-        hand: ["var(--font-hand)", "cursive"],
       },
       borderRadius: {
         none: "0",

@@ -12,7 +12,7 @@ and **three.js**. See [`DESIGN.md`](DESIGN.md) for the design and motion system.
 - Tailwind CSS (tokens in `src/app/globals.css`)
 - Newsreader, Instrument Sans, JetBrains Mono (and Kalam once) via `next/font`
 - lucide-react icons, and a custom logo mark (`src/components/brand/`)
-- Procedural 3D models in `src/three/` (macropad, PARADA lot, Tala desk),
+- Procedural 3D models in `src/three/` (the hero room, macropad, PARADA lot, Tala desk),
   drawn live with `@react-three/fiber` and loaded lazily (`src/components/three/`)
 - Posters, films and the share image rendered from the same models with
   Remotion in [`art/`](art/README.md) into `public/art/`

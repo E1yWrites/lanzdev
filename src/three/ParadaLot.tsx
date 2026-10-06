@@ -63,6 +63,20 @@ interface CarGeo {
   hub: THREE.BufferGeometry;
 }
 
+/** One set of car geometry, shared by every car in a scene (the lot, the garage at home). */
+export function useCarGeo() {
+  return useDisposable(() => {
+    const geo: CarGeo = {
+      body: carBodyGeometry(),
+      glass: carCabinGeometry(),
+      roof: new RoundedBoxGeometry(0.27, 0.03, 0.4, 2, 0.012),
+      tyre: new THREE.CylinderGeometry(CAR.wheel, CAR.wheel, 0.06, 24),
+      hub: new THREE.CylinderGeometry(CAR.wheel * 0.55, CAR.wheel * 0.55, 0.012, 24),
+    };
+    return { geo, dispose: () => Object.values(geo).forEach((g) => g.dispose()) };
+  }, []);
+}
+
 function plateTexture(text: string, font: string, ready: boolean) {
   return canvasTexture(360, 100, (ctx, w, h) => {
     ctx.fillStyle = "#f4f3ee";
@@ -79,7 +93,7 @@ function plateTexture(text: string, font: string, ready: boolean) {
   });
 }
 
-function Car({
+export function Car({
   geo,
   color,
   plate,
@@ -594,16 +608,7 @@ export function ParadaLot({
 }: ParadaLotProps) {
   const slab = useDisposable(() => new RoundedBoxGeometry(LOT.w, 0.2, LOT.d, 4, 0.08), []);
   const marks = useDisposable(() => lotMarkings(font, ready), [font, ready]);
-  const car = useDisposable(() => {
-    const geo: CarGeo = {
-      body: carBodyGeometry(),
-      glass: carCabinGeometry(),
-      roof: new RoundedBoxGeometry(0.27, 0.03, 0.4, 2, 0.012),
-      tyre: new THREE.CylinderGeometry(CAR.wheel, CAR.wheel, 0.06, 24),
-      hub: new THREE.CylinderGeometry(CAR.wheel * 0.55, CAR.wheel * 0.55, 0.012, 24),
-    };
-    return { geo, dispose: () => Object.values(geo).forEach((g) => g.dispose()) };
-  }, []);
+  const car = useCarGeo();
 
   const parking = park > 0;
   const { p, yaw } = parking ? poseOn(parkPath, easeInOut(park)) : poseOn(approachPath, 1 - Math.pow(1 - clamp01(approach), 2.2));

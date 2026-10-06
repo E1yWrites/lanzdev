@@ -43,6 +43,8 @@ export interface MacropadProps {
   /** Knob angle, radians. */
   knob?: number;
   screen?: { title: string; sub: string; meter?: number };
+  /** The coiled cable running out of frame (off on a desk, where it would cross the room). */
+  cable?: boolean;
   onKey?: (index: number, type: "over" | "out" | "click", event: ThreeEvent<PointerEvent | MouseEvent>) => void;
 }
 
@@ -330,7 +332,7 @@ function Engraving({ font, ready }: { font: string; ready: boolean }) {
   );
 }
 
-export function Macropad({ font, ready, press = [], glow = [], knob = 0, screen, onKey }: MacropadProps) {
+export function Macropad({ font, ready, press = [], glow = [], knob = 0, screen, cable = true, onKey }: MacropadProps) {
   const body = useDisposable(() => new RoundedBoxGeometry(CASE.w, CASE.h, CASE.d, 8, 0.16), []);
   const plate = useDisposable(() => new RoundedBoxGeometry(2.3, 0.05, 2.3, 4, 0.06), []);
   const cap = useDisposable(() => taperedCap(1, 1, KEY_H), []);
@@ -365,7 +367,7 @@ export function Macropad({ font, ready, press = [], glow = [], knob = 0, screen,
       <Knob angle={knob} />
       {[-1, 1].map((sx) => [-1, 1].map((sz) => <Screw key={`${sx}${sz}`} x={sx * (CASE.w / 2 - 0.2)} z={sz * (CASE.d / 2 - 0.2)} />))}
       <Engraving font={font} ready={ready} />
-      <Cable />
+      {cable && <Cable />}
     </group>
   );
 }

@@ -1,13 +1,15 @@
 import { Composition, Still } from "remotion";
 import { ParadaFilm } from "./scenes/ParadaFilm";
 import { ShareImage } from "./scenes/ShareImage";
-import { MacropadStill, ParadaStill, TalaStill } from "./scenes/Stills";
+import { HouseStill, ParadaStill, RoomStill, TalaStill } from "./scenes/Stills";
 import { TalaFilm } from "./scenes/TalaFilm";
 
 export const RemotionRoot = () => (
   <>
     {/* Transparent model renders — covers, and what the site shows before WebGL takes over. */}
-    <Still id="Macropad" component={MacropadStill} width={1600} height={1200} />
+    <Still id="Room" component={RoomStill} width={1600} height={1200} />
+    <Still id="RoomPhone" component={RoomStill} width={1600} height={1200} defaultProps={{ headline: false }} />
+    <Still id="House" component={HouseStill} width={2560} height={1440} />
     <Still id="Parada" component={ParadaStill} width={1600} height={1200} />
     <Still id="Tala" component={TalaStill} width={1600} height={1200} />
     {/* 15-second showcase films. */}

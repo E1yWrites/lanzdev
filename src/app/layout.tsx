@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, JetBrains_Mono, Kalam, Newsreader } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Cursor } from "@/components/motion/Cursor";
+import { DoorTransition } from "@/components/motion/DoorTransition";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { siteConfig } from "@/data/config";
 import { getProjectSummaries } from "@/lib/githubProjects";
@@ -32,15 +33,6 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
-});
-
-// Tala's own handwriting face — used once, so not preloaded.
-const hand = Kalam({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-hand",
-  display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -73,7 +65,7 @@ export default async function RootLayout({
   const summaries = await getProjectSummaries();
 
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable} ${hand.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         {/* Lets CSS hold entrance animations until JS can start them on scroll (no-JS visitors see everything). */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
@@ -92,6 +84,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer />
+        <DoorTransition />
       </body>
     </html>
   );

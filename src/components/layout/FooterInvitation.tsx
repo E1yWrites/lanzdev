@@ -5,11 +5,26 @@ import { useState } from "react";
 import { KineticText } from "@/components/motion/KineticText";
 import { Magnetic } from "@/components/motion/Magnetic";
 
-/** The closing line on every page, except /contact, which says it already. */
-export function FooterInvitation({ email, github, availability }: { email: string; github: string; availability: string }) {
+interface InvitationProps {
+  email: string;
+  github: string;
+  availability: string;
+}
+
+/** The closing line on every page, except /contact, which says it already, and home, where the front door says it. */
+export function FooterInvitation(props: InvitationProps) {
   const pathname = usePathname();
+  if (pathname === "/contact" || pathname === "/") return null;
+  return <Invitation {...props} />;
+}
+
+/**
+ * "Have a project in mind?", with the email, a copy button and GitHub. Spread across the
+ * footer, or `stacked` in one column (beside the front door on the home page), where
+ * it's the section's heading.
+ */
+export function Invitation({ email, github, availability, stacked, headingId }: InvitationProps & { stacked?: boolean; headingId?: string }) {
   const [copied, setCopied] = useState(false);
-  if (pathname === "/contact") return null;
 
   const copy = async () => {
     try {
@@ -22,14 +37,19 @@ export function FooterInvitation({ email, github, availability }: { email: strin
   };
 
   return (
-    <div className="mx-auto grid max-w-[1600px] gap-10 px-5 pb-16 pt-20 md:px-8 md:pb-24 md:pt-28 lg:grid-cols-12 lg:items-end lg:px-12">
+    <div className={stacked ? "grid gap-8" : "mx-auto grid max-w-[1600px] gap-10 px-5 pb-16 pt-20 md:px-8 md:pb-24 md:pt-28 lg:grid-cols-12 lg:items-end lg:px-12"}>
       <KineticText
-        as="p"
+        as={stacked ? "h2" : "p"}
+        id={headingId}
         lines={["Have a project", "in mind"]}
         accent="?"
-        className="font-display text-[clamp(3rem,7vw,6.5rem)] font-light leading-[0.98] tracking-[-0.03em] text-ink lg:col-span-7"
+        className={
+          stacked
+            ? "font-display text-[clamp(2.6rem,4.6vw,4.75rem)] font-light leading-[0.98] tracking-[-0.03em] text-ink"
+            : "font-display text-[clamp(3rem,7vw,6.5rem)] font-light leading-[0.98] tracking-[-0.03em] text-ink lg:col-span-7"
+        }
       />
-      <div className="lg:col-span-5 lg:pb-3">
+      <div className={stacked ? undefined : "lg:col-span-5 lg:pb-3"}>
         <p className="t-label inline-flex items-center gap-2 text-ink/70">
           <span className="live-dot" aria-hidden="true" />
           {availability}

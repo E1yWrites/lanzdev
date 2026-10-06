@@ -8,6 +8,9 @@ export const SITE = {
   sheet: "#E8EAEE",
   grey: "#C9CED6",
   onSheet: "#0D1016",
+  elevated: "#161A22",
+  night: "#181D2C",
+  solar: "#E6B450",
 };
 
 /** PARADA — navy-and-sunset driver app, orange-led console, status colours. */
