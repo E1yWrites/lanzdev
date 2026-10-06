@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react";
 import { createStore, useStore } from "@/components/three/store";
 import { HOUSE, roomForPath } from "@/data/house";
 
-// Every link is a door you walk through: the doorway's rectangle grows to fill the screen
-// in the next room's light, the page changes behind it, and the light fades off the room
-// that has arrived. Any internal link to another page opens this way (its own box is the
+// Every link is a door you walk through: the next room's light blooms out of the doorway
+// while the screen dips to the page's own night, the page changes behind it, and the new
+// room fades up out of the dark. (No flat colour fill: the light is a glow, never a wall.) Any internal link to another page opens this way (its own box is the
 // doorway); the house's rooms pass their floor instead. Under reduced motion it's a plain
 // navigation.
 
@@ -32,6 +32,7 @@ export function DoorTransition() {
   const router = useRouter();
   const pathname = usePathname();
   const el = useRef<HTMLDivElement>(null);
+  const glow = useRef<HTMLDivElement>(null);
   const from = useRef<string | null>(null);
 
   // Every internal link to another page is a door. Capture phase, so it runs before
@@ -58,28 +59,26 @@ export function DoorTransition() {
     };
   }, []);
 
-  // grow out of the doorway, then go
+  // light blooms out of the doorway, the screen dips to night, then go
   useEffect(() => {
     const node = el.current;
-    if (!entry || !node) return;
-    const { x, y, w, h } = entry.rect;
-    const inset = `inset(${y}px ${innerWidth - x - w}px ${innerHeight - y - h}px ${x}px)`;
+    const lamp = glow.current;
+    if (!entry || !node || !lamp) return;
+    const { w, h } = entry.rect;
+    // the glow starts about the doorway's size and spreads; its box is the screen's diagonal across
+    const start = Math.max(w, h) / Math.hypot(innerWidth, innerHeight);
+    const ease = { duration: 620, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" as const };
     from.current = location.pathname;
-    const grow = node.animate(
-      [
-        { clipPath: inset, opacity: 0.6 },
-        { clipPath: "inset(0px 0px 0px 0px)", opacity: 1 },
-      ],
-      { duration: 620, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" }
-    );
+    const dip = node.animate([{ backgroundColor: "rgb(var(--paper) / 0)" }, { backgroundColor: "rgb(var(--paper) / 1)" }], ease);
+    lamp.animate([{ transform: `scale(${start})`, opacity: 0.95 }, { transform: "scale(0.8)", opacity: 0.5 }], ease);
     let stuck = 0;
-    grow.onfinish = () => {
+    dip.onfinish = () => {
       router.push(entry.href);
       // a page that never arrives must not leave the screen covered
       stuck = window.setTimeout(() => entering.get() === entry && entering.set(null), 5000);
     };
     return () => {
-      grow.cancel();
+      dip.cancel();
       clearTimeout(stuck);
     };
   }, [entry, router]);
@@ -88,10 +87,21 @@ export function DoorTransition() {
   useEffect(() => {
     const node = el.current;
     if (!entry || !node || pathname === from.current) return;
-    const fade = node.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 520, delay: 80, easing: "ease-out", fill: "forwards" });
+    const fade = node.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, delay: 80, easing: "ease-out", fill: "forwards" });
     fade.onfinish = () => entering.set(null);
   }, [pathname, entry]);
 
   if (!entry) return null;
-  return <div ref={el} aria-hidden="true" className="door-transition" style={{ background: entry.light }} />;
+  const d = Math.hypot(innerWidth, innerHeight);
+  const cx = entry.rect.x + entry.rect.w / 2;
+  const cy = entry.rect.y + entry.rect.h / 2;
+  return (
+    <div ref={el} aria-hidden="true" className="door-transition">
+      <div
+        ref={glow}
+        className="absolute rounded-full"
+        style={{ width: 2 * d, height: 2 * d, left: cx - d, top: cy - d, background: `radial-gradient(closest-side, ${entry.light}, ${entry.light}55 35%, transparent)` }}
+      />
+    </div>
+  );
 }

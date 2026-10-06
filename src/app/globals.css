@@ -770,12 +770,14 @@
     }
   }
 
-  /* Walking through a door (motion/DoorTransition.tsx): the next room's light fills the screen. */
+  /* Walking through a door (motion/DoorTransition.tsx): the next room's light blooms out of
+     the doorway and the screen dips to the page's night; it never fills with a flat colour. */
   .door-transition {
     position: fixed;
     inset: 0;
     z-index: 80;
     pointer-events: none;
+    overflow: hidden;
   }
 
   /* Pins: a number on each object, the name sliding out on hover or focus. The button is
