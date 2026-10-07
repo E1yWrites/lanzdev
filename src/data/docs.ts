@@ -69,7 +69,7 @@ Tala uses Tiptap: headings, bullet, ordered and task lists, blockquotes, code bl
 
 ## Handwriting
 
-A vector ink layer sits on top of each page.
+Switch the header from **Type** to **Write** and a vector ink layer takes the page; the pen tools sit in a dock on the page's edge (a bottom row on phones). Switching never moves the text under your handwriting.
 
 - Pinch to zoom and pan; the pen paints with no visible lag
 - Pen, pencil, highlighter, eraser and a free-form **lasso** to select, recolour and duplicate strokes
@@ -88,6 +88,10 @@ Record while you write. Audio is saved in five-second chunks, so a crash costs s
 
 A rule-based mascot that never appears over the page while you write. It tracks a weekly goal (a Study day is five minutes of writing) that never resets your progress, leaves a short wrap-up after a session, and resurfaces notes you haven't opened in a while. Quiet mode silences it.
 
+## Home and the week
+
+Home shows the tasks still open across your notes and picks up where you left off. The sidebar's **week constellation** lights one star per study day and joins them as the week fills; missing a day costs nothing. Every note carries a catalogue number (№ 001, № 002, …) and lists are grouped by day.
+
 ## Organization
 
 - **Folders** and coloured **tags**
@@ -97,7 +101,7 @@ A rule-based mascot that never appears over the page while you write. It tracks 
 
 ## Themes and layout
 
-Light and dark themes, applied before first paint. Three panes on desktop, a drawer on tablet portrait, and a Notes / Tasks / New / Search tab bar on phones.`,
+Colours taken from the app icon: a forest-green sidebar, a star-yellow New note button and white pages on a light green dotted ground, with a dark mode to match. Light and dark themes are applied before first paint. Three panes on desktop, a drawer on tablet portrait, and a Notes / Tasks / New / Search tab bar on phones.`,
   },
   {
     slug: "keyboard-shortcuts",
@@ -167,7 +171,7 @@ Older \`.json\` backups (versions 1–3) still import.
 
 Tala uses autosave with debounce. If notes aren't saving:
 
-1. Check the saved indicator in the editor toolbar
+1. Check the saved indicator next to the note's title in the header
 2. Try \`Ctrl+S\` to force save
 3. Ensure your browser supports IndexedDB
 
@@ -188,7 +192,7 @@ sudo apt install libwebkit2gtk-4.1-dev build-essential
 
 ## Pen strokes not appearing
 
-Make sure a pen, pencil or highlighter is selected in the pen bar. On touch screens, a finger scrolls the page while an active pen draws.`,
+Switch the header to **Write**, then pick a pen, pencil or highlighter in the pen dock. On touch screens, a finger scrolls the page while an active pen draws.`,
   },
   {
     slug: "faq",
