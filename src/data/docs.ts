@@ -339,7 +339,7 @@ Slots exist for layout and inventory only. Nothing on screen implies per-slot de
 
 ## Status
 
-Phases 0–14 are complete, including full-system integration and a published accuracy evaluation. Phase 15 (deployment) is under way; Phase 16 (documentation and final review) follows. The [landing page](https://parada-landing.vercel.app/) walks through the whole pipeline.`,
+Phases 0–14 are complete, including full-system integration and a published accuracy evaluation. Phase 15 (deployment) is under way; Phase 16 (documentation and final review) follows. The [landing page](https://parada.lorenzmalabanan.com/) walks through the whole pipeline.`,
   },
   {
     slug: "parada-architecture",
@@ -462,7 +462,7 @@ npm run test
     slug: "parada-landing",
     title: "Landing page",
     project: "parada",
-    content: `The [PARADA landing page](https://parada-landing.vercel.app/) explains the system for the capstone defense and is honest about status: it shows what is built and marks the phases still under evaluation.
+    content: `The [PARADA landing page](https://parada.lorenzmalabanan.com/) explains the system for the capstone defense and is honest about status: it shows what is built and marks the phases still under evaluation.
 
 ## What's on it
 

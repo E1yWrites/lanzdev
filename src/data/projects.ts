@@ -83,7 +83,7 @@ export const projects: Project[] = [
       { id: "16", title: "Documentation + final review", status: "next" },
     ],
     githubUrl: "https://github.com/E1yWrites/parada",
-    demoUrl: "https://parada-landing.vercel.app/",
+    demoUrl: "https://parada.lorenzmalabanan.com/",
     documentationUrl: "/docs/parada-overview",
     links: [{ label: "Landing page source", href: "https://github.com/E1yWrites/parada-landing" }],
     downloads: {},
