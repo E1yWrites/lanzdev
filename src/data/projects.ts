@@ -121,7 +121,18 @@ export const projects: Project[] = [
       duration: 15,
       credit: "Rendered with Remotion from the same 3D model as above. Sound on — the soundtrack is synthesised, not sampled.",
     },
-    screenshots: [],
+    screenshots: [
+      {
+        src: asset("/images/tala-write.webp"),
+        alt: "A lecture note in Write mode: typed notes on a white page with blue ink circling a line, a pink highlight on the heading, and the pen dock on the page's edge",
+        caption: "Write mode: ink over typed text, with the pen tools docked on the page's edge",
+      },
+      {
+        src: asset("/images/tala-home.webp"),
+        alt: "Tala's home screen: a forest-green sidebar with folders and a week constellation, open tasks from across notes, and a list of recent notes with catalogue numbers",
+        caption: "Home: open tasks across notes, Bituin resurfacing an old note, and the week constellation",
+      },
+    ],
     stats: [
       { value: "v2.0.0", label: "Latest release" },
       { value: "0", label: "Accounts or servers" },
@@ -140,6 +151,8 @@ export const projects: Project[] = [
       { name: "Tasks view across the whole library", available: true },
       { name: ".tala backups with restore, and old backups still import", available: true },
       { name: "Folders, coloured tags, favourites and search", available: true },
+      { name: "Week constellation: one star per study day, missing a day costs nothing", available: true },
+      { name: "Catalogue numbers on every note and lists grouped by day", available: true },
       { name: "Installable on iPad, Android and desktop; works offline", available: true },
       { name: "Handwriting search (experimental, off by default)", available: true },
       { name: "Word and PowerPoint import (was in 1.1.0)", available: false },
@@ -177,10 +190,15 @@ export const projects: Project[] = [
           "Tasks view across the whole library",
           "Phone layout with a tab bar and 44 px touch targets",
           ".tala backups; older backups still import",
+          "First-run onboarding, a start list for an empty library, and \"Pick up where you left off\"",
+          "Week constellation in the sidebar: one star per study day",
+          "Catalogue numbers on every note; lists grouped by day",
+          "Home shows the tasks still open across notes",
           "New app icon and search-engine metadata for tala.lorenzmalabanan.com",
         ],
         changed: [
-          "Clean visual system: Inter, green actions, blue ink",
+          "New look in the app icon's colours: forest-green sidebar, star-yellow New note, white pages on a dotted green ground, one typeface (Hanken Grotesk)",
+          "Calmer editor: a Type | Write switch and a Record button in the header, pen tools in a dock on the page's edge",
           "Database schema v5; one library module is the only writer of note data",
           "Release notes now come from the changelog",
           "Not carried over from 1.1.0: Word and PowerPoint import, the .zip package format, editable shape handles and the Draw popover",
@@ -189,6 +207,7 @@ export const projects: Project[] = [
           "Opening a note no longer autosaves it",
           "Ink on later pages no longer creates ghost notes",
           "Notes with ink only on a later page are now saved",
+          "Menus near the right edge of the screen no longer jump left",
         ],
       },
       {
