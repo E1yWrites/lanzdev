@@ -5,42 +5,45 @@ const talaSections: DocSection[] = [
     slug: "getting-started",
     title: "Getting Started",
     project: "tala",
-    content: `Tala is a local-first note-taking app built with Tauri and React. No account is required — your notes are stored on your device and remain private.
+    content: `Tala is a local-first notebook for typed notes, handwriting and PDF markup. No account is required — your notes are stored on your device and remain private.
 
 ## Quick Start
 
-1. Download Tala from the [releases page](https://github.com/E1yWrites/tala/releases)
-2. Install the application for your platform
-3. Open Tala and follow the onboarding wizard
-4. Start creating notes
+1. Open [tala.lorenzmalabanan.com](https://tala.lorenzmalabanan.com/) in your browser, or download the Windows installer from the [releases page](https://github.com/E1yWrites/tala/releases)
+2. On an iPad or phone, add it to your home screen so the browser keeps your notes
+3. Follow the short onboarding
+4. Start a note, then write, draw or import a PDF
 
 ## System Requirements
 
+- **Web:** any modern browser with IndexedDB — iPad Safari and Android Chrome are the main targets
 - **Windows:** Windows 10 or later (x64) — installer on the releases page
-- **Linux:** build from source with Tauri (AppImage, .deb or .rpm)
-- **Web:** any modern browser with IndexedDB — [tala-xi.vercel.app](https://tala-xi.vercel.app/)`,
+- **Linux:** build from source with Tauri (AppImage, .deb or .rpm)`,
   },
   {
     slug: "installation",
     title: "Installation",
     project: "tala",
-    content: `## Windows
+    content: `## Web (iPad, Android, desktop browsers)
+
+Open [tala.lorenzmalabanan.com](https://tala.lorenzmalabanan.com/). Notes stay in your browser's IndexedDB and Tala works offline after the first visit.
+
+- **iPad / iPhone (Safari):** Share → Add to Home Screen. Safari can clear storage for sites that are not installed, so do this before you rely on it.
+- **Android (Chrome):** menu → Install app.
+
+## Windows
 
 Download the \`.exe\` installer from the [latest release](https://github.com/E1yWrites/tala/releases/latest) and run it.
 
 \`\`\`
-Tala_1.1.0_x64-setup.exe
+Tala_2.0.0_x64-setup.exe
 \`\`\`
 
-For a silent or managed install, use the \`.msi\` package: \`msiexec /i Tala_1.1.0_x64_en-US.msi\`.
+For a silent or managed install, use the \`.msi\` package: \`msiexec /i Tala_2.0.0_x64_en-US.msi\`.
 
 ## Linux
 
 Build the installers yourself with Tauri — see [Developer Setup](/docs/developer-setup). \`npm run app:build\` produces an AppImage, a \`.deb\` and an \`.rpm\`.
-
-## Web
-
-Open [tala-xi.vercel.app](https://tala-xi.vercel.app/). Notes stay in your browser's IndexedDB.
 
 The installers aren't code-signed, so verify the checksum before you run them.
 
@@ -56,64 +59,45 @@ sha256sum -c SHA256SUMS
     slug: "features",
     title: "Features",
     project: "tala",
-    content: `## Rich Text Editing
+    content: `## Pages
 
-Tala uses Tiptap for a fast, responsive editing experience. Supported formatting includes:
+A note is a stack of pages. Each page owns its typed text and its handwriting. A page strip with thumbnails lets you jump around and drag pages into a new order.
 
-- Headings (H1, H2, H3)
-- Bullet, ordered, and task lists
-- Blockquotes
-- Code blocks with syntax copy
-- Links and images (upload, paste, or drag)
-- Inline markdown shortcuts
-- Word count and save indicator
+## Typing
 
-## Handwriting & Ink Layer
+Tala uses Tiptap: headings, bullet, ordered and task lists, blockquotes, code blocks, links and images. Tick tasks across your whole library from the Tasks view.
 
-A vector-based drawing layer sits on top of the editor. Draw with:
+## Handwriting
 
-- Pen, Pencil, Highlighter, Eraser and Lasso
-- Six named presets: Marker, Brush Pen, Ballpoint, Pencil, Fine Pencil, Highlighter
-- Colours, six sizes and per-stroke opacity for pencil and highlighter
-- **Gestures** — hold the pen still to turn a stroke into a straight line, arrow, circle, rectangle, triangle or polygon; scribble over ink to erase it
-- **Editable shapes** — recognised shapes get resize and rotate handles, outline width and fill
-- **Apple Pencil & stylus** — pressure, tilt shading, a hover ring and palm rejection
+A vector ink layer sits on top of each page.
 
-## Documents
+- Pinch to zoom and pan; the pen paints with no visible lag
+- Pen, pencil, highlighter, eraser and a free-form **lasso** to select, recolour and duplicate strokes
+- **Snap to shape** — rest the pen at the end of a stroke and a line, circle, rectangle or triangle replaces it
+- Palm rejection while the pen is down, and left-handed mirroring
 
-Import PDF, Word (.docx) and PowerPoint (.pptx) files as notes. PDFs open as a page stack you can zoom, reorder, rotate, annotate with ink and text, and export again with the annotations baked in. Word and PowerPoint files become editable text when the conversion is faithful, or a preserved-layout view when it isn't. Legacy .doc and .ppt files are kept as attachments.
+## PDFs
+
+Import a PDF and Tala keeps the original, rendering pages sharply on demand — also offline. Annotate with ink and export a PDF with the ink drawn as vectors over the original pages.
+
+## Lecture audio
+
+Record while you write. Audio is saved in five-second chunks, so a crash costs seconds, not the lecture. Tap a stroke you drew while recording to hear the audio from just before it.
+
+## Bituin, the study coach
+
+A rule-based mascot that never appears over the page while you write. It tracks a weekly goal (a Study day is five minutes of writing) that never resets your progress, leaves a short wrap-up after a session, and resurfaces notes you haven't opened in a while. Quiet mode silences it.
 
 ## Organization
 
-- **Folders** — hierarchical note organization
-- **Tags** — colored labels for cross-cutting categorization
-- **Favorites & Pins** — quick access to important notes
-- **Archive** — soft archive with one-keystroke restore
-- **Trash** — soft delete with restore capability
+- **Folders** and coloured **tags**
+- **Favourites** and pins
+- **Archive** and **Trash** with restore
+- Instant search across titles and text, and a command palette
 
-## Templates
+## Themes and layout
 
-Eight built-in templates: Lecture Notes, Meeting Notes, To-Do List, Project Planning, Daily Journal, Study Notes, Brain Dump, Code Notes.
-
-## Search
-
-Instant client-side search across titles, body text, tags, and folders. Results update per keystroke with match highlighting.
-
-## Command Palette
-
-Press \`Ctrl+Shift+P\` to open the command palette for quick navigation and actions.
-
-## Focus Mode
-
-Collapse the sidebar and note list to show only the editor for distraction-free writing.
-
-## Themes
-
-Light ("sunlight") and dark ("moonlight") themes with a hand-drawn visual identity. Applied before React renders to prevent flash.
-
-## Responsive Design
-
-Three-pane desktop layout, drawer sidebar on tablet, single-pane with bottom navigation on mobile.`,
+Light and dark themes, applied before first paint. Three panes on desktop, a drawer on tablet portrait, and a Notes / Tasks / New / Search tab bar on phones.`,
   },
   {
     slug: "keyboard-shortcuts",
@@ -123,82 +107,57 @@ Three-pane desktop layout, drawer sidebar on tablet, single-pane with bottom nav
 
 | Keys | Action |
 | --- | --- |
-| \`Ctrl/Command + N\` / \`Alt + N\` | New note (template picker) |
+| \`Ctrl/Command + N\` | New note |
 | \`Ctrl/Command + K\` / \`Ctrl/Command + Shift + F\` | Search notes |
 | \`Ctrl/Command + Shift + P\` | Command palette |
 | \`Ctrl/Command + S\` | Force save |
+| \`Ctrl/Command + B\` | Show or hide the sidebar |
 | \`Ctrl/Command + Shift + D\` | Toggle dark mode |
 | \`Ctrl/Command + ,\` | Settings |
 | \`/\` | Focus list search |
-| \`Ctrl/Command + .\` | Toggle drawing in the open note |
-| \`Esc\` | Close dialog / exit focus mode / exit multi-select / stop drawing |
+| \`Esc\` | Close dialog |
 
 ## Editor Shortcuts
 
-| Keys | Action |
-| --- | --- |
-| \`Ctrl/Command + B\` | Bold |
-| \`Ctrl/Command + I\` | Italic |
-| \`Ctrl/Command + U\` | Underline |
-| \`Ctrl/Command + E\` | Inline code |
-
-## Drawing Shortcuts
-
-| Keys | Action |
-| --- | --- |
-| \`1\` / \`2\` / \`3\` | Pen / pencil / highlighter |
-| \`E\` · \`L\` | Eraser · lasso |
-| \`[\` / \`]\` | Thinner / thicker stroke |
-| \`Ctrl + C\` / \`X\` / \`V\` / \`D\` | Copy / cut / paste / duplicate selected ink |`,
+Standard Tiptap shortcuts apply: \`Ctrl/Command + B/I/U\` for bold, italic and underline while the cursor is in the text.`,
   },
   {
     slug: "pen-tools",
     title: "Pen Tools",
     project: "tala",
-    content: `## The Draw popover
-
-Every handwriting control lives in one anchored panel: tools, style presets, colours, six sizes, opacity, eraser mode, recently used combinations and stylus settings. Right-click the canvas to open it at the cursor.
-
-## Pen Presets
-
-Six named writing styles:
-
-1. **Marker** — bold, high-contrast strokes
-2. **Brush Pen** — variable-width calligraphic strokes
-3. **Pencil** — medium-weight sketching
-4. **Fine Pencil** — thin, precise lines
-5. **Highlighter** — semi-transparent overlay
-6. **Ballpoint** — consistent thin strokes
-
-## Stroke Widths
-
-Six width levels from Hairline to Marker. Select using the inline dot indicators in the toolbar.
-
-## Colors
-
-Ten preset ink colors: Black, Dark Gray, Red, Orange, Yellow, Green, Blue, Purple, Pink, White. A custom color picker is also available.
-
-## Tools
+    content: `## Tools
 
 - **Pen, Pencil, Highlighter** — draw vector strokes
 - **Eraser** — remove strokes
-- **Lasso** — loop around strokes to select them, then duplicate, copy, cut, rotate or recolour
+- **Lasso** — loop around strokes to select them, then recolour or duplicate
 
-All strokes are vector-based and scale losslessly at any zoom level.`,
+## Snap to shape
+
+Rest the pen for about half a second at the end of a stroke and a line, circle or ellipse, rectangle or triangle replaces it. If Tala is not sure what you drew, the stroke is left alone.
+
+## Zoom
+
+Pinch with two fingers (or Ctrl + scroll) to zoom a page. Strokes keep their on-screen thickness and stay sharp at any zoom, because they are vectors.
+
+## Apple Pencil
+
+Browsers do not expose Apple Pencil double-tap or squeeze, so Tala does not offer them.`,
   },
   {
     slug: "exporting",
     title: "Exporting",
     project: "tala",
-    content: `## Tala packages (.zip)
+    content: `## .tala backup
 
-The complete format. **Share → Tala package** exports one note with its handwriting, documents and annotations; **Settings → Export library** exports everything.
+The complete format: a zip with a manifest, your notes, pages, ink, folders, tags and imported PDFs. **Settings → Export backup** saves one; on phones and tablets it opens the share sheet so you can send it to Files or iCloud. Restoring can merge into your library or replace it.
 
-Import checks the manifest, entry paths, referenced files and SHA-256 hashes before writing anything, and never overwrites a local note unless you choose to — keep both, replace or skip.
+Backups include lecture entries and study days but not the audio itself, to keep the file small and safe to build in memory. Each lecture has its own **Save audio** button.
 
-## JSON backup (legacy)
+Older \`.json\` backups (versions 1–3) still import.
 
-Text only: notes, folders, tags and settings, without imported documents. Import it in **Merge** mode (alongside existing notes) or **Replace** mode.`,
+## PDF
+
+**Export annotated PDF** writes the original pages with your ink drawn on top as vectors. Typed text is added in plain Helvetica, continuing on extra pages if it is long.`,
   },
   {
     slug: "troubleshooting",
@@ -229,7 +188,7 @@ sudo apt install libwebkit2gtk-4.1-dev build-essential
 
 ## Pen strokes not appearing
 
-Turn drawing on for the open note with the Draw control in the header, or press \`Ctrl + .\`. On touch screens, check the "finger draws or scrolls" setting in the Draw popover.`,
+Make sure a pen, pencil or highlighter is selected in the pen bar. On touch screens, a finger scrolls the page while an active pen draws.`,
   },
   {
     slug: "faq",
@@ -245,11 +204,19 @@ No. Tala is local-first. Your notes stay on your device.
 
 ## Can I use Tala on multiple devices?
 
-Not with sync — each install keeps its own local database. Move notes between devices with a Tala package (.zip), which carries handwriting and documents too.
+Not with sync — each install keeps its own local database. Move notes between devices with a \`.tala\` backup.
 
 ## Where are my notes stored?
 
-Notes are stored in your browser's IndexedDB (web) or the Tauri webview profile (desktop). Data never leaves your device.
+Notes are stored in your browser's IndexedDB (web) or the Tauri webview profile (desktop). Data never leaves your device. On iPad, add Tala to your home screen so Safari doesn't clear it.
+
+## Does Tala use AI?
+
+No. Bituin, the study coach, is a fixed set of rules.
+
+## What happened to Word and PowerPoint import?
+
+Version 1.1.0 had it. Version 2.0.0 was rebuilt around pages and PDFs and did not carry it over.
 
 ## Can I contribute?
 
@@ -280,7 +247,7 @@ npm run dev        # Start Vite dev server on localhost:5173
 npm run build      # Typecheck + production build
 npm run preview    # Serve production build on localhost:4173
 npm run typecheck  # TypeScript check without emit
-npm test           # Vitest: lists, documents, gestures, packages
+npm test           # Vitest: migrations, library write path, backups, canvas math
 \`\`\`
 
 ## Desktop App (Tauri)
@@ -304,7 +271,7 @@ node scripts/smoke.mjs
 The codebase uses a clean separation:
 
 - **Components** — React UI components organized by feature
-- **Database** — Dexie schema with a repository pattern (swappable for REST)
+- **Library** — the only code that writes note data (Dexie/IndexedDB), with optimistic updates and rollback
 - **Stores** — Zustand stores for state management
 - **Types** — Single source of truth for domain models
 - **Utils** — Pure utility functions`,
