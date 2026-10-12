@@ -126,8 +126,8 @@ interface ModelStageProps {
   /** Poster alt text; the live canvas is decorative and hidden from assistive tech. */
   alt?: string;
   className?: string;
-  /** The poster on phones (< 768 px), when it differs. */
-  posterNarrow?: string;
+  /** Tala: the poster while `night` is on, fetched the first time it is. */
+  posterNight?: string;
   /** Poster <Image> sizes. */
   sizes?: string;
   priority?: boolean;
@@ -144,7 +144,7 @@ interface ModelStageProps {
   onClick?: () => void;
 }
 
-export function ModelStage({ model, poster, posterNarrow, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, feather = true, onClick }: ModelStageProps) {
+export function ModelStage({ model, poster, posterNight, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, feather = true, onClick }: ModelStageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const reduced = useReducedMotion();
@@ -159,6 +159,11 @@ export function ModelStage({ model, poster, posterNarrow, alt = "", className, s
   const last = useRef<{ x: number } | null>(null);
   /** Distance of the current/last drag, so the click that ends a drag can be ignored. */
   const moved = useRef(0);
+
+  const [nightAsked, setNightAsked] = useState(false);
+  const [nightShown, setNightShown] = useState(false);
+  if (night && posterNight && !live && !nightAsked) setNightAsked(true);
+  const nightUp = Boolean(night && nightShown);
 
   const scale = useStore(renderScale);
   useEffect(() => {
@@ -242,20 +247,31 @@ export function ModelStage({ model, poster, posterNarrow, alt = "", className, s
       }}
       {...dragHandlers}
     >
-      <picture>
-        {posterNarrow && <source media="(max-width: 767px)" srcSet={posterNarrow} />}
       <Image
-        src={poster}
-        alt={alt}
-        fill
-        sizes={sizes}
-        priority={priority}
-        // the hero's poster is the page's largest paint: decode it into the first frame
-        decoding={priority ? "sync" : "async"}
-        className={cn(feather && "stage-feather", "pointer-events-none object-contain transition-opacity duration-700", live && "opacity-0")}
-        draggable={false}
-      />
-      </picture>
+          src={poster}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          loading={priority ? "eager" : undefined}
+          fetchPriority={priority ? "high" : undefined}
+          // the hero's poster is the page's largest paint: decode it into the first frame
+          decoding={priority ? "sync" : "async"}
+          className={cn(feather && "stage-feather", "pointer-events-none object-contain transition-opacity duration-700", (live || nightUp) && "opacity-0")}
+          draggable={false}
+        />
+      {/* night over day: the two cross-fade once the night picture has loaded */}
+      {nightAsked && (
+        <Image
+          src={posterNight!}
+          alt=""
+          fill
+          sizes={sizes}
+          onLoad={() => setNightShown(true)}
+          className={cn(feather && "stage-feather", "pointer-events-none object-contain transition-opacity duration-700", (live || !nightUp) && "opacity-0")}
+          draggable={false}
+        />
+      )}
       {mounted && (
         <div aria-hidden="true" className={cn(feather && "stage-feather", "absolute inset-0 transition-opacity duration-700", live ? "opacity-100" : "opacity-0")}>
           <Scene

@@ -8,12 +8,24 @@ build time (it's excluded from the root `tsconfig.json`).
 
 | Composition  | Output                                        | Used by                                                  |
 | ------------ | --------------------------------------------- | -------------------------------------------------------- |
-| `Room`       | `room.webp` (transparent, 1600×1200)          | Home hero poster: the room, before the live scene loads  |
+| `Room`       | `room.webp` (transparent, 1600×1200)          | Home hero poster (phones pan across it), before the live scene loads |
 | `Parada`     | `parada.webp` (transparent)                   | PARADA `cover` — poster for the live lot                 |
 | `Tala`       | `tala.webp` (transparent)                     | Tala `cover` — poster for the live desk                  |
+| `TalaNight`  | `tala-night.webp` (transparent)               | Tala `coverNight` — the poster in night mode (phones)    |
 | `ParadaFilm` | `films/parada-3d.{webm,mp4,jpg}`, only with `ONLY=ParadaFilm` | Not on the site: PARADA's film is its motion reel (below) |
-| `TalaFilm`   | `films/tala.{webm,mp4,jpg}` — 15 s, 1080p, sound   | Showreel, film dialog, Tala project page            |
+| `TalaFilm`   | `films/tala-3d.{webm,mp4,jpg}`, only with `ONLY=TalaFilm` | Not on the site: Tala's film is its launch film (below) |
 | `ShareImage` | `og.jpg` (1200×630)                           | Open Graph / Twitter image (`src/app/layout.tsx`)        |
+
+**Tala's film** (`films/tala.{mp4,webm,jpg}`) is Tala's launch film: 60 s, 1080p, with
+sound, made from screenshots of the real app (outside this folder). To replace it:
+
+```bash
+node encode.mjs path/to/brag.mp4 tala   # → films/tala.{mp4,webm}
+# poster: the hook, settled, taken from the encoded file
+ffmpeg -ss 4.2 -i ../public/art/films/tala.mp4 -frames:v 1 -q:v 3 ../public/art/films/tala.jpg
+```
+
+Keep `duration` in `src/data/projects.ts` in step with the file.
 
 **PARADA's film** (`films/parada.{mp4,webm,jpg}`) is PARADA's own motion reel, supplied
 as footage rather than rendered here. It's 15 s, 1080p, with sound. To replace it:

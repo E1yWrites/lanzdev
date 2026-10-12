@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-import type { LucideIcon } from "lucide-react";
-
 export const COMMAND_PALETTE_EVENT = "command-palette:open";
 
 /** The palette shortcut as it's printed on this keyboard: "⌘K" on Apple devices, "Ctrl K" elsewhere. */
@@ -16,21 +14,21 @@ export function useShortcutLabel() {
   return label;
 }
 
-interface Command {
+export interface Command {
   label: string;
-  action: () => void;
-  category?: string;
-  icon?: LucideIcon;
+  href: string;
+  /** Opens in a new tab (off the site). */
+  external?: boolean;
 }
 
-export function useCommandPalette(commands: Command[]) {
+export function useCommandPalette(commands: Command[], run: (cmd: Command) => void) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const filtered = commands.filter((cmd) =>
-    cmd.label.toLowerCase().includes(query.toLowerCase())
-  );
+  // matches the name or the path it opens
+  const q = query.trim().toLowerCase();
+  const filtered = commands.filter((cmd) => `${cmd.label} ${cmd.href}`.toLowerCase().includes(q));
 
   const open = useCallback(() => {
     setIsOpen(true);
@@ -38,21 +36,14 @@ export function useCommandPalette(commands: Command[]) {
     setSelectedIndex(0);
   }, []);
 
-  const close = useCallback(() => {
-    setIsOpen(false);
-    setQuery("");
-    setSelectedIndex(0);
-  }, []);
+  const close = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        if (isOpen) {
-          close();
-        } else {
-          open();
-        }
+        if (isOpen) close();
+        else open();
       }
     };
     window.addEventListener("keydown", handler);
@@ -64,33 +55,21 @@ export function useCommandPalette(commands: Command[]) {
     };
   }, [isOpen, open, close]);
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
+  useEffect(() => setSelectedIndex(0), [query]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSelectedIndex((prev) => Math.min(prev + 1, filtered.length - 1));
+      setSelectedIndex((i) => (i + 1) % Math.max(filtered.length, 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setSelectedIndex((prev) => Math.max(prev - 1, 0));
+      setSelectedIndex((i) => (i - 1 + filtered.length) % Math.max(filtered.length, 1));
     } else if (e.key === "Enter" && filtered[selectedIndex]) {
-      filtered[selectedIndex].action();
-      close();
-    } else if (e.key === "Escape") {
+      e.preventDefault();
+      run(filtered[selectedIndex]);
       close();
     }
   };
 
-  return {
-    isOpen,
-    open,
-    close,
-    query,
-    setQuery,
-    filtered,
-    selectedIndex,
-    handleKeyDown,
-  };
+  return { isOpen, close, query, setQuery, filtered, selectedIndex, setSelectedIndex, handleKeyDown };
 }

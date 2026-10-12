@@ -8,10 +8,10 @@ export const RemotionRoot = () => (
   <>
     {/* Transparent model renders — covers, and what the site shows before WebGL takes over. */}
     <Still id="Room" component={RoomStill} width={1600} height={1200} />
-    <Still id="RoomPhone" component={RoomStill} width={1600} height={1200} defaultProps={{ headline: false }} />
     <Still id="House" component={HouseStill} width={2560} height={1440} />
     <Still id="Parada" component={ParadaStill} width={1600} height={1200} />
     <Still id="Tala" component={TalaStill} width={1600} height={1200} />
+    <Still id="TalaNight" component={TalaStill} width={1600} height={1200} defaultProps={{ night: 1 }} />
     {/* 15-second showcase films. */}
     <Composition id="ParadaFilm" component={ParadaFilm} durationInFrames={450} fps={30} width={1280} height={720} />
     <Composition id="TalaFilm" component={TalaFilm} durationInFrames={450} fps={30} width={1280} height={720} />

@@ -5,7 +5,6 @@
 // props and the camera. It talks to the page only through the stores in ./store.
 
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { asset } from "@/lib/constants";
@@ -33,6 +32,11 @@ const camOf = (p: Pose): CamState => ({ px: p.position[0], py: p.position[1], pz
 
 const damp = THREE.MathUtils.damp;
 
+/** A camera move, run by the frame loop: from where the camera is to `to` over `dur` seconds. */
+type Move = { from: CamState; to: CamState; t: number; dur: number; ease: (x: number) => number; done?: () => void };
+const easeInOut = (x: number) => (x < 0.5 ? 2 * x * x : 1 - (2 - 2 * x) ** 2 / 2);
+const easeIn = (x: number) => x * x;
+
 function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<SceneProps, "font" | "display" | "fontReady" | "onReady" | "drag" | "onNavigate">) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const hover = useStore(roomHover);
@@ -46,6 +50,7 @@ function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<S
 
   // Everything that eases lives in refs; one re-render per frame hands it to the model.
   const cam = useRef<CamState>(camOf(focus ? roomObject(focus)!.pose : ROOM_VIEW));
+  const move = useRef<Move | null>(null);
   const v = useRef({ time: 0, wake: 0, dim: focus ? 1 : 0, look: [0, 0] as [number, number], knob: 0.6, lit: {} as Partial<Record<RoomId, number>>, tapes: {} as Partial<Record<TapeId, number>>, press: [0, 0, 0, 0], glow: [0, 0, 0, 0], meter: 0.25 });
   const ready = useRef({ frames: 0, done: false });
   const offset = useRef(new THREE.Vector3());
@@ -74,11 +79,7 @@ function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<S
   // A pick moves the camera to the object's pose; closing brings it back.
   useEffect(() => {
     const pose = focus ? roomObject(focus)!.pose : ROOM_VIEW;
-    const to = camOf(pose);
-    const tween = gsap.to(cam.current, { ...to, duration: 0.6, ease: "power2.inOut", overwrite: true });
-    return () => {
-      tween.kill();
-    };
+    move.current = { from: { ...cam.current }, to: camOf(pose), t: 0, dur: 0.6, ease: easeInOut };
   }, [focus]);
 
   // A card's call to action: push in toward the object, then go.
@@ -88,18 +89,17 @@ function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<S
         const href = roomEnter.get();
         if (!href) return;
         const c = cam.current;
-        gsap.to(c, {
-          px: c.px + (c.tx - c.px) * 0.45,
-          py: c.py + (c.ty - c.py) * 0.45,
-          pz: c.pz + (c.tz - c.pz) * 0.45,
-          duration: 0.32,
-          ease: "power2.in",
-          overwrite: true,
-          onComplete: () => {
+        move.current = {
+          from: { ...c },
+          to: { ...c, px: c.px + (c.tx - c.px) * 0.45, py: c.py + (c.ty - c.py) * 0.45, pz: c.pz + (c.tz - c.pz) * 0.45 },
+          t: 0,
+          dur: 0.32,
+          ease: easeIn,
+          done: () => {
             roomEnter.set(null);
             onNavigate?.(href);
           },
-        });
+        };
       }),
     [onNavigate]
   );
@@ -134,6 +134,16 @@ function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<S
     s.look[1] = damp(s.look[1], free * heroPointer.y * THREE.MathUtils.degToRad(1.5), 5, dt);
 
     const c = cam.current;
+    const m = move.current;
+    if (m) {
+      m.t = Math.min(1, m.t + delta / m.dur);
+      const k = m.ease(m.t);
+      for (const key of Object.keys(c) as (keyof CamState)[]) c[key] = m.from[key] + (m.to[key] - m.from[key]) * k;
+      if (m.t === 1) {
+        move.current = null;
+        m.done?.();
+      }
+    }
     const o = offset.current.set(c.px - c.tx, c.py - c.ty, c.pz - c.tz);
     o.applyAxisAngle(THREE.Object3D.DEFAULT_UP, -s.look[0]);
     const right = new THREE.Vector3(o.z, 0, -o.x).normalize();

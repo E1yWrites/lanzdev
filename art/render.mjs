@@ -52,14 +52,15 @@ const film = async (id, name, posterFrame) => {
 };
 
 // Transparent model renders: covers, and the first paint before WebGL.
-if (want("Room")) await still("Room", "room.webp", { imageFormat: "webp" });
-if (want("RoomPhone")) await still("RoomPhone", "room-phone.webp", { imageFormat: "webp" });
+// 1.5× (2400×1800): phones pan across it at full height and zoom 1.4× onto each object.
+if (want("Room")) await still("Room", "room.webp", { imageFormat: "webp", scale: 1.5 });
 if (want("House")) await still("House", "house.webp", { imageFormat: "webp" });
 if (want("Parada")) await still("Parada", "parada.webp", { imageFormat: "webp" });
 if (want("Tala")) await still("Tala", "tala.webp", { imageFormat: "webp" });
+if (want("TalaNight")) await still("TalaNight", "tala-night.webp", { imageFormat: "webp" });
 if (want("ShareImage")) await still("ShareImage", "og.jpg", { imageFormat: "jpeg", jpegQuality: 88 });
-// PARADA's film on the site is its own motion reel (supplied footage, encoded with
-// `node encode.mjs <reel.mp4> parada`), so the 3D film renders only on request, and
-// under its own name, so a full render never overwrites the reel.
+// Both films on the site are supplied footage: PARADA's motion reel and Tala's launch
+// film (each encoded with `node encode.mjs <video.mp4> <name>`). The 3D films render only
+// on request, and under their own names, so a full render never overwrites the footage.
 if (only?.has("ParadaFilm")) await film("ParadaFilm", "parada-3d", 40);
-if (want("TalaFilm")) await film("TalaFilm", "tala", 45);
+if (only?.has("TalaFilm")) await film("TalaFilm", "tala-3d", 45);

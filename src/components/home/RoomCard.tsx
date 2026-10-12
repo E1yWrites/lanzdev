@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { closeRoom, roomEnter, roomFocus, roomLive, roomTape, useStore } from "@/components/three/store";
 import { roomObject, type RoomId, type TapeId } from "@/three/roomObjects";
+import { Facts } from "./Facts";
+import { TapeButton } from "./ReelPlayer";
 import type { ReelItem } from "./VhsOverlay";
 
 /** Label/value rows under each card's line, from the projects' data and the résumé. */
@@ -12,7 +14,8 @@ export type RoomFacts = Partial<Record<RoomId, [string, string][]>>;
 /**
  * The card for the picked object: a line, a few facts and one way in. A native modal
  * dialog, so focus stays inside it and Esc closes it; clicking outside, Back, or
- * scrolling on also close it. Beside the object on wide screens, a bottom sheet on phones.
+ * scrolling on also close it. Beside the object; phones look around the room instead (RoomPan),
+ * so it's only a bottom sheet if a narrow window opens one.
  */
 export function RoomCard({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
   const focus = useStore(roomFocus);
@@ -64,28 +67,13 @@ export function RoomCard({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-ink/75">{obj.card.body}</p>
 
-          {rows && rows.length > 0 && (
-            <dl className="mt-5 border-t border-dotted border-ink/25">
-              {rows.map(([k, v]) => (
-                <div key={k} className="flex gap-4 border-b border-dotted border-ink/25 py-2.5">
-                  <dt className="t-label w-24 shrink-0 pt-px text-ink/60">{k}</dt>
-                  <dd className="text-sm leading-snug text-ink">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
+          {rows && rows.length > 0 && <Facts rows={rows} className="mt-5" />}
 
           {obj.id === "reel" ? (
             <ul className="mt-5 grid gap-2">
               {reel.map((r) => (
                 <li key={r.slug}>
-                  <button type="button" aria-pressed={tape === r.slug} onClick={() => roomTape.set(r.slug as TapeId)} className="room-tape" data-tape={r.slug}>
-                    <span className="flex items-baseline justify-between gap-3">
-                      <span className="font-display text-xl font-light text-ink">{r.name}</span>
-                      <span className="t-label text-ink/60">{r.film.duration} s</span>
-                    </span>
-                    <span className="mt-1 block text-left text-sm leading-snug text-ink/70">{r.caption}</span>
-                  </button>
+                  <TapeButton item={r} pressed={tape === r.slug} onClick={() => roomTape.set(r.slug as TapeId)} />
                 </li>
               ))}
             </ul>

@@ -18,8 +18,8 @@ import { projectToStage, type TapeId } from "@/three/roomObjects";
 // its lamp turns up and a paper note says what's in it; go in and you walk through to its
 // page in its light. The screening room plays the films. Beside the open front door, the
 // invitation. Plates and hit areas are placed with the render's own camera, so they land
-// on the poster before WebGL and on the live model after. On phones the house is a
-// picture: the room's own index above already lists the same five rooms.
+// on the poster before WebGL and on the live model after. Phones don't get the house:
+// they look around the room's own five objects instead (RoomPan).
 
 /** A room's status on its plate, then the lines on its note. */
 export type HouseNotes = Partial<Record<HouseRoom, string[]>>;
@@ -103,7 +103,7 @@ export function House({ notes, tape }: { notes: HouseNotes; tape?: TapeId }) {
   const wide = useMedia("(min-width: 768px)");
 
   return (
-    <section id="house" data-scene aria-labelledby="house-title" className="scene house-scene relative overflow-hidden">
+    <section id="house" data-scene aria-labelledby="house-title" className="scene house-scene relative hidden overflow-hidden md:block">
       <h2 id="house-title" className="sr-only">
         The rooms
       </h2>
@@ -112,12 +112,12 @@ export function House({ notes, tape }: { notes: HouseNotes; tape?: TapeId }) {
           model="house"
           poster={asset("/art/house.webp")}
           alt="The house from above with its roof off, at night: PARADA’s garage with a car under a sodium lamp, a workbench and shelving, Tala’s study with the notebook and a brass lamp, a screening room lit by its television with a sofa and coffee table, the about room with the portrait and a dining table, Lanz’s bedroom, and the front entrance with its door open."
-          sizes="(min-width: 768px) 100vw, 160vw"
+          sizes="100vw"
           live={wide}
           feather={false}
           className="absolute inset-0"
         />
-        <nav aria-label="Rooms" className="absolute inset-0 hidden md:block">
+        <nav aria-label="Rooms" className="absolute inset-0">
           <ul>
             {ROOMS.map((r) => (
               <li key={r.room}>
@@ -127,7 +127,7 @@ export function House({ notes, tape }: { notes: HouseNotes; tape?: TapeId }) {
           </ul>
         </nav>
       </div>
-      <div className="house-invite px-5 pb-16 pt-12 md:p-0">
+      <div className="house-invite">
         <Invitation email={siteConfig.email} github={siteConfig.github.url} availability={siteConfig.availability} stacked headingId="say-hi-title" />
       </div>
     </section>

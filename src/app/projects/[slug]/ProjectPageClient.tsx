@@ -12,7 +12,7 @@ import { FilmPlayer } from "@/components/motion/FilmPlayer";
 import { KineticText } from "@/components/motion/KineticText";
 import { ModelStage } from "@/components/three/ModelStage";
 import { Roadmap } from "@/components/project/Roadmap";
-import { useFinePointer } from "@/hooks/useMedia";
+import { useFinePointer, useMedia } from "@/hooks/useMedia";
 import { Surface } from "@/components/ui/Surface";
 import { ChangelogView } from "@/components/project/ChangelogView";
 import { PlatformDownloads } from "@/components/project/PlatformDownloads";
@@ -85,13 +85,19 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
   const [night, setNight] = useState(false);
   const isTala = project.model === "tala";
   const fine = useFinePointer();
-  const hint = isTala
-    ? fine
-      ? `Hover to write, click for ${night ? "day" : "night"}, drag to turn`
-      : `Tap for ${night ? "day" : "night"}, drag to turn`
-    : fine
-      ? "Hover to play, drag to turn"
-      : "Plays on its own, drag to turn";
+  // phones get the model's still (no WebGL): Tala's night still swaps in on a tap, PARADA's lot just sits there
+  const wide = useMedia("(min-width: 768px)");
+  const hint = !wide
+    ? isTala
+      ? `Tap for ${night ? "day" : "night"}`
+      : null
+    : isTala
+      ? fine
+        ? `Hover to write, click for ${night ? "day" : "night"}, drag to turn`
+        : `Tap for ${night ? "day" : "night"}, drag to turn`
+      : fine
+        ? "Hover to play, drag to turn"
+        : "Plays on its own, drag to turn";
   const spec = [
     ["Version", project.version ? `v${project.version}` : "—"],
     ["Status", status.label],
@@ -210,18 +216,22 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                   <ModelStage
                     model={project.model}
                     poster={project.cover}
+                    posterNight={project.coverNight}
                     alt={`${project.name} as a 3D model`}
                     priority
                     sizes="(min-width: 1280px) 1024px, 100vw"
-                    draggable
+                    live={wide}
+                    draggable={wide}
                     night={night}
                     onClick={isTala ? () => setNight((v) => !v) : undefined}
                     className="mx-auto aspect-[4/3] w-full max-w-5xl"
                   />
                 ) : null}
-                <p className={cn("t-label pointer-events-none absolute left-5 top-5 transition-colors duration-700", isTala && night ? "text-ink/70" : "text-on-sheet/70")}>
-                  {hint}
-                </p>
+                {hint && (
+                  <p className={cn("t-label pointer-events-none absolute left-5 top-5 transition-colors duration-700", isTala && night ? "text-ink/70" : "text-on-sheet/70")}>
+                    {hint}
+                  </p>
+                )}
               </div>
             </div>
           )}

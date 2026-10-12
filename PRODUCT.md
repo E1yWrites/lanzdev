@@ -24,17 +24,18 @@ or a project.
 ## Positioning
 
 The projects are shown doing what they do, not described: live 3D models that act out
-each product, and two 15-second films. The home page is Lanz's own room at night, and
+each product, and two short films. The home page is Lanz's own room at night, and
 the room is the site's index.
 
 ## Capabilities and Constraints
 
 - Next.js 14 (App Router, Vercel ISR), React 18, TypeScript, Tailwind 3, three.js with
-  @react-three/fiber, GSAP; Remotion in `art/` renders posters and films.
+  @react-three/fiber; Remotion in `art/` renders posters and films.
 - 3D is procedural (no downloaded models); posters paint first, WebGL swaps in.
-- Phones (< 768 px) get the room as a still image with tap targets; reduced motion and
-  no-WebGL keep the still.
-- Must stay: the two 15-second films (PARADA's motion reel, Tala's Remotion film).
+- Phones (< 768 px) never load WebGL: the room is a still at full height that the visitor
+  swipes across, one object to a stop, with a paper note saying what each is; project
+  pages show their model's still. Reduced motion and no-WebGL keep the stills everywhere.
+- Must stay: the two films (PARADA's 15-second motion reel, Tala's 60-second launch film).
   Everything else below the hero room is open to change.
 
 ## Brand Commitments

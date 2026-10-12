@@ -8,7 +8,7 @@ import { LogoMark } from "@/components/brand/Logo";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { COMMAND_PALETTE_EVENT, useShortcutLabel } from "@/hooks/useCommandPalette";
 import { CommandPalette } from "@/components/ui/CommandPalette";
-import { MobileMenu } from "./MobileMenu";
+import { KineticMenu, prefetchMenuMotion } from "@/components/ui/sterling-gate-kinetic-navigation";
 import { isActivePath, mainNav } from "@/data/navigation";
 import type { ProjectSummary } from "@/lib/githubProjects";
 
@@ -129,17 +129,28 @@ export function Navigation({ projects }: NavigationProps) {
             <button
               type="button"
               onClick={toggle}
+              onPointerDown={prefetchMenuMotion}
+              onFocus={prefetchMenuMotion}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
-              className="t-label -mr-2 h-11 px-2 text-ink transition-colors duration-fast hover:text-accent md:hidden"
+              aria-label={isOpen ? "Close menu" : "Menu"}
+              data-open={isOpen || undefined}
+              className="menu-toggle t-label -mr-2 inline-flex h-11 items-center gap-2.5 px-2 text-ink transition-colors duration-fast hover:text-accent md:hidden"
             >
-              {isOpen ? "Close" : "Menu"}
+              <span aria-hidden="true" className="menu-toggle-words">
+                <span>Menu</span>
+                <span>Close</span>
+              </span>
+              <svg aria-hidden="true" viewBox="0 0 16 16" className="menu-toggle-icon h-3 w-3" fill="currentColor">
+                <path d="M7.33 0h1.34v16H7.33z" />
+                <path d="M0 7.33h16v1.34H0z" />
+              </svg>
             </button>
           </div>
         </nav>
       </header>
 
-      <MobileMenu isOpen={isOpen} onClose={close} />
+      <KineticMenu isOpen={isOpen} onClose={close} />
       <CommandPalette projects={projects} />
     </>
   );

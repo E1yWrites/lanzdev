@@ -117,7 +117,7 @@ export function VhsOverlay({ reel }: { reel: ReelItem[] }) {
                 ▶ PLAY
               </p>
               <p aria-hidden="true" className="vhs-osd vhs-osd-right">
-                SP 0:{String(film.duration).padStart(2, "0")}
+                SP {Math.floor(film.duration / 60)}:{String(film.duration % 60).padStart(2, "0")}
               </p>
             </>
           )}

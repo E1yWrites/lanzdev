@@ -155,8 +155,8 @@ export const ROOM_OBJECTS: RoomObject[] = [
     side: "right",
     card: {
       kicker: "05 · Showreel",
-      title: "Fifteen seconds each.",
-      body: "Pick a tape: PARADA’s motion reel, or Tala writing its own name.",
+      title: "Watch them run",
+      body: "Pick a tape: PARADA’s motion reel, or Tala’s launch film.",
     },
   },
 ];

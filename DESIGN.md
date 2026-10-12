@@ -183,7 +183,7 @@ focus or a step through a door.
 - Procedural 3D, poster first: a transparent render of the same camera paints before WebGL.
 - Mono plates and labels, a light Newsreader for titles, Instrument Sans for reading.
 - Every internal link is a door that opens in the next room's light.
-- Every motion stops under `prefers-reduced-motion`. Phones get stills with real buttons.
+- Every motion stops under `prefers-reduced-motion`. Phones never load WebGL: they get the room as a still at full height and swipe across it, one object to a stop.
 
 ## Colors
 
@@ -271,16 +271,16 @@ Newsreader 300, line-height 1.05, tracking −0.025em, `text-wrap: balance`. Par
 
 ### Hierarchy
 - **Display** (300, clamp(3rem, 7vw, 7.5rem), 0.95, −0.035em): page titles on inner pages
-  (`text-display`). On phones the home h1 is set as type at clamp(2.6rem, 11vw, 4rem); from
-  md up it is visually hidden (`sr-only`) because it's painted on the room's wall in
-  Newsreader Light.
+  (`text-display`). The home h1 is visually hidden (`sr-only`) at every size because it's
+  painted on the room's wall in Newsreader Light; phones get the room closer in so the
+  paint reads.
 - **Headline** (300, clamp(2.6rem, 4.6vw, 4.75rem), 0.98, −0.03em): "Have a project in
   mind?" beside the front door. In the footer version it's clamp(3rem, 7vw, 6.5rem).
-- **Title** (300, 2.4rem, 1, −0.02em): the room card's title. Phone index labels and tape
-  names are the same face at 1.25rem.
+- **Title** (300, 2.4rem, 1, −0.02em): the room card's title. The phone's paper note titles
+  at 2rem; phone section titles at 2.6rem (the Headline's floor). Tape and shelf names are the same face at 1.25rem.
 - **Body** (400, 16px, 1.6): reading text, held to max-w-sm (24rem) in the invitation.
-  Card body is 15px, relaxed. The line under the room is 13px, rising to 15px from 1200px,
-  line-height 1.4, max 24rem.
+  Card body is 15px, relaxed. The line under the room is 15px on phones, 13px from md and
+  15px again from 1200px, line-height 1.4, max 24rem.
 - **Label** (400, 11px, 0.06em, uppercase, `.t-label`): nav, buttons, fact keys,
   availability, "Skip the room", the floor plan caption (10px).
 - **Plate** (400, clamp(10px, 0.82cqw, 14px), 0.08em, uppercase): door plates. They size
@@ -306,13 +306,24 @@ a paper note.
   under the transparent nav. Under it is a three-column rule (`1fr auto 1fr`, top hairline
   `ink/10`): the greeting line "Hi, I'm Lanz, …" on the left, "Skip the room ↓" in the
   middle, availability on the right. The greeting lives in that line, not as a kicker.
-  On phones the stage is drawn at 125% width (the section clips), with a 2-column index of
-  five full buttons under it (52px tall, Showreel spanning both columns).
+  On phones that rule is hidden; its words move into the paper note.
+- **Looking around (phones, `RoomPan`).** The same `room.webp` stands at the screen's
+  full height (`100svh − 3.5rem`, 4:3, so ~2.7 screens wide) in a horizontal scroller
+  with native `scroll-snap`: stop 0 is the headline wall, then each object left to right
+  (its pin's spot from `projectToStage`). The objects' names (PARADA, Tala, About, Films,
+  Say hi) sit under the nav in that order as mono labels, the one in view ember and
+  underlined; each jumps to its object. Once a swipe has been still for 140ms the stage
+  dollies in 1.4× on the object (1400ms ease-out) and backs out in 320ms when it moves
+  again; never on the wall, never under reduced motion. `room.webp` is 2400×1800 so the
+  zoom stays sharp. A paper note (`sheet`, 2px, pinned-paper shadow) is docked
+  over the bottom of the room: the greeting, availability and "Look around →" at stop 0;
+  then the object's title, its line, the ember CTA and its status. The films' stop links
+  down to them. Under the room: the shelf (projects without an object, only when there is
+  one), the films, then the invitation. `?focus=<id>` opens on that object.
 - **The house.** A 16:9 stage centred and fitted to the screen from md
   (`min(100%, 100svh × 16/9)`). The invitation sits absolutely at lower left beside the
-  open front door, `min(30rem, 34vw)` wide. On phones the picture is 156% wide, centred on
-  the house, and the invitation follows below it. Plates and hit areas are hidden on
-  phones because the room's index above already lists the five rooms.
+  open front door, `min(30rem, 34vw)` wide. Phones don't get the house: looking around the room is
+  their index.
 - **Shell.** A fixed 56px nav (`h-14`), a 1600px max container, gutters of 20 / 32 / 48px
   at base / md / lg. The floor plan sits under the logo, from md up, at
   clamp(72px, 9.9vw, 120px) wide.
@@ -344,7 +355,9 @@ things that float over the scene. Nothing has a hard offset shadow.
 
 **The Lamp, Not the Shadow Rule.** Emphasis on the scene is light, never lift. A room
 you're at turns its lamp up (damped) and washes its floor in its light at 12% (screen
-blend). A picked object gets an iris vignette. Neither one moves the object.
+blend). A picked object gets an iris vignette. Neither one moves the object. On phones
+the iris follows the pan (`--ix`/`--iy`, 600ms) so only the object in view stays lit;
+it jumps under reduced motion.
 
 **The Crisp Frame Rule.** The room and house stages keep hard edges (`feather={false}`).
 Only project models that run off their frame fade over their last 44px (`.stage-feather`).
@@ -353,8 +366,8 @@ Only project models that run off their frame fade over their last 44px (`.stage-
 
 Rounded, hand-built forms. The 3D is made of bevelled boxes and rods. In the interface:
 pills (999px) for anything you press (CTAs, nav capsule, pins, copy), 18px for the room
-card (18px 18px 0 0 when it becomes a bottom sheet), 12px for tapes, 10px for VHS buttons
-and the phone index (rounded-xl, 14px). The paper itself is nearly square: plates are 3px
+card (18px 18px 0 0 when it becomes a bottom sheet), 12px for tapes, 10px for VHS buttons.
+The paper itself is nearly square: plates are 3px
 and notes 2px, tilted −1.5°. The CRT screen is `16px / 22px` inside a 22px set. The
 `.room-tape` has a 6px left stripe in its film's colour (ember for PARADA, gold for Tala),
 which the user kept from the approved hero.
@@ -383,9 +396,15 @@ which the user kept from the approved hero.
   the hovered link and rests on the current page (420ms ease-out, no animation on first
   paint). The current page gets a 4px ember dot.
 - **Right:** Search ⌘K (ghost) and Contact (primary pill).
-- **Mobile:** "Menu" / "Close" as a mono label. A full sheet under the bar with numbered
-  rows (01–) on dotted `ink/25` rules, titles in Newsreader at 2.25rem, and rows that rise
-  in with a 55ms stagger. Esc closes it.
+- **Mobile (kinetic menu, `ui/sterling-gate-kinetic-navigation.tsx`):** "Menu" / "Close"
+  as a mono label that rolls between the two words while a plus turns 315° into a cross.
+  Under the bar, three layers of paint slide in from the right 120ms apart (ember, raised
+  midnight, midnight), then the titles (Newsreader 2.75rem) rise out of their rows with a
+  10° turn, 50ms apart, then GitHub and Email fade up. One curve throughout:
+  `cubic-bezier(0.65, 0.01, 0.05, 0.99)`, 700ms. Rows are numbered 01–05 on dotted
+  `ink/25` rules; a row's number lights in the light of the room it leads to on hover or
+  focus, ember for the current page. GSAP loads on the first touch of the button, never
+  under reduced motion (the menu just appears). Esc, a tap outside, or arriving closes it.
 
 ### Room pins (signature)
 Numbered chips 01–05 on the room's objects, in tab order: 01 PARADA (monitor), 02 Tala
@@ -393,23 +412,23 @@ Numbered chips 01–05 on the room's objects, in tab order: 01 PARADA (monitor),
 Showreel (VHS deck). Hover or focus fills the chip ember and slides the name out (320ms).
 Click opens the card and moves the camera there (600ms), dims the room behind an iris,
 and sets `?focus=<id>`. Pins hide while a card is open and return 450ms after the camera
-comes home. On phones they are `aria-hidden` markers, and the index under the room does
-the work.
+comes home. Phones don't show them: the names over the panned room do the work.
 
 ### Room card (signature)
 A native modal `<dialog>`, 24rem wide, beside the object on the side the camera leaves
 free. It slides in from that side over 320ms. Inside: a title, one line, fact rows on
 dotted rules (mono key, 6rem wide; sans value), and one CTA. For the reel, it shows two
 tapes instead. Esc, Close, a click outside, Back or 48px of scroll closes it, and focus
-returns to its pin. On phones it becomes a bottom sheet (max 78svh) over a `paper/55`
-backdrop.
+returns to its pin. Phones never open it; a window narrowed below 768px with a card
+open shows it as a bottom sheet (max 78svh) over a `paper/55` backdrop.
 
 ### VHS player (signature)
 A modal CRT: a rounded set, a 16:9 screen with scanlines, a vignette, a tracking band
 that wobbles once per tape, and a green-cyan "▶ PLAY" readout with an ember fringe. Below
 it are mono controls (tapes with colour swatches, Pause, Sound on, Eject), 40px tall,
 with a 10px radius. It opens after the tape slides into the deck (550ms) and starts
-muted with Sound on.
+muted with Sound on. Phones get the films in the page instead (`ReelPlayer`): the same
+set and screen around the browser's own controls, and a tape button for each film.
 
 ### Door plate and paper note (signature)
 An enamel plate over each room in the house: number in the room's light · name · status
@@ -441,22 +460,23 @@ page above the footer. It's hidden on `/` (the front door says it) and on `/cont
 
 ### 3D stage (`ModelStage`)
 Poster first: a transparent render from the same camera (`art/render.mjs`: Room,
-RoomPhone, House, Parada, Tala, ShareImage, plus films). `posterNarrow` swaps in a phone
-poster below 768px. The room uses `room-phone.webp`, whose wall is blank because the
-headline is set as type there. WebGL mounts near the viewport (700px margin), one scene at
+House, Parada, Tala, TalaNight, ShareImage, plus films). Phones and desktop share
+the room's one poster. `posterNight` (Tala) is fetched the first time night turns on and cross-fades over the
+poster once loaded. WebGL mounts near the viewport (700px margin), one scene at
 a time in idle time, renders only while visible, and cross-fades over the poster after its
 first frame. A loader shows until then, and it gives up after 20s. Reduced motion, no
-WebGL or `live={false}` (phones) keep the poster. three.js is prefetched in idle time
-after first paint, but never under reduced motion. After changing a colour token,
-re-render the posters (`ONLY=Room,RoomPhone,House,Parada,Tala,ShareImage`).
+WebGL or `live={false}` (phones, on home and the project pages) keep the poster. three.js
+is prefetched in idle time after first paint, but never under reduced motion or on phones.
+After changing a colour token, re-render the posters
+(`ONLY=Room,House,Parada,Tala,TalaNight,ShareImage`).
 
 ### Films
-Two 15s films with sound. PARADA's is its own supplied motion reel. Tala's is rendered
-with Remotion from its model, composed at 1280×720 and rendered at 1.5× (1080p). A
-near-lossless master is encoded by `art/encode.mjs` to H.264 High CRF 18 + AAC 192k
+Two films with sound, both supplied footage: PARADA's 15s motion reel and Tala's 60s launch
+film. (art/ can still render 3D films from the models with Remotion, composed at 1280×720
+and rendered at 1.5×, under their own names.) A near-lossless master is encoded by `art/encode.mjs` to H.264 High CRF 18 + AAC 192k
 (served first) and VP9 CRF 31 + Opus 128k, in limited-range BT.709. `useFilmSource` falls
 back to the other file if one fails to decode. Muted autoplay always comes with a Sound on
-control.
+control. On phones a film downloads nothing until play is pressed.
 
 ## Do's and Don'ts
 

@@ -45,14 +45,14 @@ function useFurnitureSet() {
 /** The portrait in the room's frame. */
 const usePortrait = () => usePicture("portrait.webp");
 
-/** The hero room as the site first paints it: the live room's opening frame. On phones the headline is set as type above the room, so its wall is left blank. */
-export function RoomStill({ headline = true }: { headline?: boolean }) {
+/** The hero room as the site first paints it (phones pan across it): the live room's opening frame. */
+export function RoomStill() {
   const { width, height } = useVideoConfig();
   const ready = useFontsReady();
   const portrait = usePortrait();
   return (
     <Studio width={width} height={height} background={null} camera={ROOM_VIEW} lights={false}>
-      <Room font={MONO} display={SERIF} ready={ready} portrait={portrait} headline={headline} />
+      <Room font={MONO} display={SERIF} ready={ready} portrait={portrait} />
     </Studio>
   );
 }
@@ -81,12 +81,13 @@ export function ParadaStill() {
   );
 }
 
-export function TalaStill() {
+/** Tala's desk by day, or with its moon up (`night`: the project page's night mode). */
+export function TalaStill({ night = 0 }: { night?: number }) {
   const { width, height } = useVideoConfig();
   const ready = useFontsReady();
   return (
     <Studio width={width} height={height} background={null} camera={VIEWS.tala}>
-      <TalaDesk font={MONO} ready={ready} write={0.93} night={0} time={0.6} />
+      <TalaDesk font={MONO} ready={ready} write={0.93} night={night} time={0.6} />
     </Studio>
   );
 }

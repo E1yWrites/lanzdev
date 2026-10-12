@@ -1,7 +1,7 @@
 # Lorenz.dev — Portfolio & Software Studio
 
 The personal site for Lorenz “Lanz” Malabanan — a spec-sheet portfolio with a
-motion layer: live 3D models you can play with, kinetic type and two 15-second
+motion layer: live 3D models you can play with, kinetic type and two short
 films. Built with **Next.js 14 (App Router)**, **React 18**, **Tailwind CSS**
 and **three.js**. See [`DESIGN.md`](DESIGN.md) for the design and motion system.
 

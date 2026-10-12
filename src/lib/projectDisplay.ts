@@ -27,6 +27,14 @@ export function platformSummary(project: Pick<Project, "platforms" | "demoUrl" |
   return project.demoUrl ? "Web" : "Source";
 }
 
+/** The label/value rows beside a project in the hero room (and under it on phones): all from the project's own data. */
+export function projectFacts(p: Project): [string, string][] {
+  const rows: [string, string][] = [["Status", projectStatus(p.status).label]];
+  if (p.version) rows.push(["Version", `v${p.version}`]);
+  rows.push(["Runs on", platformSummary(p)], ["Built with", p.technologies.slice(0, 5).join(" · ")]);
+  return rows;
+}
+
 export function hasDownloads(project: Project) {
   return PLATFORMS.some(({ key }) => project.downloads[key]?.available);
 }
