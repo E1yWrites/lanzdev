@@ -11,7 +11,7 @@ The whole site, led by the home page. Visitor mode: Experience (the work leads; 
 interface recedes), with every room ending one step from contact.
 
 Audience: internship recruiters, hiring managers and faculty, about a minute each.
-Action: write to Lanz. Proof: PARADA and Tala running, the two 15 s films, the résumé
+Action: write to Lanz. Proof: PARADA and Tala running, the two films, the résumé
 facts in `src/data/config.ts`. Constraints: the two films stay; phones get stills;
 everything off under reduced motion; no invented proof.
 
@@ -106,3 +106,26 @@ screening room, the standalone front-door scene.
 RISK the user accepted: rooms are small in one view; detail waits for hover or entry.
 NO COMP: image generation unavailable (Higgsfield out of credits, Gemini API free tier
 is 0 for image models); ambition lives in this block and the build gets reviewed in behavior.
+
+## Phones (re-locked 2026-10-12, code-led by the user's call; supersedes "Walkthrough")
+
+Below 768px the site is its own UI; desktop and tablets keep the live room and house as
+built. Scope: home and the two project pages (the pages built around 3D).
+
+REJECTED: the built "Walkthrough" (square close-up, title, facts, CTA, repeated per stop).
+User verdict: "this one is ass". It read as a stack of identical cards in the world's paint.
+
+STRUCTURE: "Look around the room" (surface round seed abe69cc0, dealt 2 of 7; beat "Down the
+hall" and "The key rack"). The room fills the phone, full height and full bleed, and a
+sideways swipe pans one wide render from object to object: the painted headline wall,
+monitor (PARADA), notebook (Tala), VHS deck (films), portrait (About), door (Say hi). The
+object in view is lit; the rest of the room dims (iris, never lift). Plates 01–05 sit
+under the nav as the progress and jump links. A paper note (`sheet`, `on-sheet` ink, 2px
+corners) is docked over the bottom third and changes per stop: plate, title with ember
+punctuation, one line, a fact or two, the ember CTA. Stop 0's note is the greeting,
+availability and "Swipe the room →". Vertical scroll below the room: films, invitation, footer.
+CRITIQUE REFERENCE (code-led): `.impeccable/mocks/decision/phone-pan.jpg` (Canva media MAHXwxOAbI8; local
+file is the 200px connector preview, full size 1456x1088 in Canva).
+Not to literalize: the comp's approximate lettering and fact values (real data replaces
+them); its storyboard canvas (three screens side by side is the presentation, not the page).
+PERFORMANCE: no three.js or WebGL on phones; one wide still for the pan, lazy below it.

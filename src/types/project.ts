@@ -80,9 +80,11 @@ export interface Project {
   icon?: string;
   /** Transparent render of the project's 3D model (art/ Remotion project). */
   cover?: string;
+  /** The same render after dark, for a model with a night mode (Tala). */
+  coverNight?: string;
   /** Live 3D model shown in place of the cover once WebGL is ready. */
   model?: ProjectModel;
-  /** 15-second showcase film rendered in art/. */
+  /** Showcase film: rendered in art/ or supplied footage, encoded by art/encode.mjs. */
   film?: ProjectFilm;
   /** Folder colour on the home page. */
   tone?: "accent" | "solar" | "sheet";

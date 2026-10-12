@@ -10,6 +10,7 @@ import { asset } from "@/lib/constants";
 import { useFinePointer, useMedia } from "@/hooks/useMedia";
 import type { ReelItem } from "./VhsOverlay";
 import { RoomCard, type RoomFacts } from "./RoomCard";
+import { RoomPan } from "./RoomPan";
 import { VhsOverlay } from "./VhsOverlay";
 
 /** Where the pins sit over the poster — the same camera as the render, so they line up before WebGL. */
@@ -39,8 +40,8 @@ function RoomPins({ interactive }: { interactive: boolean }) {
     return roomPins.subscribe(place);
   }, []);
 
-  // On phones the pins are too close together to be fair targets: they stay as markers
-  // on the picture, and the index under it (PhoneIndex) is what you tap.
+  // Until the page knows it's wide (and on phones, where CSS hides them) the pins are
+  // markers; phones look around the room instead (RoomPan).
   if (!interactive)
     return (
       <div aria-hidden="true" className="room-pins absolute inset-0">
@@ -97,27 +98,6 @@ function RoomPins({ interactive }: { interactive: boolean }) {
   );
 }
 
-/** The room's index as full-size buttons, for phones. */
-function PhoneIndex() {
-  return (
-    <nav aria-label="Room" className="mt-3 md:hidden">
-      <ol className="grid grid-cols-2 gap-2">
-        {ROOM_OBJECTS.map((o) => (
-          <li key={o.id} className={o.id === "reel" ? "col-span-2" : undefined}>
-            <button type="button" aria-haspopup="dialog" onClick={() => openRoom(o.id)} className="room-index flex min-h-[52px] w-full items-center gap-3 rounded-xl px-3.5 text-left">
-              <span className="t-label text-ink/60">{o.index}</span>
-              <span className="font-display text-xl font-light leading-none text-ink">{o.label}</span>
-              <span aria-hidden="true" className="t-label ml-auto text-accent">
-                →
-              </span>
-            </button>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
-
 function Vignette() {
   const focus = useStore(roomFocus);
   const live = useStore(roomLive);
@@ -127,9 +107,9 @@ function Vignette() {
 }
 
 /**
- * The hero is Lanz's room at night. The headline is painted on its left wall (on phones,
- * where paint that small can't be read, it's set as type above the room). Five objects
- * are the index: pick one and the camera moves to it and its card opens.
+ * The hero is Lanz's room at night, with the headline painted on its left wall. Five
+ * objects are the index: pick one and the camera moves to it and its card opens. Phones
+ * get the room as a still at full height and look around it (RoomPan).
  */
 export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
   const section = useRef<HTMLElement>(null);
@@ -150,7 +130,8 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
       heroPointer.scroll = Math.min(1, Math.max(0, window.scrollY / h));
     };
     onScroll();
-    syncRoomFromUrl();
+    // ?focus=<id> opens that object's card (phones: RoomPan pans to it)
+    if (matchMedia("(min-width: 768px)").matches) syncRoomFromUrl();
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("popstate", syncRoomFromUrl);
@@ -174,21 +155,19 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
       <div className="relative mx-auto flex max-w-[1600px] flex-col px-5 md:h-full md:px-8 lg:px-12">
         <FloorPlan current="room" className="hero-floor-plan absolute hidden md:block" />
 
-        {/* On the wall from md up; set as type on phones. Always the page's one h1. */}
-        <div className="pt-8 md:sr-only">
-          <h1 id="hero-title" className="font-display text-[clamp(2.6rem,11vw,4rem)] font-light leading-[0.95] tracking-[-0.035em] text-ink">
-            Software for curious people<span className="text-accent">.</span>
-          </h1>
-        </div>
+        {/* Painted on the wall; the page's one h1 for everything that reads text. */}
+        <h1 id="hero-title" className="sr-only">
+          Software for curious people.
+        </h1>
 
+        <RoomPan facts={facts}>
         <div className="room-stage relative md:mx-auto" data-open={zoomed || undefined}>
           <ModelStage
             model="room"
             poster={asset("/art/room.webp")}
-            posterNarrow={asset("/art/room-phone.webp")}
             alt="Lanz’s room at night: a desk with a monitor showing PARADA’s parking count, an open notebook with “tala” written in it, a framed portrait, a door left ajar with warm light behind it, and a VHS deck on a cabinet under the words “Software for curious people.” painted on the wall."
             priority
-            sizes="(min-width: 768px) 80vw, 100vw"
+            sizes="(min-width: 768px) 80vw, 134vh"
             live={wide}
             draggable={wide}
             feather={false}
@@ -196,14 +175,15 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
           />
           <Vignette />
           <RoomPins interactive={wide} />
+          <div aria-hidden="true" className="room-iris pointer-events-none absolute inset-0 md:hidden" />
         </div>
-        <PhoneIndex />
+        </RoomPan>
 
-        <div className="hero-rule hero-fade relative z-[2] grid gap-4 border-t border-ink/10 md:mt-auto md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8" style={{ animationDelay: "700ms" }}>
+        <div className="hero-rule hero-fade relative z-[2] hidden gap-4 md:grid border-t border-ink/10 md:mt-auto md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8" style={{ animationDelay: "700ms" }}>
           <p className="hero-rule-line text-ink/70">
             Hi, I’m {siteConfig.alias}, a 3rd-year IT student in Batangas building web, mobile and desktop apps.
           </p>
-          <p className="t-label flex flex-wrap items-center gap-x-5 gap-y-2 text-ink/60 md:justify-center">
+          <p className="t-label hidden flex-wrap items-center justify-center gap-x-5 gap-y-2 text-ink/60 md:flex">
             {hint && <span>{hint}</span>}
             <a href="#house" className="text-ink underline-offset-4 transition-colors hover:text-accent hover:underline">
               Skip the room ↓

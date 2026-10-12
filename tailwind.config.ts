@@ -62,9 +62,6 @@ const config: Config = {
       animation: {
         "slide-up": "slideUp 0.2s ease-out forwards",
         "fade-in": "fadeIn 0.2s ease-out forwards",
-        "route-progress": "routeProgress 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "fade-out": "fadeOut 200ms ease-out forwards",
-        shimmer: "shimmer 2s ease-in-out infinite",
       },
       keyframes: {
         slideUp: {
@@ -74,20 +71,6 @@ const config: Config = {
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        routeProgress: {
-          "0%": { transform: "scaleX(0)", transformOrigin: "left" },
-          "50%": { transform: "scaleX(1)", transformOrigin: "left" },
-          "50.01%": { transformOrigin: "right" },
-          "100%": { transform: "scaleX(0)", transformOrigin: "right" },
-        },
-        fadeOut: {
-          from: { opacity: "1" },
-          to: { opacity: "0" },
         },
       },
     },

@@ -74,14 +74,14 @@ function headlineTexture(display: string, ready: boolean) {
   });
 }
 
-const Shell = memo(function Shell({ display, ready, headline: painted, dim }: { display: string; ready: boolean; headline: boolean; dim: number }) {
+const Shell = memo(function Shell({ display, ready, dim }: { display: string; ready: boolean; dim: number }) {
   const slab = useRounded(2 * S + T, F, 2 * S + T, 0.05);
   const left = useRounded(T, H, 2 * S + T, 0.04);
   const right = useRounded(2 * S, H, T, 0.04);
   const floorMap = useDisposable(floorTexture, []);
   const leftMap = useDisposable(() => wallTexture(C.wallLeft, "right"), []);
   const rightMap = useDisposable(() => wallTexture(C.wallRight, "left"), []);
-  const headline = useDisposable(() => headlineTexture(display, ready && painted), [display, ready, painted]);
+  const headline = useDisposable(() => headlineTexture(display, ready), [display, ready]);
   return (
     <group>
       <mesh geometry={slab} position={[-T / 2, -F / 2, -T / 2]}>
@@ -827,9 +827,12 @@ function tapeLabel(font: string, ready: boolean, id: TapeId) {
     ctx.font = canvasFont(700, 40, font);
     ctx.fillText(id === "parada" ? "PARADA" : "TALA", 36, 66);
     ctx.font = canvasFont(500, 22, font);
-    ctx.fillText("15 s", w - 86, 66);
+    ctx.fillText(TAPE_LENGTH[id], w - 86, 66);
   });
 }
+
+/** Each tape's running time, as its film's `duration` in src/data/projects.ts says. */
+const TAPE_LENGTH: Record<TapeId, string> = { parada: "15 s", tala: "60 s" };
 
 function Tape({ id, font, ready, insert, lift, onTape }: { id: TapeId; font: string; ready: boolean; insert: number; lift: number; onTape?: RoomProps["onTape"] }) {
   const shell = useRounded(TAPE.w, TAPE.h, TAPE.d, 0.008);
@@ -973,17 +976,15 @@ export interface RoomProps {
   onObject?: (id: RoomId, type: "over" | "out" | "click", e: ThreeEvent<PointerEvent | MouseEvent>) => void;
   onTape?: (id: TapeId, type: "over" | "out" | "click", e: ThreeEvent<PointerEvent | MouseEvent>) => void;
   onKey?: MacropadProps["onKey"];
-  /** false leaves the wall blank (the phone poster, where the headline is set as type). */
-  headline?: boolean;
 }
 
-export function Room({ font, display, ready, portrait, headline = true, time = 0, wake = 0, lit = {}, focus = null, dim = 0, tapes = {}, tapeHover = null, pad, onObject, onTape, onKey }: RoomProps) {
+export function Room({ font, display, ready, portrait, time = 0, wake = 0, lit = {}, focus = null, dim = 0, tapes = {}, tapeHover = null, pad, onObject, onTape, onKey }: RoomProps) {
   const free = wake > 0.6 ? 11 : 12;
   const doorLeaf: Vec3 = [DOOR.x1, 0, -S + 0.03];
   return (
     <group>
       <Lights dim={dim} focus={focus} />
-      <Shell display={display} ready={ready} headline={headline} dim={dim} />
+      <Shell display={display} ready={ready} dim={dim} />
       <Shelves />
       <Desk />
       <Chair />

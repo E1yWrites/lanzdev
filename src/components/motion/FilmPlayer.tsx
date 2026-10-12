@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "@/hooks/useInView";
+import { useMedia } from "@/hooks/useMedia";
 import { cn } from "@/lib/utils";
 import type { ProjectFilm } from "@/types/project";
 import { Loader } from "./Loader";
@@ -108,12 +109,14 @@ interface FilmPlayerProps {
 /**
  * A film with native controls that preloads as it nears the viewport, so pressing
  * play starts instantly. With `autoPlay` it waits for a smooth start, showing the loader.
+ * On phones nothing loads until play is pressed: a film is megabytes of someone's data.
  */
 export function FilmPlayer({ film, title, autoPlay = false, className }: FilmPlayerProps) {
   const wrap = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const near = useInView(wrap, "600px 0px");
-  const { ready, buffering, progress } = useFilmLoading(video, near || autoPlay);
+  const wide = useMedia("(min-width: 768px)");
+  const { ready, buffering, progress } = useFilmLoading(video, (near && wide) || autoPlay);
   const src = useFilmSource(video, film);
   const started = useRef(false);
 

@@ -112,14 +112,15 @@ export const projects: Project[] = [
     license: "MIT",
     icon: asset("/images/tala-app-icon.png"),
     cover: asset("/art/tala.webp"),
+    coverNight: asset("/art/tala-night.webp"),
     model: "tala",
     tone: "sheet",
     film: {
       webm: asset("/art/films/tala.webm"),
       mp4: asset("/art/films/tala.mp4"),
       poster: asset("/art/films/tala.jpg"),
-      duration: 15,
-      credit: "Rendered with Remotion from the same 3D model as above. Sound on — the soundtrack is synthesised, not sampled.",
+      duration: 60,
+      credit: "Tala’s launch film: open it, write a line the way you say it, open Today. Every screen is the real app; the soundtrack is synthesised, not sampled. Sound on.",
     },
     screenshots: [
       {
