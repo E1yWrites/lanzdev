@@ -42,6 +42,26 @@ const SECTIONS: LegalSection[] = [
     ),
   },
   {
+    title: "UDB",
+    body: (
+      <>
+        <p>
+          UDB is free software under the GNU General Public License, version 3 or later. Some of its protocol code is
+          ported from AGPL-3.0 projects, so the hosted app at udb.lorenzmalabanan.com is offered under AGPL-3.0 terms,
+          and every page links to the exact source of its build.
+        </p>
+        <p className="mt-3">
+          Product names, trademarks and product images shown in UDB belong to their makers. Its third-party credits and
+          notices are on{" "}
+          <a href="https://udb.lorenzmalabanan.com/legal/" className="font-medium text-swiss-fg underline decoration-accent/50 underline-offset-4 transition-colors duration-fast hover:text-swiss-accent">
+            UDB&rsquo;s legal page
+          </a>
+          .
+        </p>
+      </>
+    ),
+  },
+  {
     title: "Website",
     body: "The website design, original content, and documentation are provided for informational purposes. The source code for this website may be available on GitHub.",
   },
