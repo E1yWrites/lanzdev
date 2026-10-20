@@ -5,7 +5,7 @@ import { canvasFont, canvasTexture, easeInOut, lerp, range, ribbonGeometry, useD
 import { Box, C, EnvLevel, Glow, Plant, Rod, doorwayTexture, floorTexture, mulberry, poolTexture, spillTexture, useRounded, wallTexture } from "./house";
 import { Macropad, type MacropadProps } from "./Macropad";
 import { PARADA, SITE, TALA } from "./palette";
-import { LAYOUT, ROOM_OBJECTS, type RoomId, type TapeId } from "./roomObjects";
+import { LAYOUT, ROOM_OBJECTS, TAPE_IDS, type RoomId, type TapeId } from "./roomObjects";
 import { SoftShadow, StudioLights } from "./Studio";
 import { TalaNotebook } from "./TalaDesk";
 
@@ -41,6 +41,7 @@ const TAPE = { w: 0.3, h: 0.17, d: 0.045 };
 const TAPE_REST: Record<TapeId, Vec3> = {
   parada: [-1.0, CAB.top + TAPE.h / 2, -S + 0.12],
   tala: [-0.68, CAB.top + TAPE.h / 2, -S + 0.12],
+  udb: [-1.32, CAB.top + TAPE.h / 2, -S + 0.12],
 };
 const SLOT: Vec3 = [DECK.x - 0.12, CAB.top + DECK.h / 2, DECK_FRONT];
 
@@ -813,7 +814,7 @@ function deckFace(font: string, ready: boolean, playing: TapeId | null) {
 
 function tapeLabel(font: string, ready: boolean, id: TapeId) {
   return canvasTexture(320, 180, (ctx, w) => {
-    ctx.fillStyle = id === "parada" ? SITE.accent : SITE.solar;
+    ctx.fillStyle = TAPE_COLOR[id];
     ctx.fillRect(0, 0, w, 180);
     // the label and the two reel windows
     ctx.fillStyle = TALA.ivory;
@@ -825,14 +826,16 @@ function tapeLabel(font: string, ready: boolean, id: TapeId) {
     if (!ready) return;
     ctx.fillStyle = SITE.onSheet;
     ctx.font = canvasFont(700, 40, font);
-    ctx.fillText(id === "parada" ? "PARADA" : "TALA", 36, 66);
+    ctx.fillText(TAPE_TITLE[id], 36, 66);
     ctx.font = canvasFont(500, 22, font);
     ctx.fillText(TAPE_LENGTH[id], w - 86, 66);
   });
 }
 
 /** Each tape's running time, as its film's `duration` in src/data/projects.ts says. */
-const TAPE_LENGTH: Record<TapeId, string> = { parada: "15 s", tala: "60 s" };
+export const TAPE_LENGTH: Record<TapeId, string> = { parada: "15 s", tala: "60 s", udb: "21 s" };
+const TAPE_TITLE: Record<TapeId, string> = { parada: "PARADA", tala: "TALA", udb: "UDB" };
+const TAPE_COLOR: Record<TapeId, string> = { parada: SITE.accent, tala: SITE.solar, udb: "#ffd52e" };
 
 function Tape({ id, font, ready, insert, lift, onTape }: { id: TapeId; font: string; ready: boolean; insert: number; lift: number; onTape?: RoomProps["onTape"] }) {
   const shell = useRounded(TAPE.w, TAPE.h, TAPE.d, 0.008);
@@ -864,7 +867,7 @@ function Tape({ id, font, ready, insert, lift, onTape }: { id: TapeId; font: str
 }
 
 function Cabinet({ font, ready, tapes, onTape, tapeHover }: { font: string; ready: boolean; tapes: Partial<Record<TapeId, number>>; onTape?: RoomProps["onTape"]; tapeHover?: TapeId | null }) {
-  const playing = (["parada", "tala"] as TapeId[]).find((id) => (tapes[id] ?? 0) > 0.98) ?? null;
+  const playing = TAPE_IDS.find((id) => (tapes[id] ?? 0) > 0.98) ?? null;
   const face = useDisposable(() => deckFace(font, ready, playing), [font, ready, playing]);
   const strip = useDisposable(poolTexture, []);
   const bodyH = CAB.top - 0.095;
@@ -897,10 +900,10 @@ function Cabinet({ font, ready, tapes, onTape, tapeHover }: { font: string; read
         <planeGeometry args={[DECK.w - 0.02, DECK.h - 0.02]} />
         <meshStandardMaterial map={face} roughness={0.5} emissive="#ffffff" emissiveMap={face} emissiveIntensity={0.15} />
       </mesh>
-      {(["parada", "tala"] as TapeId[]).map((id) => (
+      {TAPE_IDS.map((id) => (
         <Tape key={id} id={id} font={font} ready={ready} insert={tapes[id] ?? 0} lift={tapeHover === id ? 0.03 : 0} onTape={onTape} />
       ))}
-      <Plant position={[CAB.x - CAB.l / 2 + 0.16, CAB.top, CAB.z]} size={0.85} seed={3} pot={SITE.sheet} />
+      <Plant position={[CAB.x - CAB.l / 2 + 0.16, CAB.top, CAB.z + CAB.depth / 2 - 0.12]} size={0.85} seed={3} pot={SITE.sheet} />
     </group>
   );
 }

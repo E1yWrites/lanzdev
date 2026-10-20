@@ -937,6 +937,11 @@
     --tape: rgb(var(--accent));
   }
 
+  .room-tape[data-tape="udb"],
+  .vhs-button[data-tape="udb"] {
+    --tape: #ffd52e;
+  }
+
   .room-tape[data-tape="tala"],
   .vhs-button[data-tape="tala"] {
     --tape: rgb(var(--solar));
