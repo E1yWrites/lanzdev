@@ -37,3 +37,15 @@ next-env.d.ts
 
 # design tooling output
 .impeccable/
+
+# local AI / dev tooling and scratch assets (not part of the open-source project)
+/.agents/
+/.claude/
+/.opencode/
+/.graphifyignore
+/graphify-out/
+/opencode.json
+/skills-lock.json
+/assets/
+.env
+.env.local
