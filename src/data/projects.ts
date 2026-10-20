@@ -1,7 +1,7 @@
 import type { Project } from "@/types/project";
 import { asset } from "@/lib/constants";
 
-// Order is the order on the site: PARADA is 01, Tala is 02, UDB is 03.
+// `featured` marks lead projects; /downloads and /releases use the first one in this order (Tala), so keep it ahead of UDB.
 // `featured` marks the downloadable app that /downloads and /releases lead with (Tala).
 // Facts come from the repositories (README, roadmap, CHANGELOG, releases);
 // live release data from GitHub overrides version/downloads at build time.
@@ -328,13 +328,13 @@ export const projects: Project[] = [
       { id: "6", title: "Security review", status: "done", date: "2026-10-19" },
       { id: "7", title: "Launcher redesign", status: "done", date: "2026-10-19" },
       { id: "8", title: "Brand, Dee and the instruction booklet", status: "active", date: "2026-10-20" },
-      { id: "9", title: "Deployment to udb.lorenzmalabanan.com", status: "next" },
+      { id: "9", title: "Deployment to udb.lorenzmalabanan.com", status: "active", date: "2026-10-20" },
     ],
     githubUrl: "https://github.com/E1yWrites/udb",
     demoUrl: "https://udb.lorenzmalabanan.com/",
     links: [{ label: "Legal and licences", href: "https://udb.lorenzmalabanan.com/legal/" }],
     downloads: {},
-    featured: false,
+    featured: true,
     story: {
       whyItExists:
         "Every mouse and keyboard brand wants its own background app, and most of them can't tell you whether a setting actually stuck.",

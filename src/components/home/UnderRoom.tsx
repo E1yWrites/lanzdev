@@ -7,7 +7,7 @@ import { Title } from "./Facts";
 import { ReelPlayer } from "./ReelPlayer";
 import type { ReelItem } from "./VhsOverlay";
 
-// Phones, under the room they've looked around (RoomPan): any project without an object
+// Phones, under the room they've looked around: any project without an object
 // in the room, the films, and the way to write. Desktop gets the house instead.
 
 export function UnderRoom({ projects, reel }: { projects: Project[]; reel: ReelItem[] }) {

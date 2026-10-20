@@ -183,7 +183,7 @@ focus or a step through a door.
 - Procedural 3D, poster first: a transparent render of the same camera paints before WebGL.
 - Mono plates and labels, a light Newsreader for titles, Instrument Sans for reading.
 - Every internal link is a door that opens in the next room's light.
-- Every motion stops under `prefers-reduced-motion`. Phones never load WebGL: they get the room as a still at full height and swipe across it, one object to a stop.
+- Every motion stops under `prefers-reduced-motion`. Phones never mount the room: they get its five objects as a numbered list (`MobileIndex`), each row opening to its room card's words.
 
 ## Colors
 
@@ -307,23 +307,17 @@ a paper note.
   `ink/10`): the greeting line "Hi, I'm Lanz, …" on the left, "Skip the room ↓" in the
   middle, availability on the right. The greeting lives in that line, not as a kicker.
   On phones that rule is hidden; its words move into the paper note.
-- **Looking around (phones, `RoomPan`).** The same `room.webp` stands at the screen's
-  full height (`100svh − 3.5rem`, 4:3, so ~2.7 screens wide) in a horizontal scroller
-  with native `scroll-snap`: stop 0 is the headline wall, then each object left to right
-  (its pin's spot from `projectToStage`). The objects' names (PARADA, Tala, About, Films,
-  Say hi) sit under the nav in that order as mono labels, the one in view ember and
-  underlined; each jumps to its object. Once a swipe has been still for 140ms the stage
-  dollies in 1.4× on the object (1400ms ease-out) and backs out in 320ms when it moves
-  again; never on the wall, never under reduced motion. `room.webp` is 2400×1800 so the
-  zoom stays sharp. A paper note (`sheet`, 2px, pinned-paper shadow) is docked
-  over the bottom of the room: the greeting, availability and "Look around →" at stop 0;
-  then the object's title, its line, the ember CTA and its status. The films' stop links
-  down to them. Under the room: the shelf (projects without an object, only when there is
-  one), the films, then the invitation. `?focus=<id>` opens on that object.
+- **The index (phones, `MobileIndex`).** The room isn't mounted below md. The page opens
+  with the headline as a real h1, the greeting and availability, then the room's five
+  objects as a dotted-rule numbered list (01–05). Each row is a native `<details>`: index
+  in ember, title, kicker, a `+` that turns to ×; open, it shows the card's line, its
+  facts and the ember CTA (the films' row links down to the player). Rows rise in 70ms
+  apart on load; opening animates through `::details-content` where supported and an
+  ember rule grows down the open row. All of it stops under reduced motion. Under the
+  list: the shelf (projects without an object), the films, then the invitation.
 - **The house.** A 16:9 stage centred and fitted to the screen from md
   (`min(100%, 100svh × 16/9)`). The invitation sits absolutely at lower left beside the
-  open front door, `min(30rem, 34vw)` wide. Phones don't get the house: looking around the room is
-  their index.
+  open front door, `min(30rem, 34vw)` wide. Phones don't get the house: the list is their index.
 - **Shell.** A fixed 56px nav (`h-14`), a 1600px max container, gutters of 20 / 32 / 48px
   at base / md / lg. The floor plan sits under the logo, from md up, at
   clamp(72px, 9.9vw, 120px) wide.

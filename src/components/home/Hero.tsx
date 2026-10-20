@@ -10,7 +10,6 @@ import { asset } from "@/lib/constants";
 import { useFinePointer, useMedia } from "@/hooks/useMedia";
 import type { ReelItem } from "./VhsOverlay";
 import { RoomCard, type RoomFacts } from "./RoomCard";
-import { RoomPan } from "./RoomPan";
 import { VhsOverlay } from "./VhsOverlay";
 
 /** Where the pins sit over the poster — the same camera as the render, so they line up before WebGL. */
@@ -40,8 +39,7 @@ function RoomPins({ interactive }: { interactive: boolean }) {
     return roomPins.subscribe(place);
   }, []);
 
-  // Until the page knows it's wide (and on phones, where CSS hides them) the pins are
-  // markers; phones look around the room instead (RoomPan).
+  // Until the page knows it's wide the pins are markers.
   if (!interactive)
     return (
       <div aria-hidden="true" className="room-pins absolute inset-0">
@@ -109,7 +107,7 @@ function Vignette() {
 /**
  * The hero is Lanz's room at night, with the headline painted on its left wall. Five
  * objects are the index: pick one and the camera moves to it and its card opens. Phones
- * get the room as a still at full height and look around it (RoomPan).
+ * never mount it; they get the same index as a list (MobileIndex).
  */
 export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
   const section = useRef<HTMLElement>(null);
@@ -130,7 +128,7 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
       heroPointer.scroll = Math.min(1, Math.max(0, window.scrollY / h));
     };
     onScroll();
-    // ?focus=<id> opens that object's card (phones: RoomPan pans to it)
+    // ?focus=<id> opens that object's card
     if (matchMedia("(min-width: 768px)").matches) syncRoomFromUrl();
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -160,7 +158,6 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
           Software for curious people.
         </h1>
 
-        <RoomPan facts={facts}>
         <div className="room-stage relative md:mx-auto" data-open={zoomed || undefined}>
           <ModelStage
             model="room"
@@ -175,9 +172,7 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
           />
           <Vignette />
           <RoomPins interactive={wide} />
-          <div aria-hidden="true" className="room-iris pointer-events-none absolute inset-0 md:hidden" />
         </div>
-        </RoomPan>
 
         <div className="hero-rule hero-fade relative z-[2] hidden gap-4 md:grid border-t border-ink/10 md:mt-auto md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8" style={{ animationDelay: "700ms" }}>
           <p className="hero-rule-line text-ink/70">

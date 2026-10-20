@@ -14,7 +14,7 @@ export type RoomFacts = Partial<Record<RoomId, [string, string][]>>;
 /**
  * The card for the picked object: a line, a few facts and one way in. A native modal
  * dialog, so focus stays inside it and Esc closes it; clicking outside, Back, or
- * scrolling on also close it. Beside the object; phones look around the room instead (RoomPan),
+ * scrolling on also close it. Beside the object; phones get a list instead (MobileIndex),
  * so it's only a bottom sheet if a narrow window opens one.
  */
 export function RoomCard({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {

@@ -19,7 +19,7 @@ import { projectToStage, type TapeId } from "@/three/roomObjects";
 // page in its light. The screening room plays the films. Beside the open front door, the
 // invitation. Plates and hit areas are placed with the render's own camera, so they land
 // on the poster before WebGL and on the live model after. Phones don't get the house:
-// they look around the room's own five objects instead (RoomPan).
+// they look around the room's own five objects instead (MobileIndex).
 
 /** A room's status on its plate, then the lines on its note. */
 export type HouseNotes = Partial<Record<HouseRoom, string[]>>;

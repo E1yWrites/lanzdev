@@ -252,8 +252,8 @@ export function ModelStage({ model, poster, posterNight, alt = "", className, si
           alt={alt}
           fill
           sizes={sizes}
-          priority={priority}
-          loading={priority ? "eager" : undefined}
+          // not next's `priority` (that preloads for every viewport, phones included, where the
+          // hero is hidden); a lazy image in a display:none ancestor never downloads
           fetchPriority={priority ? "high" : undefined}
           // the hero's poster is the page's largest paint: decode it into the first frame
           decoding={priority ? "sync" : "async"}
