@@ -9,7 +9,7 @@ export const siteConfig = {
   domain: "lorenzmalabanan.com",
   url: "https://lorenzmalabanan.com",
   description:
-    "Lorenz “Lanz” Malabanan — a 3rd-year IT student in Batangas building web, mobile and desktop software: PARADA, a smart parking system, and Tala, a note-taking app.",
+    "Lorenz “Lanz” Malabanan — a 3rd-year IT student in Batangas building web, mobile and desktop software: PARADA, a smart parking system, Tala, a note-taking app, and UDB, mouse and keyboard settings in the browser.",
   tagline: "Software for curious people.",
   profile:
     "3rd-year IT student building web and desktop apps with React, TypeScript and Tauri, including Tala, my released note-taking app. Trained in Cisco networking and cybersecurity.",

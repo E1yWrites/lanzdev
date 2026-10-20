@@ -496,123 +496,6 @@
     --fade: 9%;
   }
 
-  /* Phones (home/RoomPan.tsx): the room at the screen's full height, panned sideways
-     from object to object with native scroll-snap. The object in view stays lit and the
-     rest dims round it (an iris, never a lift); a paper note docked at the bottom says
-     what it is. The pins would sit too close to tap, so the plates under the nav jump. */
-  @property --ix {
-    syntax: "<percentage>";
-    inherits: true;
-    initial-value: 29%;
-  }
-
-  @property --iy {
-    syntax: "<percentage>";
-    inherits: true;
-    initial-value: 36%;
-  }
-
-  @media (max-width: 767px) {
-    .room-pan {
-      height: calc(100svh - 3.5rem);
-      margin: 0 -1.25rem;
-      overflow-x: auto;
-      overscroll-behavior-x: contain;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      scroll-behavior: smooth;
-      transition:
-        --ix 600ms var(--ease-out),
-        --iy 600ms var(--ease-out);
-    }
-
-    .room-pan::-webkit-scrollbar {
-      display: none;
-    }
-
-    .room-pan-track {
-      position: relative;
-      width: max-content;
-      height: 100%;
-      /* the zoom never adds scroll room or a vertical scrollbar */
-      overflow: clip;
-    }
-
-    /* Dolly in slowly once settled; back out quickly when the room moves. */
-    .room-zoom {
-      height: 100%;
-      transition: transform 320ms var(--ease-out);
-    }
-
-    .room-zoom[style*="scale"] {
-      transition-duration: 1400ms;
-    }
-
-    .room-stage {
-      height: 100%;
-      width: calc((100svh - 3.5rem) * 4 / 3);
-      margin: 0;
-    }
-
-    .room-snap {
-      position: absolute;
-      top: 0;
-      width: 1px;
-      height: 1px;
-      scroll-snap-align: center;
-    }
-
-    .room-pins {
-      display: none;
-    }
-
-    .room-iris {
-      background: radial-gradient(circle at var(--ix) var(--iy), transparent 7rem, rgb(var(--paper) / 0.62) 15rem);
-    }
-
-    /* The names along the top, left to right as the room goes; the one in view is ember. */
-    .room-names {
-      position: absolute;
-      top: 0.25rem;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      display: flex;
-      justify-content: center;
-      gap: 0.25rem;
-    }
-
-    .room-name {
-      min-height: 44px;
-      padding: 0 0.5rem;
-      color: rgb(var(--ink) / 0.6);
-      text-decoration: underline transparent;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 6px;
-      transition:
-        color 240ms var(--ease-out),
-        text-decoration-color 240ms var(--ease-out);
-    }
-
-    .room-name[aria-current] {
-      color: rgb(var(--accent));
-      text-decoration-color: currentColor;
-    }
-
-    .room-note {
-      position: absolute;
-      left: 1.25rem;
-      right: 1.25rem;
-      bottom: calc(1.25rem + env(safe-area-inset-bottom));
-      z-index: 3;
-      border-radius: 2px;
-      background: rgb(var(--sheet));
-      padding: 1.1rem 1.15rem 1rem;
-      color: rgb(var(--on-sheet));
-      box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.7);
-    }
-  }
-
   .hero-rule {
     padding-block: 1.25rem 2rem;
   }
@@ -1391,9 +1274,6 @@
   .room-pin-chip,
   .room-pin-name,
   .room-pins,
-  .room-pan,
-  .room-zoom,
-  .room-name,
   .menu-toggle-words > span,
   .menu-toggle-icon,
   .room-cta,
@@ -1428,5 +1308,53 @@
 
   html {
     scroll-behavior: auto;
+  }
+}
+
+/* Phones' index (home/MobileIndex.tsx): rows rise in one after another; each opens smoothly
+   where the browser can animate <details> (::details-content), instantly elsewhere. */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.mi-row details::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size 320ms var(--ease-out),
+    content-visibility 320ms allow-discrete;
+}
+
+.mi-row details[open]::details-content {
+  block-size: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mi-row {
+    animation: mi-in 520ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+  }
+
+  /* Where the browser can tie it to scroll, each row rises as it enters the screen instead. */
+  @supports (animation-timeline: view()) {
+    .mi-row {
+      animation: mi-in linear both;
+      animation-delay: 0s;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+
+  @keyframes mi-in {
+    from {
+      opacity: 0;
+      translate: 0 14px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mi-row details::details-content {
+    transition: none;
   }
 }

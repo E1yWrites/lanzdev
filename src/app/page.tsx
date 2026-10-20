@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/Hero";
 import type { RoomFacts } from "@/components/home/RoomCard";
+import { MobileIndex } from "@/components/home/MobileIndex";
 import { House, type HouseNotes } from "@/components/home/House";
 import { UnderRoom } from "@/components/home/UnderRoom";
 import type { ReelItem } from "@/components/home/VhsOverlay";
@@ -56,8 +57,11 @@ export default async function Home() {
 
   return (
     <>
-      <Hero facts={facts} reel={reel} />
-      {/* phones (below 768px): films and the invitation; wider screens get the house */}
+      {/* phones (below 768px): the index as a list, then films and the invitation; wider screens get the room and the house */}
+      <MobileIndex facts={facts} />
+      <div className="hidden md:block">
+        <Hero facts={facts} reel={reel} />
+      </div>
       <UnderRoom projects={projects} reel={reel} />
       <House notes={notes} tape={reel[0]?.slug as TapeId | undefined} />
     </>

@@ -33,6 +33,7 @@ const timeline = [
   { when: "Sep–Nov 2025", what: "AI+X: Understanding & Applying AI — Universitas Brawijaya" },
   { when: "Aug 2026", what: "Tala 1.0 released; PARADA's monorepo scaffolded (Phase 1)" },
   { when: "Sep 2026", what: "Tala 1.1.0; PARADA's Phase 14 accuracy evaluation; deployment under way" },
+  { when: "Oct 2026", what: "Tala 2.0.0 released; UDB, a browser-based settings app for mice, keyboards and headsets, built in the open" },
 ];
 
 /** Portrait in grey; a lens follows the pointer and shows it in colour. */

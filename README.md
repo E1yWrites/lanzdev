@@ -78,6 +78,9 @@ Currently curated on the site, in this order:
    its landing page is [E1yWrites/parada-landing](https://github.com/E1yWrites/parada-landing).
 2. **Tala** — a local-first note-taking app with handwriting (Tauri + React), with a
    live web version at `https://tala-xi.vercel.app/`.
+3. **UDB** — the Universal Driver Bus: mouse, keyboard and headset settings in the
+   browser over WebHID, showing only what the device reads back (Svelte, TypeScript).
+   Live at `https://udb.lorenzmalabanan.com/`; its legal page links back here.
 
 Personal details (education, certifications, organisations) live in
 `src/data/config.ts` and are taken from the résumé — email and city only, no phone

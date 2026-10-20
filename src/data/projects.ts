@@ -1,7 +1,7 @@
 import type { Project } from "@/types/project";
 import { asset } from "@/lib/constants";
 
-// Order is the order on the site: PARADA is 01, Tala is 02.
+// `featured` marks lead projects; /downloads and /releases use the first one in this order (Tala), so keep it ahead of UDB.
 // `featured` marks the downloadable app that /downloads and /releases lead with (Tala).
 // Facts come from the repositories (README, roadmap, CHANGELOG, releases);
 // live release data from GitHub overrides version/downloads at build time.
@@ -272,5 +272,75 @@ export const projects: Project[] = [
         ],
       },
     ],
+  },
+  {
+    id: "udb",
+    slug: "udb",
+    name: "UDB",
+    tagline: "One bus. Every device.",
+    role: "Peripheral settings · In the browser",
+    description:
+      "UDB, the Universal Driver Bus, changes DPI, polling rate, lighting and keys on gaming mice, keyboards and headsets straight from Chrome or Edge over WebHID. No vendor app, no install, no account, nothing uploaded. Every write is read back, and the screen shows only what the device returned.",
+    status: "in-progress",
+    version: "",
+    releaseDate: "2026-10-20",
+    platforms: [],
+    surfaces: "Web · Chrome and Edge on a computer",
+    technologies: ["Svelte 5", "TypeScript", "Vite", "WebHID", "Vitest", "Service worker"],
+    license: "GPL-3.0-or-later",
+    heroImage: asset("/images/udb-landing.webp"),
+    screenshots: [
+      {
+        src: asset("/images/udb-landing.webp"),
+        alt: "UDB's landing page: an instruction-booklet cover in green with the yellow UDB wordmark, Dee the USB-stick mascot in a green cap, and a START button",
+        caption: "The cover: START is the real browser request for a device",
+      },
+      {
+        src: asset("/images/udb-device.webp"),
+        alt: "UDB's device view: a mouse shown as a yellow cartridge in a green console, with its identity and status, the next device in a rack beside it, and a printed Controls page below",
+        caption: "The device view, shown in UDB's design preview with simulated devices",
+      },
+    ],
+    stats: [
+      { value: "489", label: "Models in the registry" },
+      { value: "2", label: "Verified on real hardware" },
+      { value: "1,377", label: "Automated tests passing" },
+      { value: "0", label: "Bytes uploaded" },
+    ],
+    features: [
+      { name: "Read, write once on release, read back: the device's answer replaces your request", available: true },
+      { name: "DPI stages, polling rate, debounce and lift-off where the protocol is known", available: true },
+      { name: "Keyboard lighting and VIA keymaps (keymaps experimental)", available: true },
+      { name: "Adapters for Pulsar/ATK, Vibe75, QMK/VIA, Logitech HID++, Razer, Corsair and Windows Dynamic Lighting", available: true },
+      { name: "Every setting labelled verified, unverified or recognised; unverified writes stay off until you allow them", available: true },
+      { name: "Profiles kept in the browser, exportable as files", available: true },
+      { name: "Device reports and diagnostics that never include what you type", available: true },
+      { name: "Works offline and installs as an app", available: true },
+      { name: "Firmware, bootloader or factory-reset commands (never sent, by design)", available: false },
+    ],
+    milestones: [
+      { id: "0", title: "Bootstrap", status: "done", date: "2026-10-15" },
+      { id: "1", title: "Research, architecture, registry schema", status: "done", date: "2026-10-15" },
+      { id: "2", title: "App shell and real device discovery", status: "done", date: "2026-10-15" },
+      { id: "3", title: "First write-verified devices", status: "done", date: "2026-10-15" },
+      { id: "4", title: "Wider protocol support", status: "done", date: "2026-10-18" },
+      { id: "5", title: "Profiles, diagnostics, offline app", status: "done", date: "2026-10-18" },
+      { id: "6", title: "Security review", status: "done", date: "2026-10-19" },
+      { id: "7", title: "Launcher redesign", status: "done", date: "2026-10-19" },
+      { id: "8", title: "Brand, Dee and the instruction booklet", status: "active", date: "2026-10-20" },
+      { id: "9", title: "Deployment to udb.lorenzmalabanan.com", status: "active", date: "2026-10-20" },
+    ],
+    githubUrl: "https://github.com/E1yWrites/udb",
+    demoUrl: "https://udb.lorenzmalabanan.com/",
+    links: [{ label: "Legal and licences", href: "https://udb.lorenzmalabanan.com/legal/" }],
+    downloads: {},
+    featured: true,
+    story: {
+      whyItExists:
+        "Every mouse and keyboard brand wants its own background app, and most of them can't tell you whether a setting actually stuck.",
+      content:
+        "UDB runs entirely in the browser: WebHID gives a page access only to the devices you pick, and a strict Content Security Policy keeps it from talking to anything but its own origin. Each protocol lives in its own adapter with an allowlist of the commands it may send, so firmware, bootloader and factory-reset commands can't go out even by mistake. A write goes out once, when you let go of the slider; the device is then read back, and if it disagrees UDB restores the old value and says so. The registry of 489 models labels every setting by its evidence: only results observed on real hardware count as verified, and simulators never do. The interface is styled as the device's own instruction booklet, with Dee, a USB stick in a green cap, as the guide.",
+    },
+    changelog: [],
   },
 ];
