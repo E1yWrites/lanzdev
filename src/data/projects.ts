@@ -328,7 +328,7 @@ export const projects: Project[] = [
       { id: "6", title: "Security review", status: "done", date: "2026-10-19" },
       { id: "7", title: "Launcher redesign", status: "done", date: "2026-10-19" },
       { id: "8", title: "Brand, Dee and the instruction booklet", status: "active", date: "2026-10-20" },
-      { id: "9", title: "Deployment to udb.lorenzmalabanan.com", status: "active", date: "2026-10-20" },
+      { id: "9", title: "Deployment to udb.lorenzmalabanan.com", status: "done", date: "2026-10-20" },
     ],
     githubUrl: "https://github.com/E1yWrites/udb",
     demoUrl: "https://udb.lorenzmalabanan.com/",
