@@ -82,6 +82,10 @@ Currently curated on the site, in this order:
    browser over WebHID, showing only what the device reads back (Svelte, TypeScript).
    Live at `https://udb.lorenzmalabanan.com/`; its legal page links back here.
 
+   | The cover (START is the real browser request) | The device view (design preview, simulated devices) |
+   | --- | --- |
+   | ![UDB's landing page: an instruction-booklet cover in green with the yellow UDB wordmark, Dee the USB-stick mascot and a START button](public/images/udb-landing.webp) | ![UDB's device view: a mouse as a yellow cartridge in a green console, with its identity and status](public/images/udb-device.webp) |
+
 Personal details (education, certifications, organisations) live in
 `src/data/config.ts` and are taken from the résumé — email and city only, no phone
 number or street address.

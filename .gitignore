@@ -49,3 +49,4 @@ next-env.d.ts
 /assets/
 .env
 .env.local
+/brag-output/

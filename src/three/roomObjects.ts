@@ -10,7 +10,9 @@ export interface Pose {
 }
 
 export type RoomId = "parada" | "tala" | "about" | "contact" | "reel";
-export type TapeId = "parada" | "tala";
+/** One tape per project film, in showreel order. */
+export const TAPE_IDS = ["parada", "tala", "udb"] as const;
+export type TapeId = (typeof TAPE_IDS)[number];
 
 /** How long a tape takes to slide into the deck; the film opens after it. */
 export const TAPE_INSERT_MS = 550;
@@ -156,7 +158,7 @@ export const ROOM_OBJECTS: RoomObject[] = [
     card: {
       kicker: "05 · Showreel",
       title: "Watch them run",
-      body: "Pick a tape: PARADA’s motion reel, or Tala’s launch film.",
+      body: "Pick a tape: PARADA’s motion reel, Tala’s launch film or UDB’s.",
     },
   },
 ];

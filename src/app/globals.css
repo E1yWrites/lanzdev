@@ -937,6 +937,11 @@
     --tape: rgb(var(--accent));
   }
 
+  .room-tape[data-tape="udb"],
+  .vhs-button[data-tape="udb"] {
+    --tape: #ffd52e;
+  }
+
   .room-tape[data-tape="tala"],
   .vhs-button[data-tape="tala"] {
     --tape: rgb(var(--solar));
@@ -1355,6 +1360,28 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mi-row details::details-content {
+    transition: none;
+  }
+}
+
+/* Home, first load of the live room: a veil with the spinner over the poster while the 3D
+   code and shaders load, so the pause reads as loading and not as a frozen page. */
+.hero-splash {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 400ms var(--ease-out),
+    visibility 0s 400ms;
+}
+
+.hero-splash[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-splash {
     transition: none;
   }
 }

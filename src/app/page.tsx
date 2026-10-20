@@ -11,6 +11,7 @@ import type { TapeId } from "@/three/roomObjects";
 
 const CAPTIONS: Record<string, string> = {
   parada: "Still circling? See which zone has room, meet Lottie, and watch one gate event reach both screens.",
+  udb: "Press START, change a setting once, and watch the device’s own answer replace your request.",
   tala: "Write “@ bukas alas-3 dentist” and it lands on Saturday at 3pm. Then Today: your plans, habits and money, already sorted.",
 };
 

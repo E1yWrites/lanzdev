@@ -9,8 +9,8 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { asset } from "@/lib/constants";
 import { PAD_KEYS } from "@/three/padKeys";
-import { Room } from "@/three/Room";
-import { ROOM_OBJECTS, ROOM_VIEW, TAPE_INSERT_MS, roomObject, type Pose, type RoomId, type TapeId } from "@/three/roomObjects";
+import { Room, TAPE_LENGTH } from "@/three/Room";
+import { ROOM_OBJECTS, ROOM_VIEW, TAPE_IDS, TAPE_INSERT_MS, roomObject, type Pose, type RoomId, type TapeId } from "@/three/roomObjects";
 import type { SceneProps } from "./scenes";
 import { cursorLabel, heroPointer, openRoom, roomEnter, roomFocus, roomHover, roomLive, roomPins, roomTape, useStore } from "./store";
 
@@ -25,7 +25,7 @@ const IDLE_SCREENS: [string, string][] = [
   ["STATUS", "OPEN TO AN INTERNSHIP"],
 ];
 
-const TAPE_NAME: Record<TapeId, string> = { parada: "PARADA", tala: "Tala" };
+const TAPE_NAME: Record<TapeId, string> = { parada: "PARADA", tala: "Tala", udb: "UDB" };
 
 type CamState = { px: number; py: number; pz: number; tx: number; ty: number; tz: number; fov: number };
 const camOf = (p: Pose): CamState => ({ px: p.position[0], py: p.position[1], pz: p.position[2], tx: p.target[0], ty: p.target[1], tz: p.target[2], fov: p.fov });
@@ -172,7 +172,7 @@ function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<S
     s.dim = damp(s.dim, focus ? 1 : 0, 6, dt);
     for (const obj of ROOM_OBJECTS) s.lit[obj.id] = damp(s.lit[obj.id] ?? 0, !focus && hover === obj.id ? 1 : 0, 12, dt);
     const step = dt / (TAPE_INSERT_MS / 1000);
-    for (const id of ["parada", "tala"] as TapeId[]) {
+    for (const id of TAPE_IDS) {
       const cur = s.tapes[id] ?? 0;
       s.tapes[id] = tape === id ? Math.min(1, cur + step) : Math.max(0, cur - step);
     }
@@ -225,7 +225,7 @@ function RoomRig({ font, display, fontReady, onReady, drag, onNavigate }: Pick<S
   const onTape = (id: TapeId, type: "over" | "out" | "click", e: ThreeEvent<PointerEvent | MouseEvent>) => {
     if (type === "over") {
       setTapeHover(id);
-      cursorLabel.set(`${TAPE_NAME[id]} · 15 s`);
+      cursorLabel.set(`${TAPE_NAME[id]} · ${TAPE_LENGTH[id]}`);
       pointer(true);
     } else if (type === "out") {
       setTapeHover((h) => (h === id ? null : h));

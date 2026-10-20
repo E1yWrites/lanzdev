@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ModelStage } from "@/components/three/ModelStage";
 import { heroPointer, openRoom, roomFocus, roomHover, roomLive, roomPins, roomTape, syncRoomFromUrl, useStore } from "@/components/three/store";
 import { ROOM_OBJECTS, ROOM_VIEW, projectToStage, roomObject } from "@/three/roomObjects";
+import { Loader } from "@/components/motion/Loader";
 import { FloorPlan } from "@/components/layout/FloorPlan";
 import { siteConfig } from "@/data/config";
 import { asset } from "@/lib/constants";
@@ -116,6 +117,13 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
   // zoomed into an object: the stage loses its hard frame (see .room-stage[data-open])
   const focus = useStore(roomFocus);
   const live = useStore(roomLive);
+  // The splash covers the first load only: the room stays mounted once it has drawn.
+  const [loading, setLoading] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
+  useEffect(() => {
+    if (live) setSplashDone(true);
+  }, [live]);
+  const splash = wide && loading && !splashDone;
   const zoomed = live && Boolean(roomObject(focus)?.side);
 
   useEffect(() => {
@@ -168,6 +176,7 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
             live={wide}
             draggable={wide}
             feather={false}
+            onLoadingChange={setLoading}
             className="absolute inset-0"
           />
           <Vignette />
@@ -189,6 +198,10 @@ export function Hero({ facts, reel }: { facts: RoomFacts; reel: ReelItem[] }) {
             {siteConfig.availability}
           </p>
         </div>
+      </div>
+
+      <div aria-hidden={!splash} className="hero-splash pointer-events-none absolute inset-0 z-[4] grid place-items-center bg-paper/70 backdrop-blur-sm" data-on={splash || undefined}>
+        <Loader label="Loading the room" />
       </div>
 
       <RoomCard facts={facts} reel={reel} />
