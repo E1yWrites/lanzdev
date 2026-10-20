@@ -141,10 +141,12 @@ interface ModelStageProps {
   live?: boolean;
   /** Fade the stage's edges into the page (models that run off the frame); false keeps a crisp frame. */
   feather?: boolean;
+  /** Tells the page when the live model is on its way (true) and when it has drawn or given up (false). */
+  onLoadingChange?: (loading: boolean) => void;
   onClick?: () => void;
 }
 
-export function ModelStage({ model, poster, posterNight, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, feather = true, onClick }: ModelStageProps) {
+export function ModelStage({ model, poster, posterNight, alt = "", className, sizes = "100vw", priority, draggable, night, cursor, live: allowLive = true, feather = true, onLoadingChange, onClick }: ModelStageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const reduced = useReducedMotion();
@@ -176,7 +178,12 @@ export function ModelStage({ model, poster, posterNight, alt = "", className, si
     if (allowLive && canRender && scale > 0 && !reduced) prefetchScenes();
   }, [allowLive, canRender, scale, reduced]);
 
-  const wanted = allowLive && canRender && scale > 0 && !reduced && near;
+  // Once a stage has been near, it stays mounted: scrolling away only pauses its frame loop
+  // (active={visible}). Tearing it down made every pass rebuild the scene and compile its
+  // shaders again, which froze the page on "Loading 3D".
+  const [armed, setArmed] = useState(false);
+  if (near && !armed) setArmed(true);
+  const wanted = allowLive && canRender && scale > 0 && !reduced && armed;
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     if (!wanted) {
@@ -197,6 +204,7 @@ export function ModelStage({ model, poster, posterNight, alt = "", className, si
     return () => window.clearTimeout(t);
   }, [wanted, live]);
   const loading = wanted && !live && !gaveUp;
+  useEffect(() => onLoadingChange?.(loading), [loading, onLoadingChange]);
 
   useFrameWatchdog(live && visible);
 
