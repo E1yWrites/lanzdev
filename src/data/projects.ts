@@ -330,6 +330,13 @@ export const projects: Project[] = [
       { id: "8", title: "Brand, Dee and the instruction booklet", status: "active", date: "2026-10-20" },
       { id: "9", title: "Deployment to udb.lorenzmalabanan.com", status: "done", date: "2026-10-20" },
     ],
+    promo: {
+      webm: asset("/art/films/udb.webm"),
+      mp4: asset("/art/films/udb.mp4"),
+      poster: asset("/art/films/udb.jpg"),
+      duration: 21,
+      credit: "UDB’s launch video: the cover, the three steps, the numbers. Real screenshots from the app; made with HyperFrames. Sound on.",
+    },
     githubUrl: "https://github.com/E1yWrites/udb",
     demoUrl: "https://udb.lorenzmalabanan.com/",
     links: [{ label: "Legal and licences", href: "https://udb.lorenzmalabanan.com/legal/" }],

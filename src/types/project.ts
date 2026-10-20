@@ -86,6 +86,8 @@ export interface Project {
   model?: ProjectModel;
   /** Showcase film: rendered in art/ or supplied footage, encoded by art/encode.mjs. */
   film?: ProjectFilm;
+  /** A launch video for the project page only; unlike `film` it never joins the home page's showreel. */
+  promo?: ProjectFilm;
   /** Folder colour on the home page. */
   tone?: "accent" | "solar" | "sheet";
   /** Where it runs when it isn't a desktop download, e.g. "Mobile · Web". */

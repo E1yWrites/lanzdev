@@ -110,6 +110,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
   // Section numbers follow whatever this project actually has.
   let n = 0;
   const num = () => ++n;
+  const film = project.film ?? project.promo;
 
   return (
     <>
@@ -155,7 +156,7 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
                     <ArrowUpRight size={14} strokeWidth={2.5} aria-hidden="true" />
                   </ButtonLink>
                 )}
-                {project.film && (
+                {film && (
                   <ButtonLink href="#film" variant="secondary">
                     Watch the film
                   </ButtonLink>
@@ -252,10 +253,10 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
       </section>
 
       {/* Film */}
-      {project.film && (
-        <Section id="film" index={num()} title={`${project.film.duration} seconds of ${project.name}`}>
-          <FilmPlayer film={project.film} title={project.name} className="rounded-xl border border-ink/10" />
-          {project.film.credit && <p className="t-label mt-3 text-ink/60">{project.film.credit}</p>}
+      {film && (
+        <Section id="film" index={num()} title={`${film.duration} seconds of ${project.name}`}>
+          <FilmPlayer film={film} title={project.name} className="rounded-xl border border-ink/10" />
+          {film.credit && <p className="t-label mt-3 text-ink/60">{film.credit}</p>}
         </Section>
       )}
 
