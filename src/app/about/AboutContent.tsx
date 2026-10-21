@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { KineticText } from "@/components/motion/KineticText";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { TechBadges } from "@/components/ui/TechBadges";
 import { siteConfig } from "@/data/config";
 import { useFinePointer, useReducedMotion } from "@/hooks/useMedia";
 import { useReveal } from "@/hooks/useReveal";
@@ -55,8 +56,8 @@ function Portrait() {
       }}
       onPointerLeave={() => ref.current?.style.setProperty("--pr", "0px")}
     >
-      <Image src={asset("/images/profilepic.png")} alt="Lorenz Malabanan in a studio portrait" fill priority className="object-cover object-[50%_20%] grayscale" sizes="(max-width: 768px) 100vw, 420px" />
-      <Image src={asset("/images/profilepic.png")} alt="" aria-hidden="true" fill className="portrait-lens object-cover object-[50%_20%]" sizes="(max-width: 768px) 100vw, 420px" />
+      <Image src={asset("/images/profilepic.webp")} alt="Lorenz Malabanan in a studio portrait" fill priority className="object-cover object-[50%_20%] grayscale" sizes="(max-width: 768px) 100vw, 420px" />
+      <Image src={asset("/images/profilepic.webp")} alt="" aria-hidden="true" fill className="portrait-lens object-cover object-[50%_20%]" sizes="(max-width: 768px) 100vw, 420px" />
     </div>
   );
 }
@@ -182,16 +183,11 @@ export function AboutContent({ projects }: AboutContentProps) {
             </li>
           ))}
         </ul>
-        <div className="reveal mt-8 flex flex-wrap gap-2">
-          {Object.values(siteConfig.technologies)
-            .flat()
-            .filter((t, i, all) => all.indexOf(t) === i)
-            .map((t) => (
-              <span key={t} className="t-label rounded-full border border-ink/20 px-3 py-1.5 text-ink/75 transition-colors hover:border-accent hover:text-accent">
-                {t}
-              </span>
-            ))}
-        </div>
+        <TechBadges
+          names={Object.values(siteConfig.technologies).flat().filter((t, i, all) => all.indexOf(t) === i)}
+          max={Infinity}
+          className="reveal mt-8"
+        />
       </Section>
 
       <Section number="07" title="How I think">

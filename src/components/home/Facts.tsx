@@ -1,13 +1,15 @@
+import { TechBadges } from "@/components/ui/TechBadges";
+import type { Fact } from "@/lib/projectDisplay";
 import { cn } from "@/lib/utils";
 
 /** Label/value rows on dotted rules: a room card's facts. */
-export function Facts({ rows, className }: { rows: [string, string][]; className?: string }) {
+export function Facts({ rows, className }: { rows: Fact[]; className?: string }) {
   return (
     <dl className={cn("border-t border-dotted border-ink/25", className)}>
       {rows.map(([k, v]) => (
         <div key={k} className="flex gap-4 border-b border-dotted border-ink/25 py-2.5">
           <dt className="t-label w-24 shrink-0 pt-px text-ink/60">{k}</dt>
-          <dd className="text-[15px] leading-snug text-ink md:text-sm">{v}</dd>
+          <dd className="text-[15px] leading-snug text-ink md:text-sm">{typeof v === "string" ? v : <TechBadges names={v} max={5} />}</dd>
         </div>
       ))}
     </dl>

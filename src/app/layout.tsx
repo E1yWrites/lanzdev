@@ -68,7 +68,7 @@ export default async function RootLayout({
     <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         {/* Lets CSS hold entrance animations until JS can start them on scroll (no-JS visitors see everything). */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');var n=navigator;if((n.connection&&n.connection.saveData)||n.deviceMemory<=2||n.hardwareConcurrency<=4)document.documentElement.classList.add('lite')" }} />
       </head>
       <body className="grain min-h-screen">
         <ScrollProgress />

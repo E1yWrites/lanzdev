@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ import { ModelStage } from "@/components/three/ModelStage";
 import { Roadmap } from "@/components/project/Roadmap";
 import { useFinePointer, useMedia } from "@/hooks/useMedia";
 import { Surface } from "@/components/ui/Surface";
+import { TechBadges } from "@/components/ui/TechBadges";
 import { ChangelogView } from "@/components/project/ChangelogView";
 import { PlatformDownloads } from "@/components/project/PlatformDownloads";
 import { useReveal } from "@/hooks/useReveal";
@@ -98,14 +99,14 @@ export function ProjectPageClient({ project, next }: ProjectPageClientProps) {
       : fine
         ? "Hover to play, drag to turn"
         : "Plays on its own, drag to turn";
-  const spec = [
+  const spec = ([
     ["Version", project.version ? `v${project.version}` : "—"],
     ["Status", status.label],
     ["Runs on", platformSummary(project)],
-    ["Built with", project.technologies.join(" / ") || "—"],
+    ["Built with", project.technologies.length ? <TechBadges key="tech" names={project.technologies} max={Infinity} /> : "—"],
     ["Licence", project.license],
     ["Updated", project.releaseDate ? formatDate(project.releaseDate) : "—"],
-  ].filter(([, value]) => value);
+  ] as [string, ReactNode][]).filter(([, value]) => value);
 
   // Section numbers follow whatever this project actually has.
   let n = 0;

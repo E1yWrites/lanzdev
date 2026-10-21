@@ -7,6 +7,7 @@ import { useReveal } from "@/hooks/useReveal";
 import { Badge } from "@/components/ui/Badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Surface } from "@/components/ui/Surface";
+import { TechBadges } from "@/components/ui/TechBadges";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { siteConfig } from "@/data/config";
 import { platformSummary, projectStatus } from "@/lib/projectDisplay";
@@ -24,7 +25,6 @@ function LeadProject({ project, index }: { project: Project; index: number }) {
   const meta = [
     ["Version", project.version && `v${project.version}`],
     ["Platform", platformSummary(project)],
-    ["Stack", project.technologies.slice(0, 4).join(" / ")],
   ].filter(([, value]) => value);
 
   return (
@@ -77,7 +77,7 @@ function LeadProject({ project, index }: { project: Project; index: number }) {
           <p className="mt-3 line-clamp-3 font-swiss text-sm leading-relaxed text-swiss-fg/60">{project.description}</p>
 
           <div aria-hidden="true" className="min-h-8 flex-1" />
-          <dl className="mb-8 grid grid-cols-[5.5rem_1fr] gap-y-2 border-t border-ink/10 pt-5">
+          <dl className="grid grid-cols-[5.5rem_1fr] gap-y-2 border-t border-ink/10 pt-5">
             {meta.map(([label, value]) => (
               <div key={label} className="contents">
                 <dt className="t-label leading-5 text-swiss-fg/60">{label}</dt>
@@ -85,6 +85,7 @@ function LeadProject({ project, index }: { project: Project; index: number }) {
               </div>
             ))}
           </dl>
+          <TechBadges names={project.technologies} max={6} className="mb-8 mt-4" />
 
           <span className="t-label inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
             Open project
