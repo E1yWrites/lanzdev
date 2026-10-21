@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { closeRoom, roomEnter, roomFocus, roomLive, roomTape, useStore } from "@/components/three/store";
 import { roomObject, type RoomId, type TapeId } from "@/three/roomObjects";
+import type { Fact } from "@/lib/projectDisplay";
 import { Facts } from "./Facts";
 import { TapeButton } from "./ReelPlayer";
 import type { ReelItem } from "./VhsOverlay";
 
 /** Label/value rows under each card's line, from the projects' data and the résumé. */
-export type RoomFacts = Partial<Record<RoomId, [string, string][]>>;
+export type RoomFacts = Partial<Record<RoomId, Fact[]>>;
 
 /**
  * The card for the picked object: a line, a few facts and one way in. A native modal

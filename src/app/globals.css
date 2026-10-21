@@ -220,6 +220,10 @@
     position: relative;
   }
 
+  .lite .grain::before {
+    display: none;
+  }
+
   .grain::before {
     content: "";
     position: fixed;

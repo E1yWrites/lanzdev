@@ -1,5 +1,8 @@
 import type { Platform, Project, ProjectStatus } from "@/types/project";
 
+/** A label and its value; a list of names (a stack) shows as badges. */
+export type Fact = [string, string | string[]];
+
 type BadgeVariant = "released" | "in-progress" | "prototype" | "archived" | "planned";
 
 export const PLATFORMS: { key: Platform; label: string; detail: string }[] = [
@@ -28,10 +31,10 @@ export function platformSummary(project: Pick<Project, "platforms" | "demoUrl" |
 }
 
 /** The label/value rows beside a project in the hero room (and under it on phones): all from the project's own data. */
-export function projectFacts(p: Project): [string, string][] {
-  const rows: [string, string][] = [["Status", projectStatus(p.status).label]];
+export function projectFacts(p: Project): Fact[] {
+  const rows: Fact[] = [["Status", projectStatus(p.status).label]];
   if (p.version) rows.push(["Version", `v${p.version}`]);
-  rows.push(["Runs on", platformSummary(p)], ["Built with", p.technologies.slice(0, 5).join(" · ")]);
+  rows.push(["Runs on", platformSummary(p)], ["Built with", p.technologies]);
   return rows;
 }
 

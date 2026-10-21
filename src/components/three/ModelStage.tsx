@@ -75,10 +75,10 @@ function supportsWebGL() {
   return webgl;
 }
 
-/** Data-saver or a 2 GB-or-less device: the posters are the same pictures, so skip WebGL. */
+/** Data-saver or a 2 GB-or-less or 4-core-or-less device: the posters are the same pictures, so skip WebGL. */
 function lowEnd() {
   const n = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-  return Boolean(n.connection?.saveData) || (n.deviceMemory !== undefined && n.deviceMemory <= 2);
+  return Boolean(n.connection?.saveData) || (n.deviceMemory !== undefined && n.deviceMemory <= 2) || navigator.hardwareConcurrency <= 4;
 }
 
 /** Watches real frame times while a scene draws. Under ~25 fps over 60 frames (or 3 s): render fewer

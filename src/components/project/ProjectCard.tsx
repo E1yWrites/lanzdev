@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Surface } from "@/components/ui/Surface";
+import { TechBadges } from "@/components/ui/TechBadges";
 import { platformSummary, projectStatus } from "@/lib/projectDisplay";
 import { formatDate } from "@/lib/utils";
 import type { Project } from "@/types/project";
@@ -20,7 +21,6 @@ export function ProjectCard({ project, index, headingLevel: Heading = "h3", clas
   const status = projectStatus(project.status);
   const meta = [
     ["Platform", platformSummary(project)],
-    ["Stack", project.technologies.slice(0, 3).join(" / ")],
     ["Updated", project.releaseDate && formatDate(project.releaseDate)],
   ].filter(([, value]) => value);
 
@@ -47,6 +47,7 @@ export function ProjectCard({ project, index, headingLevel: Heading = "h3", clas
             </div>
           ))}
         </dl>
+        <TechBadges names={project.technologies} max={5} className="mt-4" />
 
         <span className="t-label mt-5 inline-flex items-center gap-2 text-swiss-fg/60 transition-colors duration-fast group-hover:text-swiss-accent">
           Take a look

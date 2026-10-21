@@ -4,15 +4,15 @@ import { useState } from "react";
 import { FilmPlayer } from "@/components/motion/FilmPlayer";
 import type { ReelItem } from "./VhsOverlay";
 
-/** One tape: the film's name, its length and a line about it. */
-export function TapeButton({ item, pressed, onClick }: { item: ReelItem; pressed: boolean; onClick: () => void }) {
+/** One tape: the film's name, its length and a line about it (`compact`: that line only while it plays). */
+export function TapeButton({ item, pressed, onClick, compact }: { item: ReelItem; pressed: boolean; onClick: () => void; compact?: boolean }) {
   return (
     <button type="button" aria-pressed={pressed} onClick={onClick} className="room-tape" data-tape={item.slug}>
       <span className="flex items-baseline justify-between gap-3">
         <span className="font-display text-xl font-light text-ink">{item.name}</span>
         <span className="t-label text-ink/60">{item.film.duration} s</span>
       </span>
-      <span className="mt-1 block text-left text-sm leading-snug text-ink/70">{item.caption}</span>
+      {(!compact || pressed) && <span className="mt-1 block text-left text-sm leading-snug text-ink/70">{item.caption}</span>}
     </button>
   );
 }
@@ -42,7 +42,7 @@ export function ReelPlayer({ reel, children }: { reel: ReelItem[]; children: Rea
         {children}
         <div role="group" aria-label="Tapes" className="mt-6 grid gap-2">
           {reel.map((r) => (
-            <TapeButton key={r.slug} item={r} pressed={r.slug === item.slug} onClick={() => setSlug(r.slug)} />
+            <TapeButton key={r.slug} item={r} pressed={r.slug === item.slug} onClick={() => setSlug(r.slug)} compact />
           ))}
         </div>
       </div>

@@ -59,11 +59,11 @@ export default async function Home() {
   return (
     <>
       {/* phones (below 768px): the index as a list, then films and the invitation; wider screens get the room and the house */}
-      <MobileIndex facts={facts} />
+      <MobileIndex facts={facts} projects={projects} />
       <div className="hidden md:block">
         <Hero facts={facts} reel={reel} />
       </div>
-      <UnderRoom projects={projects} reel={reel} />
+      <UnderRoom reel={reel} />
       <House notes={notes} tape={reel[0]?.slug as TapeId | undefined} />
     </>
   );

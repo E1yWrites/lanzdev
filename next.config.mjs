@@ -14,6 +14,12 @@ const nextConfig = {
       { source: "/projects/modpack-development", destination: "/projects", permanent: false },
     ];
   },
+  // Vercel serves public/ files with max-age=0. These filenames aren't content-hashed, so a day plus
+  // stale-while-revalidate: repeat visits skip the network, and a changed file shows within a day.
+  async headers() {
+    const cache = [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }];
+    return ["art", "images", "models", "icons"].map((d) => ({ source: `/${d}/:path*`, headers: cache }));
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

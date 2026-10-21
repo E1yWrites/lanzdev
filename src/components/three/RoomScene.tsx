@@ -265,7 +265,7 @@ export function RoomScene({ active, font, display, fontReady, onReady, drag, onN
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
-      dpr={[1, 1.75]}
+      dpr={[1, 1.25]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: ROOM_VIEW.position, fov: ROOM_VIEW.fov, near: 0.1, far: 100 }}
       style={{ touchAction: "pan-y" }}
